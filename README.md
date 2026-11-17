@@ -75,6 +75,8 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
 | `styles` | Which styles the setup screen offers. `emoji` and `text` are built in; any other name (`cartoon`, `realistic`, `shape`…) is an image folder. |
 | `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. |
+| `cover` | Optional. Card number (from 1) shown as the story's picture on the setup screen. Defaults to the last card. |
+| `cursor` | Optional. One emoji used as the mouse pointer while the story is played (for example `"💧"`). Decoration only; the setup screen can turn it off. |
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |

@@ -4,6 +4,8 @@
     "title": "Brushing teeth",
     "gradeBand": "K-2",
     "reversible": false,
+    "cover": 2,
+    "cursor": "🦷",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -17,6 +19,7 @@
     "title": "Planting a seed",
     "gradeBand": "K-2",
     "reversible": false,
+    "cursor": "🪴",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -31,6 +34,8 @@
     "title": "Making a sandwich",
     "gradeBand": "3-5",
     "reversible": false,
+    "cover": 3,
+    "cursor": "🍽️",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -45,6 +50,8 @@
     "title": "Mailing a letter",
     "gradeBand": "3-5",
     "reversible": false,
+    "cover": 4,
+    "cursor": "💌",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -61,6 +68,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["calm", "puffed"],
+    "cursor": "💧",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f7f2e7"},
     "cards": [
@@ -75,6 +83,7 @@
     "gradeBand": "3-5",
     "reversible": true,
     "endLabels": ["cold", "boiling"],
+    "cursor": "🔥",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -90,6 +99,7 @@
     "gradeBand": "3-5",
     "reversible": true,
     "endLabels": ["clear", "storm"],
+    "cursor": "☂️",
     "styles": ["cartoon", "emoji", "text"],
     "cards": [
       {"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"},
@@ -105,6 +115,8 @@
     "gradeBand": "K-8",
     "reversible": true,
     "endLabels": ["silent", "yelling"],
+    "cover": 4,
+    "cursor": "🎤",
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [

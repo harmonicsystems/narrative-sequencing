@@ -19,7 +19,13 @@
     --accent-ink: #fdf9f1;
     --shadow: 0 1px 2px rgba(70, 48, 24, 0.10), 0 5px 14px rgba(70, 48, 24, 0.07);
     --cw: clamp(96px, 16vw, 172px);
+    --cap: 1;              /* caption text scale, grows with the cards */
   }
+  /* Card size, chosen on setup. Bigger cards wrap onto more rows on small screens. */
+  :root[data-size="large"] { --cw: clamp(124px, 22vw, 236px); --cap: 1.15; }
+  :root[data-size="largest"] { --cw: clamp(150px, 30vw, 310px); --cap: 1.3; }
+  :root[data-size="large"] main { max-width: 1320px; }
+  :root[data-size="largest"] main { max-width: 1680px; }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #2a231d; --surface: #43382e; --soft: #352c25;
@@ -80,6 +86,26 @@
   .story { text-align: left; }
   .story span { display: block; }
   .story .meta { font-size: 0.88rem; font-weight: 400; color: var(--muted); }
+  /* Picture view: each story is a small deck of cards with a close-up of one
+     card on top. The two lines under the tile are the edges of the cards below. */
+  #storyList.pictures { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 22px 16px; }
+  .pictures .story {
+    padding: 8px 8px 12px; border-radius: 18px; margin-bottom: 7px;
+    box-shadow: 0 3.5px 0 -1.5px var(--surface), 0 3.5px 0 0 var(--edge),
+                0 7px 0 -3px var(--surface), 0 7px 0 -1.5px var(--edge);
+  }
+  .pictures .story[aria-pressed="true"] {
+    box-shadow: 0 0 0 2.5px var(--accent), 0 4px 0 2.5px var(--accent), 0 8px 0 0 var(--edge);
+  }
+  .story .thumb {
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    aspect-ratio: 4 / 3; margin-bottom: 10px; border-radius: 11px;
+    background: var(--soft); border: 1px solid var(--line);
+    font-size: 3.2rem; line-height: 1;
+  }
+  .story .thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .story .thumb + span, .story .thumb ~ .meta { padding-inline: 6px; }
+  #listHead { justify-content: space-between; align-items: baseline; }
   label.check { display: inline-flex; gap: 10px; align-items: center; min-height: 48px; margin-top: 6px; cursor: pointer; }
   label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
   #sessionBar { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); justify-content: space-between; }
@@ -119,13 +145,13 @@
   /* Room for two lines on every card, so pictures sit at the same height
      whether a caption wraps or not. */
   .card .cap {
-    padding: 6px 8px 10px; font-size: clamp(0.8rem, 1.5vw, 0.95rem); line-height: 1.3; text-align: center;
+    padding: 6px 8px 10px; font-size: calc(clamp(0.8rem, 1.5vw, 0.95rem) * var(--cap)); line-height: 1.3; text-align: center;
     min-height: calc(2.6em + 16px); display: flex; align-items: center; justify-content: center;
   }
   .card.plain .art { display: none; }
   .card.plain .cap {
     flex: 1; display: flex; align-items: center; justify-content: center;
-    font-size: clamp(0.9rem, 1.9vw, 1.15rem); padding: 12px;
+    font-size: calc(clamp(0.9rem, 1.9vw, 1.15rem) * var(--cap)); padding: 12px;
   }
   /* Picked-up card: ring plus a small lift. */
   .card.selected { border-color: var(--accent); box-shadow: 0 0 0 3.5px var(--accent), var(--shadow); translate: 0 -6px; }
@@ -134,6 +160,9 @@
   /* The fixed first card is labelled above its spot, never on the picture. */
   .slot.start::before { color: var(--ink); }
   .locked .card { cursor: default; }
+  /* Optional story pointer (story.cursor): decoration only, set in startStory.
+     Buttons and the cue menu keep their own pointers. */
+  #play.themed, #play.themed .card, #play.themed .slot { cursor: var(--story-cursor), auto; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
   #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); }
@@ -165,12 +194,21 @@
     <p class="muted">Choose a story for the student to put in order.</p>
     <p class="muted small" id="sourceNote" hidden></p>
 
-    <h2>Which story?</h2>
+    <div class="row" id="listHead">
+      <h2>Which story?</h2>
+      <button class="link small" id="viewBtn"></button>
+    </div>
     <div id="storyList"></div>
 
     <h2>How should the cards look?</h2>
     <div class="row" id="styleRow"></div>
     <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
+    <div id="cursorOpt" hidden>
+      <label class="check small"><input type="checkbox" id="storyCursor" checked> <span id="cursorLabel"></span></label>
+    </div>
+
+    <h2>How big should the cards be?</h2>
+    <div class="row" id="sizeRow"></div>
 
     <div id="dirBlock" hidden>
       <h2>Which way does it go?</h2>
@@ -239,7 +277,7 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
 
 const CUES = {
   independent: 'independently',
@@ -253,7 +291,7 @@ let stories = [];
 let log = [];          // one record per checked attempt
 let runCount = 0;      // one run = one presentation of a story
 let S = null;          // state of the story on screen
-const pick = { storyId: null, style: null, direction: 'forward' };
+const pick = { storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures' };
 
 function show(name) {
   for (const id of ['setup', 'play', 'summary']) $(id).hidden = id !== name;
@@ -276,9 +314,13 @@ function renderSetup() {
 
   const list = $('storyList');
   list.replaceChildren();
+  list.classList.toggle('pictures', pick.view === 'pictures');
+  $('viewBtn').textContent = 'View: ' + pick.view;
+  $('viewBtn').onclick = () => { pick.view = pick.view === 'pictures' ? 'list' : 'pictures'; renderSetup(); };
   for (const s of stories) {
     const b = el('button', 'btn story');
     b.setAttribute('aria-pressed', s.id === story.id);
+    if (pick.view === 'pictures') b.append(buildThumb(s));
     b.append(el('span', '', s.title));
     const plays = new Set(log.filter(a => a.storyId === s.id).map(a => a.run)).size;
     const meta = [s.gradeBand, s.cards.length + ' cards'];
@@ -297,6 +339,21 @@ function renderSetup() {
     b.onclick = () => { pick.style = st; renderSetup(); };
     styleRow.append(b);
   }
+
+  $('cursorOpt').hidden = !story.cursor;
+  $('cursorLabel').textContent = 'Use the story pointer ' + (story.cursor || '') + ' (mouse or trackpad)';
+
+  const sizeRow = $('sizeRow');
+  sizeRow.replaceChildren();
+  for (const sz of ['standard', 'large', 'largest']) {
+    const b = el('button', 'btn', sz);
+    b.setAttribute('aria-pressed', sz === pick.size);
+    b.onclick = () => { pick.size = sz; renderSetup(); };
+    sizeRow.append(b);
+  }
+  // Memory only, like appearance: the choice lasts until the page is closed.
+  if (pick.size === 'standard') delete document.documentElement.dataset.size;
+  else document.documentElement.dataset.size = pick.size;
 
   $('dirBlock').hidden = !story.reversible;
   if (story.reversible) {
@@ -331,6 +388,53 @@ function shuffledAwayFrom(target) {
 }
 
 function pad2(n) { return String(n).padStart(2, '0'); }
+
+// Picture view on setup: a close-up of one card. story.cover is the card
+// number (from 1); the last card if not given. Uses the story's first image
+// set, else the card's emoji, else the tile stays words only.
+function buildThumb(story) {
+  const idx = Math.min(story.cards.length, Math.max(1, story.cover || story.cards.length)) - 1;
+  const data = story.cards[idx];
+  const thumb = el('span', 'thumb');
+  thumb.setAttribute('aria-hidden', 'true');
+  const useEmoji = () => {
+    thumb.replaceChildren();
+    thumb.style.background = '';
+    if (data.emoji) thumb.textContent = data.emoji; else thumb.hidden = true;
+  };
+  const style = story.styles.find(st => st !== 'emoji' && st !== 'text');
+  if (!style) { useEmoji(); return thumb; }
+  const img = new Image();
+  img.alt = '';
+  img.draggable = false;
+  img.onerror = useEmoji;
+  img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+  thumb.append(img);
+  if (/\.svg$/.test(img.src)) img.style.objectFit = 'contain';   // shape cards: show the whole drawing
+  const paper = story.paper && story.paper[style];
+  if (/^#[0-9a-f]{6}$/i.test(paper || '')) thumb.style.background = paper;
+  return thumb;
+}
+
+// story.cursor: an emoji drawn as the mouse pointer on the play screen.
+// Decoration only: it is the same over every card and spot.
+const cursorCache = {};
+function emojiCursor(emoji) {
+  if (cursorCache[emoji]) return cursorCache[emoji];
+  const draw = px => {
+    const c = document.createElement('canvas');
+    c.width = c.height = px;
+    const g = c.getContext('2d');
+    g.font = Math.round(px * 0.8) + 'px system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText(emoji, px / 2, px / 2 + px * 0.06);
+    return 'url(' + c.toDataURL('image/png') + ')';
+  };
+  const sharp = 'image-set(' + draw(40) + ' 1x, ' + draw(80) + ' 2x) 20 20';
+  const value = CSS.supports('cursor', sharp + ', auto') ? sharp : draw(40) + ' 20 20';
+  return cursorCache[emoji] = value;
+}
 
 function buildCard(story, idx, style, captions) {
   const data = story.cards[idx];
@@ -393,6 +497,9 @@ function startStory() {
   if (pinned != null) S.slots[0] = pinned;
 
   $('playTitle').textContent = story.title;
+  const themed = !!story.cursor && $('storyCursor').checked;
+  $('play').classList.toggle('themed', themed);
+  if (themed) $('play').style.setProperty('--story-cursor', emojiCursor(story.cursor));
   const slotsEl = $('slots');
   slotsEl.replaceChildren();
   $('tray').replaceChildren();

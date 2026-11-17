@@ -87,6 +87,19 @@ story = {
 Pick story, style, and for reversible stories
 the direction (forward | reverse), shown with
 endLabels, e.g. "calm → puffed".
+Card size: standard | large | largest (memory
+only; sets --cw through data-size on :root).
+Story list view: pictures (default) | list.
+Pictures shows each story as a small deck with a
+close-up of one card: optional story.cover (card
+number from 1, default the last card), from the
+first image style, else emoji, else words only.
+Optional story.cursor (one emoji): the mouse
+pointer on the play screen, with a setup
+checkbox to turn it off. Decoration only: it
+must look the same over every card and spot. A
+pointer that reacts to the right card is a cue
+and would need clinician control and logging.
 
 ## Flow
 1. Cards shown shuffled (never in target order).
