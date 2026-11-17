@@ -14,6 +14,26 @@ outputs a pasteable SOAP O-line.
 - No server, accounts, analytics, or student
   names. Session data in memory only.
 
+## Built-in story copy
+- Browsers block fetch() of stories.json when
+  index.html is opened from disk, so index.html
+  carries an embedded copy on the line ending
+  `// @seed`. After editing stories.json, refresh
+  it with the script in README ("Updating the
+  built-in copy").
+- To test stories.json edits directly:
+  `python3 -m http.server 8000`.
+
+## Look and feel
+- Warm paper palette (cream, beige, taupe, brown
+  accent); warm dark mode. Tokens on :root.
+- Keep contrast: text 4.5:1+, outlines of cards,
+  spots and buttons 3:1+. No pure black/white.
+  Never signal state by colour alone.
+- Short fades only; honour prefers-reduced-motion.
+- Appearance link on setup: device / light / dark
+  (memory only).
+
 ## Content model
 story = {
   id, title, gradeBand,
@@ -53,7 +73,10 @@ endLabels, e.g. "calm → puffed".
 ## Data per attempt
 storyId, cardCount, style, direction,
 attemptNumber (1|2), correct (bool),
-misplacedPositions [], cueLevel, seconds.
+misplacedPositions [], placedOrder [],
+cueLevel, seconds, modeled.
+placedOrder = card numbers (from 1, forward
+order) as the student left them. Raw data only.
 cueLevel defaults to "independent"; small
 clinician-only control sets it per attempt:
 independent | verbal | visual | model.

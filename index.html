@@ -5,127 +5,154 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Narrative Sequencing</title>
 <style>
+  /* Warm paper palette. Text and edges are checked for contrast; nothing
+     relies on colour alone, and there is no pure black or pure white. */
   :root {
-    --bg: #f3eee4;
-    --surface: #fbf8f1;
-    --ink: #3b352d;
-    --muted: #84796a;
-    --line: #d8cebd;
-    --accent: #66796a;
-    --accent-ink: #fbf8f1;
-    --soft: #e9e2d4;
-    --cw: clamp(92px, 16vw, 170px);
+    --bg: #f5efe3;         /* cream page */
+    --surface: #fdf9f1;    /* card paper */
+    --soft: #ebe2d1;       /* beige wells and tray */
+    --ink: #3a2f25;        /* body text */
+    --muted: #675a4b;      /* secondary text */
+    --edge: #8f7f68;       /* outlines of cards, spots, buttons */
+    --line: #d9cdb8;       /* decorative rules only */
+    --accent: #7a5236;     /* primary brown */
+    --accent-ink: #fdf9f1;
+    --shadow: 0 1px 2px rgba(70, 48, 24, 0.10), 0 5px 14px rgba(70, 48, 24, 0.07);
+    --cw: clamp(96px, 16vw, 172px);
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #24211d;
-      --surface: #2f2b26;
-      --ink: #e6dfd2;
-      --muted: #a09584;
-      --line: #4a443b;
-      --accent: #8fa392;
-      --accent-ink: #1f1d19;
-      --soft: #38332d;
+    :root:not([data-theme="light"]) {
+      --bg: #2a231d; --surface: #43382e; --soft: #352c25;
+      --ink: #efe6d6; --muted: #c2b39d; --edge: #a8977f; --line: #54483c;
+      --accent: #d9a878; --accent-ink: #2a231d;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 5px 14px rgba(0, 0, 0, 0.18);
     }
   }
+  :root[data-theme="dark"] {
+    --bg: #2a231d; --surface: #43382e; --soft: #352c25;
+    --ink: #efe6d6; --muted: #c2b39d; --edge: #a8977f; --line: #54483c;
+    --accent: #d9a878; --accent-ink: #2a231d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 5px 14px rgba(0, 0, 0, 0.18);
+  }
+
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
     background: var(--bg);
     color: var(--ink);
-    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 18px/1.6 ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: 0.01em;
     -webkit-text-size-adjust: 100%;
   }
-  main { max-width: 1040px; margin: 0 auto; padding: 28px 16px 64px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 40px 20px 72px; }
   [hidden] { display: none !important; }
-  h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 4px; }
-  h2 {
-    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--muted); margin: 32px 0 10px;
-  }
+  h1 { font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; }
+  h2 { font-size: 1.05rem; font-weight: 600; margin: 40px 0 12px; }
   p { margin: 0 0 12px; }
   .muted { color: var(--muted); }
-  .small { font-size: 0.85rem; }
+  .small { font-size: 0.9rem; }
 
-  button, select { font: inherit; color: inherit; }
+  button, select { font: inherit; letter-spacing: inherit; color: inherit; }
   .btn {
-    min-height: 48px; padding: 10px 20px; border-radius: 12px;
-    border: 1.5px solid var(--line); background: var(--surface); cursor: pointer;
+    min-height: 52px; padding: 12px 22px; border-radius: 16px;
+    border: 1.5px solid var(--edge); background: var(--surface); cursor: pointer;
+    transition: background-color 0.15s, box-shadow 0.15s;
   }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
-  .btn:disabled { opacity: 0.4; cursor: default; }
-  .btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
-  .link { background: none; border: 0; padding: 10px 4px; color: var(--muted); cursor: pointer; min-height: 44px; }
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .btn.primary {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
+    font-weight: 600; padding-inline: 30px;
+  }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  /* Chosen option: thicker ring and a tinted fill, so it never depends on hue alone. */
+  .btn[aria-pressed="true"] {
+    border-color: var(--accent); box-shadow: 0 0 0 2.5px var(--accent);
+    background: var(--soft); font-weight: 600;
+  }
+  .link {
+    background: none; border: 0; padding: 10px 4px; min-height: 44px; cursor: pointer;
+    color: var(--muted); text-decoration: underline; text-underline-offset: 4px;
+  }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 
   /* Setup */
-  #storyList { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+  #storyList { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
   .story { text-align: left; }
   .story span { display: block; }
-  .story .meta { font-size: 0.82rem; color: var(--muted); }
-  label.check { display: inline-flex; gap: 10px; align-items: center; min-height: 44px; cursor: pointer; }
-  label.check input { width: 20px; height: 20px; accent-color: var(--accent); }
-  #sessionBar { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); justify-content: space-between; }
+  .story .meta { font-size: 0.88rem; font-weight: 400; color: var(--muted); }
+  label.check { display: inline-flex; gap: 10px; align-items: center; min-height: 48px; margin-top: 6px; cursor: pointer; }
+  label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
+  #sessionBar { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); justify-content: space-between; }
+  #setupFoot { margin-top: 28px; justify-content: flex-end; }
 
   /* Play */
-  #playHead { justify-content: space-between; margin-bottom: 28px; }
-  #slots, #tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px 14px; }
-  #slots { padding-top: 26px; }
+  #playHead { justify-content: space-between; margin-bottom: 32px; }
+  #slots, #tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 34px 16px; }
+  #slots { padding-top: 30px; }
   .slot {
     position: relative; width: var(--cw); aspect-ratio: 3 / 4;
-    border: 2px dashed var(--line); border-radius: 16px;
+    background: var(--soft); border: 1.5px solid var(--edge); border-radius: 20px;
+    transition: background-color 0.15s, box-shadow 0.15s;
   }
   .slot::before {
-    content: attr(data-n); position: absolute; top: -26px; left: 0; right: 0;
-    text-align: center; font-size: 0.85rem; color: var(--muted);
+    content: attr(data-n); position: absolute; top: -30px; left: 0; right: 0;
+    text-align: center; font-size: 1rem; font-weight: 600; color: var(--muted);
   }
-  .slot.filled { border-color: transparent; }
-  .picking .slot:not(.filled) { border-color: var(--accent); background: var(--soft); }
+  .picking .slot:not(.filled) { background: var(--surface); box-shadow: 0 0 0 2.5px var(--accent); }
   #tray {
-    margin-top: 36px; padding: 22px 14px; min-height: calc(var(--cw) * 1.34 + 44px);
-    background: var(--soft); border-radius: 20px; gap: 14px;
+    margin-top: 40px; padding: 26px 16px; min-height: calc(var(--cw) * 1.34 + 52px);
+    background: var(--soft); border-radius: 28px; gap: 16px;
   }
   .card {
     width: var(--cw); aspect-ratio: 3 / 4; display: flex; flex-direction: column;
-    background: var(--surface); border: 2px solid var(--line); border-radius: 16px;
-    overflow: hidden; cursor: grab; user-select: none; -webkit-user-select: none;
-    touch-action: none; position: relative;
+    background: var(--surface); border: 1.5px solid var(--edge); border-radius: 20px;
+    box-shadow: var(--shadow); overflow: hidden; position: relative;
+    cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none;
+    transition: box-shadow 0.15s, translate 0.15s;
   }
-  .slot .card { width: calc(100% + 4px); height: calc(100% + 4px); margin: -2px; }
+  .slot .card { width: calc(100% + 3px); height: calc(100% + 3px); margin: -1.5px; }
   .card .art {
     flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
     font-size: calc(var(--cw) * 0.42); line-height: 1;
   }
   .card .art img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-  .card .cap { padding: 6px 8px 9px; font-size: clamp(0.72rem, 1.5vw, 0.9rem); line-height: 1.25; text-align: center; }
+  .card .cap { padding: 6px 8px 10px; font-size: clamp(0.8rem, 1.5vw, 0.95rem); line-height: 1.3; text-align: center; }
   .card.plain .art { display: none; }
   .card.plain .cap {
     flex: 1; display: flex; align-items: center; justify-content: center;
-    font-size: clamp(0.85rem, 1.9vw, 1.1rem); padding: 10px;
+    font-size: clamp(0.9rem, 1.9vw, 1.15rem); padding: 12px;
   }
-  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
-  .card.dragging { z-index: 10; cursor: grabbing; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
-  .card.pinned { cursor: default; border-color: var(--muted); }
+  /* Picked-up card: ring plus a small lift. */
+  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 3.5px var(--accent), var(--shadow); translate: 0 -6px; }
+  .card.dragging { z-index: 10; cursor: grabbing; transition: none; box-shadow: 0 14px 30px rgba(50, 34, 16, 0.24); }
+  .card.pinned { cursor: default; box-shadow: none; }
   .card.pinned::after {
-    content: "Start"; position: absolute; top: 6px; left: 6px; padding: 1px 8px;
-    font-size: 0.7rem; border-radius: 999px; background: var(--muted); color: var(--surface);
+    content: "Start"; position: absolute; top: 8px; left: 8px; padding: 1px 10px;
+    font-size: 0.78rem; font-weight: 600; border-radius: 999px;
+    background: var(--accent); color: var(--accent-ink);
   }
   .locked .card { cursor: default; }
-  #feedback { min-height: 2.2em; margin: 30px 0 14px; text-align: center; font-size: 1.2rem; }
+  #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
-  #cueBox { margin-top: 48px; justify-content: flex-end; font-size: 0.8rem; color: var(--muted); }
+  #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); }
   #cueBox select {
-    min-height: 40px; padding: 4px 8px; border-radius: 8px;
-    border: 1px solid var(--line); background: var(--surface);
+    min-height: 44px; padding: 4px 10px; border-radius: 12px;
+    border: 1.5px solid var(--edge); background: var(--surface); color: var(--ink);
   }
 
   /* Summary */
   .box {
-    background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
-    padding: 16px; margin-bottom: 12px; user-select: text; -webkit-user-select: text;
+    background: var(--surface); border: 1.5px solid var(--edge); border-radius: 16px;
+    padding: 18px 20px; margin-bottom: 14px; user-select: text; -webkit-user-select: text;
   }
-  pre.box { overflow-x: auto; font: 0.8rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; tab-size: 14; }
+  pre.box {
+    overflow-x: auto; letter-spacing: 0; tab-size: 14;
+    font: 0.82rem/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -136,15 +163,15 @@
     <p class="muted">Choose a story for the student to put in order.</p>
     <p class="muted small" id="sourceNote" hidden></p>
 
-    <h2>Story</h2>
+    <h2>Which story?</h2>
     <div id="storyList"></div>
 
-    <h2>Style</h2>
+    <h2>How should the cards look?</h2>
     <div class="row" id="styleRow"></div>
     <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
 
     <div id="dirBlock" hidden>
-      <h2>Direction</h2>
+      <h2>Which way does it go?</h2>
       <div class="row" id="dirRow"></div>
     </div>
 
@@ -155,6 +182,10 @@
     <div class="row" id="sessionBar" hidden>
       <span class="muted small" id="sessionCount"></span>
       <button class="btn" id="endFromSetup">End session</button>
+    </div>
+
+    <div class="row" id="setupFoot">
+      <button class="link small" id="themeBtn"></button>
     </div>
   </section>
 
@@ -494,6 +525,7 @@ function check() {
     attemptNumber: S.attempt,
     correct,
     misplacedPositions: misplaced,
+    placedOrder: S.slots.map(c => c + 1),   // card numbers (forward order, from 1) as the student left them
     cueLevel: $('cue').value,
     seconds: Math.round((performance.now() - S.t0) / 1000),
     modeled
@@ -588,11 +620,11 @@ function buildOLine(entries) {
 
 function buildRaw(entries) {
   const head = ['storyId', 'cardCount', 'style', 'direction', 'attemptNumber', 'correct',
-    'misplacedPositions', 'cueLevel', 'seconds', 'modeled'];
+    'misplacedPositions', 'placedOrder', 'cueLevel', 'seconds', 'modeled'];
   const rows = entries.map(a => [
     a.storyId, a.cardCount, a.style, a.direction, a.attemptNumber,
     a.correct ? 'yes' : 'no', a.misplacedPositions.join(',') || '-',
-    a.cueLevel, a.seconds, a.modeled ? 'yes' : 'no'
+    a.placedOrder.join(','), a.cueLevel, a.seconds, a.modeled ? 'yes' : 'no'
   ]);
   return [head, ...rows].map(r => r.join('\t')).join('\n');
 }
@@ -659,6 +691,16 @@ async function init() {
   $('tray').onclick = e => {
     if (S && S.selected != null && !e.target.closest('.card')) move(S.selected, 'tray');
   };
+
+  const themes = ['auto', 'light', 'dark'];
+  let theme = 0;
+  const paintTheme = () => {
+    if (theme) document.documentElement.dataset.theme = themes[theme];
+    else delete document.documentElement.dataset.theme;
+    $('themeBtn').textContent = 'Appearance: ' + ['match this device', 'light', 'dark'][theme];
+  };
+  $('themeBtn').onclick = () => { theme = (theme + 1) % themes.length; paintTheme(); };
+  paintTheme();
 
   if (!stories.length) {
     $('storyList').textContent = 'No stories found in stories.json.';

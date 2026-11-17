@@ -107,8 +107,13 @@ EOF
 ## Data and output
 
 Each checked attempt records: `storyId`, `cardCount`, `style`, `direction`,
-`attemptNumber`, `correct`, `misplacedPositions`, `cueLevel`, `seconds`,
-`modeled`.
+`attemptNumber`, `correct`, `misplacedPositions`, `placedOrder`, `cueLevel`,
+`seconds`, `modeled`.
+
+`placedOrder` is the order the student left the cards in, as card numbers
+counted from 1 in the story's forward order. A correct forward attempt on a
+5-card story reads `1,2,3,4,5`; a correct reverse attempt reads `5,4,3,2,1`.
+It appears in the raw data only, not in the O-line.
 
 The O-line groups stories by card count, style and direction:
 
