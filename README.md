@@ -52,7 +52,11 @@ explains the thinking behind it and how it was made.
    settings at the top hold card size, captions, story pointers and appearance.
 2. **Arrange (student):** drag cards into the numbered spots, or tap a card and
    then tap a spot. Tapping a placed card while another is selected swaps them.
-   In reversible stories the first card is pinned in spot 1.
+   In reversible stories the first card is pinned in spot 1. The magnifier in
+   a card's corner opens that card full screen; tap anywhere or press Escape
+   to close. It is access, not a cue, so it is not logged. It hides while
+   retell support is faded, and "Let the student enlarge a card" in Session
+   settings turns it off.
 3. **Check:** a wrong first attempt gets a neutral "Try again" with no hint
    about which cards are wrong. A wrong second attempt shows the correct order
    and is logged as modeled.

@@ -228,6 +228,32 @@
   /* Play */
   #playHead { justify-content: flex-start; gap: 18px; margin-bottom: 32px; }
   #playHead h1 { margin: 0; }
+  /* Enlarge: a small magnifier in each card's corner opens that card full
+     screen. It is access, not a cue: nothing is logged. Hidden while retell
+     support is faded, so it never brings back what the clinician took away. */
+  .zoomBtn {
+    position: absolute; top: 6px; right: 6px; z-index: 2;
+    width: clamp(30px, calc(var(--cw) * 0.17), 44px); height: clamp(30px, calc(var(--cw) * 0.17), 44px);
+    min-height: 0; padding: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: var(--surface); color: var(--ink); border: 1.5px solid var(--edge); opacity: 0.92; cursor: zoom-in;
+  }
+  .zoomBtn .ic { margin: 0; width: 58%; height: 58%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+  .zoomBtn:hover, .zoomBtn:focus-visible { opacity: 1; }
+  :root.nozoom .zoomBtn, .card.dragging .zoomBtn,
+  .support-words .zoomBtn, .support-none .zoomBtn { display: none; }
+  #zoomView {
+    border: 0; padding: 0; background: transparent; max-width: none; max-height: none;
+    width: 100vw; height: 100vh; display: none; align-items: center; justify-content: center;
+  }
+  #zoomView[open] { display: flex; }
+  #zoomView::backdrop { background: rgba(42, 35, 29, 0.72); }
+  #zoomClose { position: fixed; top: 16px; right: 16px; background: var(--surface); color: var(--ink); }
+  #zoomCard .card { cursor: zoom-out; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); transition: none; translate: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    #zoomView[open] #zoomCard .card { animation: zoomIn 0.15s ease-out; }
+    @keyframes zoomIn { from { opacity: 0; scale: 0.96; } to { opacity: 1; scale: 1; } }
+  }
+
   /* Concept stories: the student picks a colour for the shapes. The picked
      swatch gets a ring and a check mark, so the choice never rests on colour. */
   #colourRow { margin-left: auto; gap: 8px; }
@@ -392,6 +418,7 @@
           <h3>On the cards</h3>
           <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
           <label class="check small"><input type="checkbox" id="storyCursor" checked> Use story pointers (mouse or trackpad)</label>
+          <label class="check small"><input type="checkbox" id="zoomOk" checked> Let the student enlarge a card</label>
         </div>
         <div>
           <h3>This screen</h3>
@@ -563,6 +590,10 @@
     <p class="muted small" style="margin-top:16px">Nothing is saved. Closing or reloading this page clears the session.</p>
   </section>
 
+  <dialog id="zoomView" aria-label="Card, enlarged">
+    <button class="btn mini" id="zoomClose"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Close</button>
+    <div id="zoomCard"></div>
+  </dialog>
 </main>
 
 <script>
@@ -868,7 +899,8 @@ function renderSetup() {
   $('settingsSummary').textContent = [
     pick.size + ' cards',
     $('captions').checked ? 'words shown' : 'words hidden',
-    $('storyCursor').checked ? 'story pointers on' : 'story pointers off'
+    $('storyCursor').checked ? 'story pointers on' : 'story pointers off',
+    $('zoomOk').checked ? 'enlarge on' : 'enlarge off'
   ].join(' · ');
 
   const runs = new Set(log.map(a => a.run)).size;
@@ -1040,6 +1072,43 @@ function renderColours() {
   }
 }
 
+// The enlarge button on a card. Its own presses stop here, so they never pick
+// up, drag or (in a retell) mark the card underneath.
+function addZoom(card) {
+  const b = el('button', 'zoomBtn');
+  b.type = 'button';
+  b.setAttribute('aria-label', 'Enlarge this card');
+  b.title = 'Enlarge';
+  b.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zM15.2 15.2L20 20M10.5 7.5v6M7.5 10.5h6"/></svg>';
+  for (const type of ['pointerdown', 'pointerup', 'keydown']) b.addEventListener(type, e => e.stopPropagation());
+  b.addEventListener('click', e => { e.stopPropagation(); openZoom(card, b); });
+  card.append(b);
+}
+
+// Full-screen view of one card: as large as the window allows at 3:4, with
+// its picture, words and paper colour exactly as on the card.
+let zoomFrom = null;
+function openZoom(card, opener) {
+  const big = card.cloneNode(true);
+  big.querySelector('.zoomBtn').remove();
+  big.className = 'card' + (card.classList.contains('plain') ? ' plain' : '') + (card.classList.contains('whole') ? ' whole' : '');
+  big.removeAttribute('tabindex');
+  big.removeAttribute('role');
+  big.style.transform = '';
+  const w = Math.floor(Math.min(window.innerWidth * 0.9, window.innerHeight * 0.86 * 0.75));
+  big.style.width = w + 'px';
+  big.style.setProperty('--cw', w + 'px');
+  big.style.setProperty('--cap', Math.min(3, w / 170).toFixed(2));
+  $('zoomCard').replaceChildren(big);
+  zoomFrom = opener;
+  $('zoomView').showModal();
+  $('zoomClose').focus();
+}
+function closeZoom() {
+  if (!$('zoomView').open) return;
+  $('zoomView').close();
+}
+
 function startStory() {
   const story = stories.find(s => s.id === pick.storyId);
   const n = story.cards.length;
@@ -1089,6 +1158,7 @@ function startStory() {
   const captions = $('captions').checked;
   for (let i = 0; i < n; i++) {
     const card = buildCard(story, i, S.style, captions);
+    addZoom(card);
     if (i === pinned) { card.classList.add('pinned'); card.tabIndex = -1; }
     else wireCard(card, i);
     S.cardEls.push(card);
@@ -1688,6 +1758,10 @@ async function init() {
   $('play').addEventListener('pointerout', e => {
     if (grow && !grow.el.contains(e.relatedTarget)) stopGrow();
   });
+  $('zoomClose').onclick = closeZoom;
+  $('zoomView').addEventListener('click', e => { if (e.target.id !== 'zoomClose') closeZoom(); });
+  $('zoomView').addEventListener('close', () => { if (zoomFrom && zoomFrom.isConnected) zoomFrom.focus(); zoomFrom = null; });
+  $('zoomOk').onchange = () => { document.documentElement.classList.toggle('nozoom', !$('zoomOk').checked); renderSetup(); };
   $('retellDiscard').onclick = () => {
     endRetell(false);
     $('retellBtn').hidden = false;
