@@ -56,8 +56,9 @@ explains the thinking behind it and how it was made.
    cue-placed card is still on the board.
 5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
    on screen while the student tells the story. Tap a card when its part is
-   told; tap again if it needed a prompt, and once more to clear it. Count
-   sequence words (first, next, then, last…) with the − and + buttons.
+   told; tap again if it needed a prompt, and once more to clear it. Mark the
+   story parts the student included (character, setting, action, ending…) the
+   same way, and count sequence words (first, next, then, last…) with − and +.
 6. **End session:** shows the O-line and the raw data tables, each with a
    copy button.
 
@@ -92,6 +93,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. |
 | `cover` | Optional. Card number (from 1) shown as the story's picture on the setup screen. Defaults to the last card. |
 | `cursor` | Optional. One emoji used as the mouse pointer while the story is played (for example `"💧"`). Decoration only; the setup screen can turn it off. |
+| `grammar` | Optional. Story grammar parts offered in the retell step, from `character`, `setting`, `problem`, `feeling`, `action`, `ending`. Leave it out to offer all six; use `[]` for none. List only parts the story really has. |
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
@@ -167,11 +169,15 @@ separately per attempt. Stories whose order had to be shown add "Correct order
 modeled for Z/N."
 
 Each retell records: `storyId`, `cardCount`, `style`, `direction`, `told`,
-`prompted`, `orderTold`, `sequenceWords`, `seconds`. `told` lists the spots
+`prompted`, `orderTold`, `partsOffered`, `partsTold`, `partsPrompted`,
+`sequenceWords`, `seconds`. The three `parts` fields are the story grammar
+parts offered for that story, the ones marked as included, and the ones among
+them that needed a prompt. `told` lists the spots
 that were mentioned at all, `prompted` the ones among them that needed a
 prompt, and `orderTold` the spots in the order they were first tapped. The app
 only counts the clinician's taps. Retells add one sentence to the O-line and a
 second table to the raw data:
 
 > Retell of 2 stories: mentioned 6/8 events, 1/6 after a prompt; events told in
-> story order in 1/2 retells; 2 sequence words used.
+> story order in 1/2 retells; 2 sequence words used. Story parts included: 5/7
+> (character 1/1, setting 1/2, action 2/2, ending 1/2), 1/5 after a prompt.

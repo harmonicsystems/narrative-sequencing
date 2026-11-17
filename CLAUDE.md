@@ -75,7 +75,11 @@ story = {
 - Optional story.paper = { <style>: "#rrggbb" }:
   the image set's background colour. Cards take
   it so captions blend into the picture; caption
-  ink is picked for contrast.
+  ink is picked for contrast. Cards with a
+  paper colour show the whole picture (contain);
+  sets without one fill the card and are trimmed
+  (cover), so only full-scene sets like storm
+  should go without.
 - Generated image sets (puffer-fish/cartoon is
   the first): make each card as an edit of the
   previous one in the same chat, trim all images
@@ -191,7 +195,16 @@ never decides what was said. One record per
 retell: storyId, cardCount, style, direction,
 told [], prompted [], orderTold [] (spot numbers,
 in the order first marked), sequenceWords,
-seconds. Leaving the story saves it; "Discard
+seconds. Story grammar: chips for the parts in
+story.grammar (from character, setting, problem,
+feeling, action, ending; all six if the field is
+absent, none if it is []), tapped the same way
+(told / with a prompt / clear), saved as
+partsOffered, partsTold, partsPrompted. The
+O-line counts each part over the retells that
+offered it. Only list parts a story really has:
+the routine and change stories have no problem
+or feeling. Leaving the story saves it; "Discard
 this retell" drops it. O-line adds one sentence:
 "Retell of N stories: mentioned X/T events, P/X
 after a prompt; events told in story order in
