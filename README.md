@@ -64,7 +64,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `gradeBand` | Free text, e.g. `K-2`. |
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
-| `styles` | Which styles the setup screen offers: `emoji`, `text`, `cartoon`, `realistic`. |
+| `styles` | Which styles the setup screen offers. `emoji` and `text` are built in; any other name (`cartoon`, `realistic`, `shape`…) is an image folder. |
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
@@ -81,8 +81,15 @@ img/<storyId>/<style>/02.png
 ```
 
 Numbers follow the forward order of `cards`, two digits, starting at `01`.
-`<style>` is `cartoon` or `realistic`. Cards are 3:4 portrait and the image is
-cropped to fill, so 3:4 images fit without cropping.
+`<style>` is whatever name the story lists in `styles`. Cards are 3:4 portrait
+and the image is cropped to fill, so use 3:4 images and keep the subject away
+from the top and bottom edges (the caption takes some height when words are
+shown).
+
+Files other than PNG work through `cards[].img`. The four concept stories
+(small to large, light to dark, low to high, filling up) use hand-written SVGs
+this way: `"img": "01.svg"` in `img/<storyId>/shape/`. The style name also
+appears in the O-line, e.g. "shape stimuli".
 
 To add an image set: put the files in place and add the style name to that
 story's `styles`. Each card shows its image if the file exists, otherwise its

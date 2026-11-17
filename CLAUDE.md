@@ -43,6 +43,13 @@ story = {
            "realistic"],
   cards: [ { text, emoji?, img? } ]
 }
+- Style names are open: "emoji" and "text" are
+  built in; any other name is an image folder
+  img/<storyId>/<style>/. card.img overrides the
+  default 01.png (used for .svg).
+- Concept stories (size, shade, position, fill
+  pattern) use style "shape": simple SVGs, one
+  hue, outlined so they never rely on fill alone.
 - Array order = forward order.
 - Card renders the chosen style: image if the
   file exists, else emoji, else text.
