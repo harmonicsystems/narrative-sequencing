@@ -116,6 +116,7 @@
     "reversible": true,
     "endLabels": ["small", "large"],
     "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
     "cards": [
       {"text": "Tiny", "img": "01.svg"},
       {"text": "Small", "img": "02.svg"},
@@ -130,6 +131,7 @@
     "reversible": true,
     "endLabels": ["light", "dark"],
     "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
     "cards": [
       {"text": "Very light", "img": "01.svg"},
       {"text": "Light", "img": "02.svg"},
@@ -144,6 +146,7 @@
     "reversible": true,
     "endLabels": ["low", "high"],
     "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
     "cards": [
       {"text": "Low", "img": "01.svg"},
       {"text": "In the middle", "img": "02.svg"},
@@ -157,12 +160,72 @@
     "reversible": true,
     "endLabels": ["empty", "full"],
     "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
     "cards": [
       {"text": "None filled", "img": "01.svg"},
       {"text": "One filled", "img": "02.svg"},
       {"text": "Two filled", "img": "03.svg"},
       {"text": "Three filled", "img": "04.svg"},
       {"text": "All filled", "img": "05.svg"}
+    ]
+  },
+  {
+    "id": "thin-to-thick",
+    "title": "Thin to thick",
+    "gradeBand": "K-2",
+    "reversible": true,
+    "endLabels": ["thin", "thick"],
+    "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
+    "cards": [
+      {"text": "Very thin", "img": "01.svg"},
+      {"text": "Thin", "img": "02.svg"},
+      {"text": "Thick", "img": "03.svg"},
+      {"text": "Very thick", "img": "04.svg"}
+    ]
+  },
+  {
+    "id": "few-to-many",
+    "title": "Few to many",
+    "gradeBand": "K-2",
+    "reversible": true,
+    "endLabels": ["few", "many"],
+    "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
+    "cards": [
+      {"text": "One dot", "img": "01.svg"},
+      {"text": "Three dots", "img": "02.svg"},
+      {"text": "Six dots", "img": "03.svg"},
+      {"text": "Ten dots", "img": "04.svg"}
+    ]
+  },
+  {
+    "id": "left-to-right",
+    "title": "Left to right",
+    "gradeBand": "K-2",
+    "reversible": true,
+    "endLabels": ["left", "right"],
+    "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
+    "cards": [
+      {"text": "On the left", "img": "01.svg"},
+      {"text": "In the middle", "img": "02.svg"},
+      {"text": "On the right", "img": "03.svg"}
+    ]
+  },
+  {
+    "id": "short-to-tall",
+    "title": "Short to tall",
+    "gradeBand": "K-2",
+    "reversible": true,
+    "endLabels": ["short", "tall"],
+    "styles": ["shape", "text"],
+    "paper": {"shape": "#fdf9f1"},
+    "cards": [
+      {"text": "Very short", "img": "01.svg"},
+      {"text": "Short", "img": "02.svg"},
+      {"text": "Tall", "img": "03.svg"},
+      {"text": "Very tall", "img": "04.svg"}
     ]
   }
 ]

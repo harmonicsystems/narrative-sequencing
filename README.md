@@ -96,8 +96,9 @@ and the image is cropped to fill, so use 3:4 images and keep the subject away
 from the top and bottom edges (the caption takes some height when words are
 shown).
 
-Files other than PNG work through `cards[].img`. The four concept stories
-(small to large, light to dark, low to high, filling up) use hand-written SVGs
+Files other than PNG work through `cards[].img`. The eight concept stories
+(small to large, light to dark, low to high, filling up, thin to thick,
+few to many, left to right, short to tall) use hand-written SVGs
 this way: `"img": "01.svg"` in `img/<storyId>/shape/`. The style name also
 appears in the O-line, e.g. "shape stimuli".
 
