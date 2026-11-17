@@ -748,12 +748,14 @@ Generous plain cream space around everything.
 Card 3 (feeling) is a waist-up close view and uses only CAST plus the
 matching A2 cell.
 
-**Caption-safe band.** With words shown, the app crops each card to a wider
-picture area, keeping about the middle 65% of the height. Keep everything
-that matters between about 20% and 80% of the height. Round 1 had heads too
-near the top, so the installed full-scene cards were padded evenly (one
-shared scale: 1086x1448 → 1248x1665, cream #f6f0e4) before resizing to
-640 wide. Close views (the feeling card) need no padding.
+**Trim at install.** Cards with a `paper` colour now show the whole picture
+(no crop), so the padding used in round 1 is gone. Instead each set is
+trimmed to the band its scenes actually use, so the drawing fills the card:
+the full-scene cards of a story share one crop (full width, same top and
+bottom, so scale never changes between them) with about 30 px of margin;
+the close-up feeling card gets its own top trim. Then resize to 640 wide.
+Codex leaves 20–35% empty cream above most scenes, so this roughly doubles
+the drawing's size on the card.
 
 ### References per card
 
