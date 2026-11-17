@@ -143,19 +143,33 @@ emoji, otherwise its text, so a partial set still works.
 
 ## Updating the built-in copy
 
-After editing `stories.json`, refresh the copy inside `index.html` so opening
-the file from disk matches:
+After editing `stories.json` or any concept drawing (`img/*/shape/*.svg`),
+refresh the copies inside `index.html` so opening the file from disk matches:
 
 ```
 python3 - <<'EOF'
-import json, re
+import json, re, glob, os
 s = json.load(open('stories.json', encoding='utf-8'))
+shapes = {f.split('/')[1] + '/' + os.path.basename(f): open(f, encoding='utf-8').read().strip()
+          for f in sorted(glob.glob('img/*/shape/*.svg'))}
 h = open('index.html', encoding='utf-8').read()
-line = 'const SEED = ' + json.dumps(s, ensure_ascii=False) + ';// @seed'
-open('index.html', 'w', encoding='utf-8').write(
-    re.sub(r'^const SEED = .*// @seed$', lambda m: line, h, flags=re.M))
+for name, mark, data in (('SEED', 'seed', s), ('SHAPES', 'shapes', shapes)):
+    line = 'const ' + name + ' = ' + json.dumps(data, ensure_ascii=False) + ';// @' + mark
+    h = re.sub(r'^const ' + name + r' = .*// @' + mark + '$', lambda m: line, h, flags=re.M)
+open('index.html', 'w', encoding='utf-8').write(h)
 EOF
 ```
+
+## Concept colours
+
+Concept stories (style `shape`) show a row of colour swatches on the play
+screen. The student picks a favourite and the shapes change colour on the
+spot; the choice is kept for that story until the page is closed. Each concept
+story starts in a different colour. The drawings keep their brown outline, so
+no shape depends on its fill, and *Light to dark* gets four shades of the
+picked colour at the original lightness steps. A drawing can be recoloured
+when its fill is `#b07a55` (and, for shades, `#f3e6d8`, `#d6ae8c`, `#a06c44`,
+`#553521`); anything drawn in the outline colour `#6f5f4a` stays as it is.
 
 ## Data and output
 

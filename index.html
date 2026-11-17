@@ -228,6 +228,18 @@
   /* Play */
   #playHead { justify-content: flex-start; gap: 18px; margin-bottom: 32px; }
   #playHead h1 { margin: 0; }
+  /* Concept stories: the student picks a colour for the shapes. The picked
+     swatch gets a ring and a check mark, so the choice never rests on colour. */
+  #colourRow { margin-left: auto; gap: 8px; }
+  .swatch {
+    width: 40px; height: 40px; min-height: 0; padding: 0; border-radius: 50%;
+    border: 2px solid #6f5f4a; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .swatch svg { width: 22px; height: 22px; visibility: hidden; }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--ink); }
+  .swatch[aria-pressed="true"] svg { visibility: visible; }
+  .swatch path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
   #slots, #tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 34px 16px; }
   #slots { padding-top: 30px; }
   .slot {
@@ -415,6 +427,9 @@
     <div class="row" id="playHead">
       <button class="btn mini" id="backBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
       <h1 id="playTitle"></h1>
+      <div class="row" id="colourRow" role="group" aria-labelledby="colourLabel" hidden>
+        <span class="muted small" id="colourLabel">Colour</span>
+      </div>
       
     </div>
     <div id="slots"></div>
@@ -556,6 +571,60 @@
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
 const SEED = [{"id": "brushing-teeth", "set": "routine", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "set": "routine", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "set": "routine", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "set": "routine", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "set": "narrative", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6eee1"}, "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}]}, {"id": "spilled-paint", "set": "narrative", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6f0e4"}, "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}]}, {"id": "lost-library-book", "set": "narrative", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}]}, {"id": "block-tower", "set": "narrative", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"}, {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"}, {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}]}, {"id": "puffer-fish", "set": "change", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "set": "change", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "set": "change", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "set": "change", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "set": "concept", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "set": "concept", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "set": "concept", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "set": "concept", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "set": "concept", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "set": "concept", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "set": "concept", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "set": "concept", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+// Built-in copy of the concept drawings (img/<storyId>/shape/*.svg), so they
+// can be recoloured even when index.html is opened from disk. Refreshed by the
+// script in the README, like SEED.
+const SHAPES = {"few-to-many/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "few-to-many/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"179.3\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "few-to-many/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"158.6\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"200\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"200\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"104\" cy=\"241.4\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"150\" cy=\"241.4\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"196\" cy=\"241.4\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "few-to-many/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"137.9\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"179.3\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"179.3\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"104\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"150\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"196\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"81\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"219\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "filling-up/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/05.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "left-to-right/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"40\" y1=\"200\" x2=\"260\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"64\" cy=\"200\" r=\"34\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "left-to-right/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"40\" y1=\"200\" x2=\"260\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"200\" r=\"34\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "left-to-right/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"40\" y1=\"200\" x2=\"260\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"236\" cy=\"200\" r=\"34\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#f3e6d8\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#d6ae8c\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#a06c44\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#553521\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "low-to-high/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"150\" y1=\"60\" x2=\"150\" y2=\"340\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"300\" r=\"36\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "low-to-high/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"150\" y1=\"60\" x2=\"150\" y2=\"340\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"200\" r=\"36\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "low-to-high/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"150\" y1=\"60\" x2=\"150\" y2=\"340\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"100\" r=\"36\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "short-to-tall/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"280\" width=\"70\" height=\"40\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "short-to-tall/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"215\" width=\"70\" height=\"105\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "short-to-tall/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"150\" width=\"70\" height=\"170\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "short-to-tall/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"85\" width=\"70\" height=\"235\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "small-to-large/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"26\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "small-to-large/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"56\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "small-to-large/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"88\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "small-to-large/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"120\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "thin-to-thick/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"62\" y1=\"200\" x2=\"238\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "thin-to-thick/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"62\" y=\"195\" width=\"176\" height=\"10\" rx=\"5\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "thin-to-thick/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"62\" y=\"187\" width=\"176\" height=\"26\" rx=\"13\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "thin-to-thick/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"62\" y=\"175\" width=\"176\" height=\"50\" rx=\"25\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>"};// @shapes
+
+// Colours a student can pick for a concept story. The drawings keep their
+// brown outline, so a shape never depends on its fill; only the fill changes.
+// Light to dark gets four shades of the picked colour at the original
+// lightness steps, so the order still reads light to dark.
+const PALETTE = [
+  { id: 'coral', hex: '#d9806a' }, { id: 'sky', hex: '#6a90bf' },
+  { id: 'sage', hex: '#7d9d68' },  { id: 'mustard', hex: '#d4a23c' },
+  { id: 'berry', hex: '#a75f86' }, { id: 'teal', hex: '#4f9893' },
+  { id: 'plum', hex: '#8a6fae' },  { id: 'clay', hex: '#b07a55' }
+];
+const SHAPE_FILL = '#b07a55';
+const SHAPE_SHADES = [['#f3e6d8', 0.90], ['#d6ae8c', 0.69], ['#a06c44', 0.45], ['#553521', 0.23]];
+const shapeColour = {};   // storyId -> palette id the student picked (memory only)
+
+const shapeStories = () => stories.filter(s => s.styles.includes('shape'));
+// Each concept story starts in a different colour, so the set looks varied.
+function colourOf(story) {
+  const id = shapeColour[story.id];
+  if (PALETTE.some(c => c.id === id)) return id;
+  const i = shapeStories().indexOf(story);
+  return PALETTE[(i < 0 ? 0 : i) % PALETTE.length].id;
+}
+function shade(hex, light) {
+  let [r, g, b] = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16) / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0, s = 0;
+  if (d) {
+    s = d / (1 - Math.abs(max + min - 1));
+    h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  }
+  const c = (1 - Math.abs(2 * light - 1)) * s, x = c * (1 - Math.abs(((h % 2) + 2) % 2 - 1)), m = light - c / 2;
+  const seg = Math.floor(((h % 6) + 6) % 6);
+  [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][seg];
+  return '#' + [r, g, b].map(v => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('');
+}
+// The drawing for one card in the story's colour, or null if there is no
+// built-in copy (then the file is used as it is).
+function shapeSrc(story, file) {
+  const svg = SHAPES[story.id + '/' + file];
+  if (!svg) return null;
+  const hex = PALETTE.find(c => c.id === colourOf(story)).hex;
+  let out = svg;
+  if (hex !== SHAPE_FILL) {
+    out = out.split(SHAPE_FILL).join(hex);
+    for (const [from, light] of SHAPE_SHADES) out = out.split(from).join(shade(hex, light));
+  }
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(out);
+}
+
 
 const CUES = {
   independent: 'independently',
@@ -816,9 +885,10 @@ function buildThumb(story) {
   img.alt = '';
   img.draggable = false;
   img.onerror = useEmoji;
-  img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+  const file = data.img || pad2(idx + 1) + '.png';
+  img.src = (style === 'shape' && shapeSrc(story, file)) || 'img/' + story.id + '/' + style + '/' + file;
   thumb.append(img);
-  if (/\.svg$/.test(img.src)) img.style.objectFit = 'contain';   // shape cards: show the whole drawing
+  if (/\.svg$/.test(file)) img.style.objectFit = 'contain';   // shape cards: show the whole drawing
   const paper = story.paper && story.paper[style];
   if (/^#[0-9a-f]{6}$/i.test(paper || '')) thumb.style.background = paper;
   return thumb;
@@ -888,7 +958,10 @@ function buildCard(story, idx, style, captions) {
     img.alt = '';
     img.draggable = false;
     img.onerror = useEmoji;            // no image file: fall back to emoji, then text
-    img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+    const file = data.img || pad2(idx + 1) + '.png';
+    const drawn = style === 'shape' && shapeSrc(story, file);
+    if (drawn) img.dataset.shape = file;            // recoloured when the student picks a colour
+    img.src = drawn || 'img/' + story.id + '/' + style + '/' + file;
     art.append(img);
     cap.hidden = !captions;
     // Optional story.paper[style]: the image set's background colour. The card
@@ -910,6 +983,35 @@ function buildCard(story, idx, style, captions) {
     useEmoji();
   }
   return card;
+}
+
+// Colour swatches for concept stories (style "shape"). A pick recolours the
+// cards in place and is kept for that story for the rest of the session.
+function renderColours() {
+  const row = $('colourRow');
+  const on = S.style === 'shape' && S.story.cards.some((c, i) => shapeSrc(S.story, c.img || pad2(i + 1) + '.png'));
+  row.hidden = !on;
+  row.querySelectorAll('.swatch').forEach(b => b.remove());
+  if (!on) return;
+  const now = colourOf(S.story);
+  for (const c of PALETTE) {
+    const b = el('button', 'swatch');
+    b.type = 'button';
+    b.style.background = c.hex;
+    b.setAttribute('aria-pressed', c.id === now);
+    b.setAttribute('aria-label', c.id);
+    b.title = c.id;
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fdf9f1" stroke-width="6"/><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3a2f25" stroke-width="2.6"/></svg>';
+    b.onclick = () => {
+      shapeColour[S.story.id] = c.id;
+      S.cardEls.forEach(card => {
+        const img = card.querySelector('img[data-shape]');
+        if (img) img.src = shapeSrc(S.story, img.dataset.shape);
+      });
+      renderColours();
+    };
+    row.append(b);
+  }
 }
 
 function startStory() {
@@ -935,6 +1037,7 @@ function startStory() {
   if (pinned != null) S.slots[0] = pinned;
 
   $('playTitle').textContent = story.title;
+  renderColours();
   const themed = !!story.cursor && $('storyCursor').checked;
   $('play').classList.toggle('themed', themed);
   if (themed) $('play').style.setProperty('--story-cursor', emojiCursor(story.cursor));

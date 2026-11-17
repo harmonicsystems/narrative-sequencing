@@ -27,7 +27,9 @@ probably wrong. Full statement: top of README.
 - Browsers block fetch() of stories.json when
   index.html is opened from disk, so index.html
   carries an embedded copy on the line ending
-  `// @seed`. After editing stories.json, refresh
+  `// @seed` (and the shape drawings on the line
+  ending `// @shapes`). After editing stories.json
+  or a shape SVG, refresh
   it with the script in README ("Updating the
   built-in copy").
 - To test stories.json edits directly:
@@ -93,6 +95,15 @@ story = {
 - Concept stories (size, shade, position, fill
   pattern) use style "shape": simple SVGs, one
   hue, outlined so they never rely on fill alone.
+  Fill #b07a55 (shades #f3e6d8 #d6ae8c #a06c44
+  #553521), outline #6f5f4a. index.html keeps a
+  built-in copy on the line ending `// @shapes`
+  (same README script as the seed) so they can
+  be recoloured: the student picks one of 8
+  muted swatches on the play screen (memory
+  only, per story; each story starts in its own
+  colour). Shades keep their lightness steps.
+  Colour is decoration, not data: not logged.
 - Optional story.paper = { <style>: "#rrggbb" }:
   the image set's background colour. Cards take
   it so captions blend into the picture; caption
