@@ -288,7 +288,14 @@
   #wordsCount { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
-  #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); }
+  #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); gap: 10px 14px; }
+  /* Cue ladder: clinician-only, lightest help on the left. Each press is logged. */
+  #ladder { gap: 8px; margin-right: auto; }
+  #ladder .btn { font-size: 0.85rem; min-height: 40px; padding: 4px 12px; color: var(--ink); }
+  .locked #ladder { display: none; }
+  /* "Narrow to two": the other cards step back and the spot being filled is ringed. */
+  .card.dim { opacity: 0.3; pointer-events: none; box-shadow: none; }
+  .slot.target { background: var(--surface); box-shadow: 0 0 0 3px var(--talk); outline: 2px dashed var(--talk); outline-offset: 5px; }
   #cueBox select {
     min-height: 44px; padding: 4px 10px; border-radius: 12px;
     border: 1.5px solid var(--edge); background: var(--surface); color: var(--ink);
@@ -398,7 +405,15 @@
       </div>
     </div>
     <div class="row" id="cueBox">
-      <label for="cue">Cue</label>
+      <div class="row" id="ladder" role="group" aria-label="Give a cue">
+        <span id="ladderLabel">Give a cue:</span>
+        <button class="btn mini" id="cueVerbal">Verbal</button>
+        <button class="btn mini" id="cueFirst">Place first card</button>
+        <button class="btn mini" id="cueLast">Place last card</button>
+        <button class="btn mini" id="cueNarrow">Narrow to two</button>
+        <button class="btn mini" id="cueModel">Show the order</button>
+      </div>
+      <label for="cue">Level</label>
       <select id="cue">
         <option value="independent">independent</option>
         <option value="verbal">verbal</option>
@@ -752,7 +767,10 @@ function startStory() {
     tray: shuffledAwayFrom(order.filter(c => c !== pinned)),
     selected: null, locked: false, attempt: 1,
     run: ++runCount, t0: performance.now(),
-    slotEls: [], cardEls: []
+    slotEls: [], cardEls: [],
+    fixed: new Set(),      // cards placed by a cue: they stay where they are
+    cues: [],              // cues given during the attempt in progress, in order
+    narrow: null           // { spot, cards: [a, b] } while "Narrow to two" is showing
   };
   if (pinned != null) S.slots[0] = pinned;
 
@@ -805,7 +823,19 @@ function render() {
   });
   for (const c of S.tray) $('tray').append(S.cardEls[c]);
   $('tray').classList.toggle('empty', !S.tray.length);
-  S.cardEls.forEach((card, i) => card.classList.toggle('selected', i === S.selected));
+  S.cardEls.forEach((card, i) => {
+    card.classList.toggle('selected', i === S.selected);
+    card.classList.toggle('pinned', i === S.pinned || S.fixed.has(i));
+    card.classList.toggle('dim', !!S.narrow && S.tray.includes(i) && !S.narrow.cards.includes(i));
+  });
+  S.slotEls.forEach((slot, i) => slot.classList.toggle('target', !!S.narrow && S.narrow.spot === i));
+  const last = S.order.length - 1;
+  $('cueFirst').hidden = S.pinned != null;                       // reversible stories already show the first card
+  $('cueFirst').disabled = S.fixed.has(S.order[0]);
+  $('cueLast').disabled = S.fixed.has(S.order[last]);
+  $('cueNarrow').disabled = narrowSpot() < 0;
+  const verbal = S.cues.filter(c => c === 'verbal cue').length;
+  $('cueVerbal').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
   $('play').classList.toggle('picking', S.selected != null);
   $('play').classList.toggle('locked', S.locked);
   $('checkBtn').disabled = S.locked || S.slots.includes(null);
@@ -869,13 +899,13 @@ function endRetell(save) {
 
 // dest: a slot index, or 'tray'
 function move(card, dest) {
-  if (S.locked || card === S.pinned) return;
+  if (S.locked || card === S.pinned || S.fixed.has(card)) return;
   const from = S.slots.indexOf(card);
   if (dest === 'tray') {
     if (from >= 0) { S.slots[from] = null; S.tray.push(card); }
   } else {
     const occupant = S.slots[dest];
-    if (occupant === S.pinned && S.pinned != null) return;
+    if (occupant != null && (occupant === S.pinned || S.fixed.has(occupant))) return;
     if (occupant !== card) {
       if (from >= 0) S.slots[from] = null;
       else S.tray = S.tray.filter(c => c !== card);
@@ -887,11 +917,12 @@ function move(card, dest) {
     }
   }
   S.selected = null;
+  S.narrow = null;       // the narrowed choice ends as soon as a card moves
   render();
 }
 
 function tapCard(card) {
-  if (S.locked || card === S.pinned) return;
+  if (S.locked || card === S.pinned || S.fixed.has(card)) return;
   if (S.selected == null) S.selected = card;
   else if (S.selected === card) S.selected = null;
   else {
@@ -910,7 +941,7 @@ function wireCard(card, idx) {
   let start = null, dragging = false;
 
   card.addEventListener('pointerdown', e => {
-    if (S.locked || e.button > 0) return;
+    if (S.locked || e.button > 0 || S.fixed.has(idx)) return;
     start = { x: e.clientX, y: e.clientY, id: e.pointerId };
     dragging = false;
     try { card.setPointerCapture(e.pointerId); } catch {}
@@ -947,6 +978,79 @@ function wireCard(card, idx) {
   });
 }
 
+/* ---------- Cue ladder ---------- */
+
+// Every cue is given by the clinician and written into the attempt's record,
+// so help that was given is never reported as independent work.
+const CUE_RANK = ['independent', 'verbal', 'visual', 'model'];
+
+function noteCue(name, level) {
+  S.cues.push(name);
+  if (CUE_RANK.indexOf(level) > CUE_RANK.indexOf($('cue').value)) $('cue').value = level;
+}
+
+// Put the right card in a spot and keep it there.
+function placeCue(spot, name) {
+  if (S.locked) return;
+  const card = S.order[spot];
+  if (S.fixed.has(card) || card === S.pinned) return;
+  const from = S.slots.indexOf(card);
+  if (from >= 0) S.slots[from] = null;
+  else S.tray = S.tray.filter(c => c !== card);
+  const occupant = S.slots[spot];
+  if (occupant != null && occupant !== card) S.tray.push(occupant);
+  S.slots[spot] = card;
+  S.fixed.add(card);
+  S.selected = null;
+  S.narrow = null;
+  noteCue(name, 'visual');
+  render();
+}
+
+// The first empty spot whose card is still in the tray, when there are at
+// least three cards to choose from. -1 when narrowing would not help.
+function narrowSpot() {
+  if (S.locked || S.tray.length < 3) return -1;
+  return S.slots.findIndex((c, i) => c == null && S.tray.includes(S.order[i]));
+}
+
+function narrowCue() {
+  const spot = narrowSpot();
+  if (spot < 0) return;
+  const right = S.order[spot];
+  const others = S.tray.filter(c => c !== right);
+  const other = others[Math.floor(Math.random() * others.length)];
+  S.narrow = { spot, cards: [right, other] };
+  S.selected = null;
+  noteCue('choice narrowed to two', 'visual');
+  render();
+}
+
+// Show the whole order now. Logged as a modeled attempt.
+function modelCue() {
+  if (S.locked) return;
+  noteCue('order shown', 'model');
+  const misplaced = [];
+  S.slots.forEach((c, i) => { if (c != null && c !== S.order[i]) misplaced.push(i + 1); });
+  log.push({
+    run: S.run, storyId: S.story.id, cardCount: S.story.cards.length,
+    style: S.style, direction: S.direction, attemptNumber: S.attempt,
+    correct: false, misplacedPositions: misplaced,
+    placedOrder: S.slots.map(c => c == null ? '-' : c + 1),
+    cueLevel: 'model', cues: [...S.cues],
+    seconds: Math.round((performance.now() - S.t0) / 1000), modeled: true
+  });
+  S.slots = [...S.order]; S.tray = []; S.selected = null; S.narrow = null;
+  S.locked = true;
+  $('feedback').textContent = 'Here is the order.';
+  $('checkBtn').hidden = true;
+  $('retellBtn').hidden = false;
+  $('nextBtn').hidden = false;
+  $('endBtn').hidden = false;
+  render();
+  tour('done');
+}
+
 function check() {
   if (S.locked || S.slots.includes(null)) return;
   const misplaced = [];
@@ -965,15 +1069,19 @@ function check() {
     misplacedPositions: misplaced,
     placedOrder: S.slots.map(c => c + 1),   // card numbers (forward order, from 1) as the student left them
     cueLevel: $('cue').value,
+    cues: [...S.cues],
     seconds: Math.round((performance.now() - S.t0) / 1000),
     modeled
   });
+  S.narrow = null;
 
   S.selected = null;
   if (!correct && S.attempt === 1) {
     S.attempt = 2;
     S.t0 = performance.now();
-    $('cue').value = 'independent';
+    // Cards a cue placed stay on the board, so they still count on the second try.
+    S.cues = S.cues.filter(c => c.endsWith('card placed'));
+    $('cue').value = S.cues.length ? 'visual' : 'independent';
     $('feedback').textContent = 'Try again.';
     render();
     tour('wrong');
@@ -1041,7 +1149,8 @@ function groupSentence(g) {
 }
 
 function errorSentence(entries) {
-  const wrong = entries.filter(a => !a.correct);
+  // An order shown on request was never checked, so it is not counted as an error.
+  const wrong = entries.filter(a => !a.correct && !(a.cues || []).includes('order shown'));
   if (!wrong.length) return 'No sequencing errors.';
   const M = wrong.length;
   const count = test => wrong.filter(a => a.misplacedPositions.some(p => test(p, a.cardCount))).length;
@@ -1073,9 +1182,19 @@ function errorSentence(entries) {
   return s;
 }
 
+// Which cues were given, counted by attempt, always over the same denominator.
+function cueSentence(entries) {
+  const names = ['verbal cue', 'first card placed', 'last card placed', 'choice narrowed to two', 'order shown'];
+  const N = entries.length;
+  const parts = names.map(n => [n, entries.filter(a => (a.cues || []).includes(n)).length])
+    .filter(([, k]) => k).map(([n, k]) => n + ' (' + k + '/' + N + ')');
+  return parts.length ? 'Cues given, by attempt: ' + parts.join(', ') + '.' : '';
+}
+
 function buildOLine(entries) {
   if (!entries.length) return 'No attempts logged.';
-  return groupRuns(entries).map(groupSentence).join(' ') + ' ' + errorSentence(entries);
+  const cues = cueSentence(entries);
+  return groupRuns(entries).map(groupSentence).join(' ') + ' ' + errorSentence(entries) + (cues ? ' ' + cues : '');
 }
 
 function retellSentence(rs) {
@@ -1106,11 +1225,11 @@ function buildRetellRaw(rs) {
 
 function buildRaw(entries) {
   const head = ['storyId', 'cardCount', 'style', 'direction', 'attemptNumber', 'correct',
-    'misplacedPositions', 'placedOrder', 'cueLevel', 'seconds', 'modeled'];
+    'misplacedPositions', 'placedOrder', 'cueLevel', 'cues', 'seconds', 'modeled'];
   const rows = entries.map(a => [
     a.storyId, a.cardCount, a.style, a.direction, a.attemptNumber,
     a.correct ? 'yes' : 'no', a.misplacedPositions.join(',') || '-',
-    a.placedOrder.join(','), a.cueLevel, a.seconds, a.modeled ? 'yes' : 'no'
+    a.placedOrder.join(','), a.cueLevel, (a.cues || []).join('; ') || '-', a.seconds, a.modeled ? 'yes' : 'no'
   ]);
   return [head, ...rows].map(r => r.join('\t')).join('\n');
 }
@@ -1172,6 +1291,11 @@ async function init() {
   $('backBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); };
   $('endBtn').onclick = () => { endRetell(true); showSummary(); };
   $('retellBtn').onclick = startRetell;
+  $('cueVerbal').onclick = () => { if (!S.locked) { noteCue('verbal cue', 'verbal'); render(); } };
+  $('cueFirst').onclick = () => placeCue(0, 'first card placed');
+  $('cueLast').onclick = () => placeCue(S.order.length - 1, 'last card placed');
+  $('cueNarrow').onclick = narrowCue;
+  $('cueModel').onclick = modelCue;
   $('retellDiscard').onclick = () => {
     endRetell(false);
     $('retellBtn').hidden = false;
