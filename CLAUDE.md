@@ -79,7 +79,11 @@ story = {
   paper colour show the whole picture (contain);
   sets without one fill the card and are trimmed
   (cover), so only full-scene sets like storm
-  should go without.
+  should go without. Picture edges fade into
+  the card. Optional story.zoom = { <style>: n }
+  (1 to 2) enlarges a paper set that has margin
+  to spare: one value per set, so scale stays
+  constant across its cards.
 - Generated image sets (puffer-fish/cartoon is
   the first): make each card as an edit of the
   previous one in the same chat, trim all images

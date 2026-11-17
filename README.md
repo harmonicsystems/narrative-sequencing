@@ -90,7 +90,8 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
 | `styles` | Which styles the setup screen offers. `emoji` and `text` are built in; any other name (`cartoon`, `realistic`, `shape`…) is an image folder. |
-| `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. |
+| `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. A set with a `paper` color is shown whole, never trimmed, with its edges faded into the card. |
+| `zoom` | Optional. How much to enlarge a `paper` image set on the card, per style: `{"cartoon": 1.3}` (1 to 2). Use it when every picture in the set has empty margin all round; pick the largest value that keeps every card's drawing inside the frame. One value per set, so scale never differs between cards. |
 | `cover` | Optional. Card number (from 1) shown as the story's picture on the setup screen. Defaults to the last card. |
 | `cursor` | Optional. One emoji used as the mouse pointer while the story is played (for example `"💧"`). Decoration only; the setup screen can turn it off. |
 | `grammar` | Optional. Story grammar parts offered in the retell step, from `character`, `setting`, `problem`, `feeling`, `action`, `ending`. Leave it out to offer all six; use `[]` for none. List only parts the story really has. |
