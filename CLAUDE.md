@@ -84,9 +84,18 @@ story = {
   (puffer fish, kettle, storm, voice volume).
 
 ## Setup screen (clinician)
-Pick story, style, and for reversible stories
-the direction (forward | reverse), shown with
-endLabels, e.g. "calm → puffed".
+Setup is two steps: pick a story, press Start.
+Three parts, top to bottom:
+- Session settings (closed panel, summary line
+  shows the choices): things set once for the
+  whole session.
+- Story list.
+- Start bar, stuck to the bottom of the screen:
+  story title, its style and (reversible only)
+  direction buttons with endLabels, e.g.
+  "calm → puffed", and Start. Anything that
+  depends on the picked story goes here, never
+  below the list.
 Card size: standard | large | largest (memory
 only; sets --cw through data-size on :root).
 Story list view: pictures (default) | list.

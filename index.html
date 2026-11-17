@@ -105,11 +105,49 @@
   }
   .story .thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
   .story .thumb + span, .story .thumb ~ .meta { padding-inline: 6px; }
-  #listHead { justify-content: space-between; align-items: baseline; }
-  label.check { display: inline-flex; gap: 10px; align-items: center; min-height: 48px; margin-top: 6px; cursor: pointer; }
-  label.check input { width: 22px; height: 22px; accent-color: var(--accent); }
-  #sessionBar { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line); justify-content: space-between; }
-  #setupFoot { margin-top: 28px; justify-content: flex-end; }
+  .pictures .story { display: flex; flex-direction: column; justify-content: flex-start; }
+  /* Session settings: things set once and kept for every story. Closed by
+     default; the summary line says what is chosen. */
+  #settings {
+    margin-top: 26px; border: 1.5px solid var(--edge); border-radius: 16px; background: var(--surface);
+  }
+  #settings summary {
+    display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline;
+    min-height: 52px; padding: 14px 18px; cursor: pointer; list-style: none;
+  }
+  #settings summary::-webkit-details-marker { display: none; }
+  #settings .sumTitle { font-weight: 600; }
+  #settings .sumTitle::before { content: '▸'; display: inline-block; width: 1.2em; color: var(--muted); }
+  #settings[open] .sumTitle::before { content: '▾'; }
+  #settingsBody {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 28px;
+    padding: 4px 18px 18px; border-top: 1px solid var(--line);
+  }
+  #settingsBody h3 { font-size: 0.88rem; font-weight: 600; color: var(--muted); margin: 14px 0 8px; }
+  #settingsBody label.check, #settingsBody .link { display: flex; margin-top: 0; }
+  #settingsBody label.check input { flex: none; width: 22px; height: 22px; }
+  #settingsBody .row { gap: 8px; }
+  #settingsBody .link { text-align: left; }
+  /* Start bar: stays at the bottom of the screen and holds the choices that
+     belong to the picked story, so setup is pick a story, then Start. */
+  #startBar {
+    position: sticky; bottom: 0; z-index: 5; margin: 36px -6px 0;
+    padding: 12px 6px max(12px, env(safe-area-inset-bottom));   /* 6px wider: covers selection rings */
+    background: var(--bg); border-top: 1.5px solid var(--edge);
+    display: flex; gap: 12px 20px; align-items: center; justify-content: space-between;
+  }
+  #startInfo { min-width: 0; flex: 1; }
+  #startTitle { margin: 0 0 8px; font-weight: 600; }
+  #storyOpts { gap: 8px 22px; }
+  #storyOpts .row { gap: 8px; }
+  .btn.mini { min-height: 44px; padding: 6px 14px; border-radius: 12px; font-size: 0.92rem; }
+  #startBtn { flex: none; }
+  @media (max-width: 600px) {
+    #startBar { flex-wrap: wrap; }
+    #startInfo { flex-basis: 100%; }
+    #startBtn { width: 100%; }
+  }
+  #sessionBar { margin-top: 28px; padding-top: 0; border-top: 0; justify-content: space-between; }
 
   /* Play */
   #playHead { justify-content: space-between; margin-bottom: 32px; }
@@ -194,28 +232,37 @@
     <p class="muted">Choose a story for the student to put in order.</p>
     <p class="muted small" id="sourceNote" hidden></p>
 
-    <div class="row" id="listHead">
-      <h2>Which story?</h2>
-      <button class="link small" id="viewBtn"></button>
-    </div>
+    <details id="settings">
+      <summary><span class="sumTitle">Session settings</span><span class="muted small" id="settingsSummary"></span></summary>
+      <div id="settingsBody">
+        <div>
+          <h3>Card size</h3>
+          <div class="row" id="sizeRow"></div>
+        </div>
+        <div>
+          <h3>On the cards</h3>
+          <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
+          <label class="check small"><input type="checkbox" id="storyCursor" checked> Use story pointers (mouse or trackpad)</label>
+        </div>
+        <div>
+          <h3>This screen</h3>
+          <button class="link small" id="viewBtn"></button>
+          <button class="link small" id="themeBtn"></button>
+        </div>
+      </div>
+    </details>
+
+    <h2>Which story?</h2>
     <div id="storyList"></div>
 
-    <h2>How should the cards look?</h2>
-    <div class="row" id="styleRow"></div>
-    <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
-    <div id="cursorOpt" hidden>
-      <label class="check small"><input type="checkbox" id="storyCursor" checked> <span id="cursorLabel"></span></label>
-    </div>
-
-    <h2>How big should the cards be?</h2>
-    <div class="row" id="sizeRow"></div>
-
-    <div id="dirBlock" hidden>
-      <h2>Which way does it go?</h2>
-      <div class="row" id="dirRow"></div>
-    </div>
-
-    <div class="row" style="margin-top:36px">
+    <div id="startBar">
+      <div id="startInfo">
+        <p id="startTitle" aria-live="polite"></p>
+        <div class="row" id="storyOpts">
+          <div class="row" id="styleRow" role="group" aria-label="How the cards look"></div>
+          <div class="row" id="dirRow" role="group" aria-label="Which way the story goes"></div>
+        </div>
+      </div>
       <button class="btn primary" id="startBtn">Start</button>
     </div>
 
@@ -224,9 +271,6 @@
       <button class="btn" id="endFromSetup">End session</button>
     </div>
 
-    <div class="row" id="setupFoot">
-      <button class="link small" id="themeBtn"></button>
-    </div>
   </section>
 
   <section id="play" hidden>
@@ -334,19 +378,17 @@ function renderSetup() {
   const styleRow = $('styleRow');
   styleRow.replaceChildren();
   for (const st of story.styles) {
-    const b = el('button', 'btn', st);
+    const b = el('button', 'btn mini', st);
     b.setAttribute('aria-pressed', st === pick.style);
     b.onclick = () => { pick.style = st; renderSetup(); };
     styleRow.append(b);
   }
 
-  $('cursorOpt').hidden = !story.cursor;
-  $('cursorLabel').textContent = 'Use the story pointer ' + (story.cursor || '') + ' (mouse or trackpad)';
 
   const sizeRow = $('sizeRow');
   sizeRow.replaceChildren();
   for (const sz of ['standard', 'large', 'largest']) {
-    const b = el('button', 'btn', sz);
+    const b = el('button', 'btn mini', sz);
     b.setAttribute('aria-pressed', sz === pick.size);
     b.onclick = () => { pick.size = sz; renderSetup(); };
     sizeRow.append(b);
@@ -355,18 +397,26 @@ function renderSetup() {
   if (pick.size === 'standard') delete document.documentElement.dataset.size;
   else document.documentElement.dataset.size = pick.size;
 
-  $('dirBlock').hidden = !story.reversible;
+  const dirRow = $('dirRow');
+  dirRow.replaceChildren();
+  dirRow.hidden = !story.reversible;
   if (story.reversible) {
     const [a, z] = story.endLabels || ['start', 'end'];
-    const dirRow = $('dirRow');
-    dirRow.replaceChildren();
     for (const [dir, label] of [['forward', a + ' → ' + z], ['reverse', z + ' → ' + a]]) {
-      const b = el('button', 'btn', label);
+      const b = el('button', 'btn mini', label);
       b.setAttribute('aria-pressed', dir === pick.direction);
       b.onclick = () => { pick.direction = dir; renderSetup(); };
       dirRow.append(b);
     }
   }
+
+  $('startTitle').textContent = story.title;
+  $('captions').onchange = $('storyCursor').onchange = renderSetup;
+  $('settingsSummary').textContent = [
+    pick.size + ' cards',
+    $('captions').checked ? 'words shown' : 'words hidden',
+    $('storyCursor').checked ? 'story pointers on' : 'story pointers off'
+  ].join(' · ');
 
   const runs = new Set(log.map(a => a.run)).size;
   $('sessionBar').hidden = !runs;
