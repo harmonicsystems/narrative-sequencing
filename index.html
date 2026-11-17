@@ -670,8 +670,34 @@ const pick = { storyId: null, style: null, direction: 'forward', size: 'standard
 
 function show(name) {
   for (const id of ['setup', 'play', 'summary', 'about']) $(id).hidden = id !== name;
+  fitCards();
   window.scrollTo(0, 0);
 }
+
+// Play screen: the cards grow to use the screen. All of a story's cards fit
+// in one row, and the spots plus the tray fit the window's height, up to a
+// sensible maximum. The card-size setting scales up from there (bigger cards
+// may wrap onto two rows). Captions grow with the cards. Other screens keep
+// the sizes set in the stylesheet.
+const SIZE_SCALE = { standard: 1, large: 1.2, largest: 1.45 };
+function fitCards() {
+  const root = document.documentElement, main = document.querySelector('main');
+  if (!S || $('play').hidden) {
+    root.style.removeProperty('--cw');
+    root.style.removeProperty('--cap');
+    main.style.removeProperty('max-width');
+    return;
+  }
+  const n = S.story.cards.length, gap = 16;
+  const width = Math.min(root.clientWidth, 1680) - 40 - 32 - 12;   // page and tray padding, slack for borders
+  const byWidth = (width - (n - 1) * gap) / n;
+  const byHeight = (window.innerHeight - 380) / 2.75;   // spots, tray and Check all on screen
+  const cw = Math.floor(Math.max(96, Math.min(byWidth, byHeight, 340) * (SIZE_SCALE[pick.size] || 1)));
+  root.style.setProperty('--cw', cw + 'px');
+  root.style.setProperty('--cap', Math.min(1.6, Math.max(1, cw / 180)).toFixed(2));
+  main.style.maxWidth = '1680px';
+}
+window.addEventListener('resize', fitCards);
 
 function el(tag, cls, text) {
   const n = document.createElement(tag);

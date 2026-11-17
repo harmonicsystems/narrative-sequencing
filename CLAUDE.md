@@ -74,12 +74,12 @@ probably wrong. Full statement: top of README.
   then the rest from it. One tool per story.
   Drafts go in img/_drafts/ (git-ignored) with a
   review.html per round.
-- Caption-safe band: with words shown the card
-  keeps about the middle 65% of the picture, so
-  heads and key props sit between 20% and 80%
-  of the height. Full-scene cards are padded
-  evenly at install (same amount per story).
-  Keep captions to about three lines.
+- Cards with a paper colour show the whole
+  picture, so at install trim each set to the
+  band its scenes use: one shared crop for a
+  story's full scenes (scale never changes), its
+  own top trim for the close-up. Keep captions
+  to about three lines.
 story = {
   id, title, gradeBand,
   reversible: bool,
@@ -151,6 +151,11 @@ Three parts, top to bottom:
   below the list.
 Card size: standard | large | largest (memory
 only; sets --cw through data-size on :root).
+On the play screen fitCards() overrides --cw
+(and --cap): all of a story's cards fit one
+row and spots + tray + Check fit the window,
+max 340px; large/largest scale that by 1.2 /
+1.45 (may wrap). Other screens use the CSS.
 Story list view: pictures (default) | list.
 The list is grouped by story.set, in this
 order: narrative "Stories", routine "Everyday
