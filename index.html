@@ -216,6 +216,9 @@
   #startTitle { margin: 0 0 8px; font-weight: 600; }
   #storyOpts { gap: 8px 22px; }
   #storyOpts .row { gap: 8px; }
+  #feelRow { gap: 6px; margin-top: 8px; }
+  #feelRow .lbl, #storyOpts .lbl { font-size: 0.88rem; color: var(--muted); margin-right: 2px; }
+  #feelRow .btn.mini { min-height: 40px; padding: 4px 11px; }
   .btn.mini { min-height: 44px; padding: 6px 14px; border-radius: 12px; font-size: 0.92rem; }
   #startBtn { flex: none; }
   @media (max-width: 600px) {
@@ -371,6 +374,34 @@
     border: 1.5px solid var(--edge); background: var(--surface); color: var(--ink);
   }
 
+  /* Feelings match */
+  #matchHead { justify-content: flex-start; gap: 18px; margin-bottom: 24px; }
+  #matchHead h1 { margin: 0; }
+  #matchPic {
+    width: min(52vh, 88vw, 460px); margin: 0 auto; border: 1.5px solid var(--edge);
+    border-radius: 18px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow);
+  }
+  #matchImg { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+  #matchPic.missing #matchImg { display: none; }
+  #matchPic.missing::before { content: "No picture for this one"; display: grid; place-items: center; aspect-ratio: 1; color: var(--muted); }
+  #matchDrawn { padding: 10px 14px; text-align: center; border-top: 1.5px dashed var(--edge); font-weight: 600; }
+  #matchAsk { text-align: center; font-size: 1.3rem; margin: 22px 0 14px; }
+  #matchChoices { justify-content: center; gap: 12px; }
+  .choice { min-width: 112px; min-height: 64px; font-size: 1.15rem; }
+  .choice .emo { font-size: 2rem; line-height: 1; display: block; }
+  .choice .emo + .word { display: block; margin-top: 4px; font-size: 1rem; }
+  .choice.dim { opacity: 0.3; }
+  #ownWordBox { justify-content: center; margin-top: 18px; gap: 10px; }
+  #ownWord {
+    min-height: 44px; padding: 6px 12px; border-radius: 12px; width: 14em; max-width: 60vw;
+    border: 1.5px solid var(--edge); background: var(--surface); color: var(--ink); font: inherit;
+  }
+  #matchDone { min-height: 1.6em; margin: 22px 0 8px; text-align: center; font-size: 1.3rem; }
+  #matchActions { justify-content: center; gap: 12px 20px; }
+  #matchCues { margin-top: 48px; font-size: 0.88rem; color: var(--muted); gap: 8px; }
+  #matchCues .btn { font-size: 0.85rem; min-height: 40px; padding: 4px 12px; color: var(--ink); }
+  #match.finished #matchStage, #match.finished #matchCues, #match.finished #ownWordBtn { display: none; }
+
   /* Summary */
   .box {
     background: var(--surface); border: 1.5px solid var(--edge); border-radius: 16px;
@@ -438,7 +469,10 @@
         <div class="row" id="storyOpts">
           <div class="row" id="styleRow" role="group" aria-label="How the cards look"></div>
           <div class="row" id="dirRow" role="group" aria-label="Which way the story goes"></div>
+          <div class="row" id="choiceRow" role="group" aria-label="What the student chooses from" hidden></div>
+          <div class="row" id="labelRow" role="group" aria-label="Labels" hidden></div>
         </div>
+        <div class="row" id="feelRow" role="group" aria-label="Feelings in play" hidden></div>
       </div>
       <button class="btn go" id="startBtn"><svg class="ic solid" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Start</button>
     </div>
@@ -518,6 +552,43 @@
     </div>
   </section>
 
+  <!-- Feelings match: one picture at a time; the student picks a word or
+       emoji, or (open mode) says their own word. Nothing is marked right or
+       wrong on screen. -->
+  <section id="match" hidden>
+    <div class="row" id="matchHead">
+      <button class="btn mini" id="matchBack"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
+      <h1 id="matchTitle"></h1>
+      <span class="muted small" id="matchCount" aria-live="polite"></span>
+    </div>
+    <div id="matchStage">
+      <figure id="matchPic">
+        <img id="matchImg" alt="" draggable="false">
+        <figcaption id="matchDrawn" hidden></figcaption>
+      </figure>
+      <p id="matchAsk"></p>
+      <div class="row" id="matchChoices" role="group" aria-labelledby="matchAsk"></div>
+      <div class="row" id="ownWordBox" hidden>
+        <label for="ownWord">The student's own word</label>
+        <input id="ownWord" type="text" autocomplete="off" spellcheck="false" maxlength="30">
+        <button class="btn mini" id="ownWordUse">Use this word</button>
+      </div>
+    </div>
+    <p id="matchDone" role="status" aria-live="polite"></p>
+    <div class="row" id="matchActions">
+      <button class="link" id="ownWordBtn">The student used another word…</button>
+      <button class="btn go" id="matchNext">Next picture<svg class="ic after" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="btn go" id="matchToSetup" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back to stories</button>
+      <button class="btn" id="matchEnd" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
+    </div>
+    <div class="row" id="matchCues" role="group" aria-label="Give a cue">
+      <span>Give a cue:</span>
+      <button class="btn mini" id="mcVerbal">Verbal</button>
+      <button class="btn mini" id="mcNarrow">Narrow to two</button>
+      <button class="btn mini" id="mcShow">Show the drawn feeling</button>
+    </div>
+  </section>
+
   <section id="about" hidden>
     <div class="row" id="aboutHead">
       <button class="btn mini" id="aboutBack"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
@@ -535,6 +606,7 @@
       <li><b>Support is part of the data.</b> The clinician gives help from a ladder of cues, lightest first: a verbal cue, placing the first or last card, narrowing the choice to two, a pointer that grows over the next card, or showing the order. Each one is logged on the attempt with its level (independent, verbal, visual, model), so a cued success is never written up as independent. The app never gives a cue on its own.</li>
       <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in, time words and cause words, which story parts (character, problem, feeling, action, ending…) the student included, and how much picture support was left on the table.</li>
       <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
+      <li><b>Feelings without a right answer.</b> In the feelings match, each picture was drawn as one feeling, but that is the illustrator's intent, not the answer. With open labels the student's choice or own word is recorded as given; with fixed words the log notes whether the choice matches the drawing. The student never sees right or wrong.</li>
       <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
     </ul>
 
@@ -551,7 +623,7 @@
     <h2>How it was made</h2>
     <p>I built this with Claude, Anthropic's AI model, working as a coding partner. I described what a session needs to look like and what the note needs to say; Claude wrote the code, and I tried each version and corrected it. The whole app is one web page with no outside services, which keeps student data on the device and makes the tool easy to host and to trust.</p>
     <p>The cartoon pictures were made with Google's Gemini image generator, one card at a time from written prompts, with each card built on the one before so the character and scene stay the same and only the event changes. The shape cards for the concept stories are simple drawings written directly as code.</p>
-    <p>The four story grammar stories were drawn differently. Each child (Ana, Sam, Jo, Max), Gran and the puppy got a character sheet first; every card was then drawn by OpenAI's image model, through Codex, with those sheets attached and one master layout per story, so faces, rooms and sizes stay the same from card to card. I reviewed each round and asked for fixes: a face that looked angry instead of puzzled, a flashlight that changed colour, a backpack with a flap it shouldn't have.</p>
+    <p>The four story grammar stories were drawn differently. Each child (Ana, Sam, Jo, Max), Gran and the puppy got a character sheet first; every card was then drawn by OpenAI's image model, through Codex, with those sheets attached and one master layout per story, so faces, rooms and sizes stay the same from card to card. The same characters then got feelings sheets, nine feelings drawn subtle, exaggerated, and with lines and colour, which became the pictures for the feelings match. I reviewed each round and asked for fixes: a face that looked angry instead of puzzled, a flashlight that changed colour, a backpack with a flap it shouldn't have.</p>
 
     <h2>Who did what</h2>
     <div class="box">
@@ -563,6 +635,7 @@
     <ul>
       <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
       <li>21 stories: 8 picture stories with 33 illustrated cards, 5 story grammar stories (4 illustrated, with 21 cards; one, with two characters who feel differently, still in words and emoji), and 8 concept stories with 31 shape cards.</li>
+      <li>A feelings match for the whole cast: six characters, nine feelings each, drawn three ways (subtle, exaggerated, and with lines and colour), 162 pictures in all.</li>
       <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
       <li>Setup, card sizes, themes, the retell step, the cue ladder and this tour were each added in response to trying the tool and finding what got in the way.</li>
     </ul>
@@ -601,7 +674,7 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "set": "routine", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "set": "routine", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "set": "routine", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "set": "routine", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "set": "narrative", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6eee1"}, "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}]}, {"id": "spilled-paint", "set": "narrative", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6f0e4"}, "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}]}, {"id": "lost-library-book", "set": "narrative", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}]}, {"id": "block-tower", "set": "narrative", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"}, {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"}, {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}]}, {"id": "puppy-at-the-door", "set": "narrative", "title": "A puppy at the door", "gradeBand": "3-5", "reversible": false, "cover": 2, "cursor": "🐾", "styles": ["emoji", "text"], "cards": [{"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "part": "setting"}, {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "part": "feeling"}, {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "part": "problem"}, {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "part": "feeling"}, {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "part": "action"}, {"text": "Max's family gives the puppy a home", "emoji": "🏡", "part": "ending"}, {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "part": "end feeling"}]}, {"id": "puffer-fish", "set": "change", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "set": "change", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "set": "change", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "set": "change", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "set": "concept", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "set": "concept", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "set": "concept", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "set": "concept", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "set": "concept", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "set": "concept", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "set": "concept", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "set": "concept", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "set": "routine", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "set": "routine", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "set": "routine", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "set": "routine", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "set": "narrative", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6eee1"}, "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}]}, {"id": "spilled-paint", "set": "narrative", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6f0e4"}, "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}]}, {"id": "lost-library-book", "set": "narrative", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}]}, {"id": "block-tower", "set": "narrative", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"}, {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"}, {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}]}, {"id": "puppy-at-the-door", "set": "narrative", "title": "A puppy at the door", "gradeBand": "3-5", "reversible": false, "cover": 2, "cursor": "🐾", "styles": ["emoji", "text"], "cards": [{"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "part": "setting"}, {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "part": "feeling"}, {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "part": "problem"}, {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "part": "feeling"}, {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "part": "action"}, {"text": "Max's family gives the puppy a home", "emoji": "🏡", "part": "ending"}, {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "part": "end feeling"}]}, {"id": "puffer-fish", "set": "change", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "set": "change", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "set": "change", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "set": "change", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "set": "concept", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "set": "concept", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "set": "concept", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "set": "concept", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "set": "concept", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "set": "concept", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "set": "concept", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "set": "concept", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}, {"id": "feelings-jo", "set": "feelings", "kind": "match", "who": "Jo", "title": "Jo's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-ana", "set": "feelings", "kind": "match", "who": "Ana", "title": "Ana's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-sam", "set": "feelings", "kind": "match", "who": "Sam", "title": "Sam's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-max", "set": "feelings", "kind": "match", "who": "Max", "title": "Max's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-gran", "set": "feelings", "kind": "match", "who": "Gran", "title": "Gran's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-puppy", "set": "feelings", "kind": "match", "who": "the puppy", "title": "The puppy's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}];// @seed
 // Built-in copy of the concept drawings (img/<storyId>/shape/*.svg), so they
 // can be recoloured even when index.html is opened from disk. Refreshed by the
 // script in the README, like SEED.
@@ -697,10 +770,17 @@ let log = [];          // one record per checked attempt
 let retells = [];      // one record per retell (optional step after a story)
 let runCount = 0;      // one run = one presentation of a story
 let S = null;          // state of the story on screen
-const pick = { storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures' };
+let matches = [];      // one record per picture in a feelings match
+let M = null;          // state of the feelings match on screen
+const pick = {
+  storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures',
+  // Feelings match (memory only): what the student picks from, open or fixed
+  // labels, and which feelings are in play.
+  choices: 'words', labels: 'open', feelings: ['calm', 'happy', 'upset', 'worried']
+};
 
 function show(name) {
-  for (const id of ['setup', 'play', 'summary', 'about']) $(id).hidden = id !== name;
+  for (const id of ['setup', 'play', 'match', 'summary', 'about']) $(id).hidden = id !== name;
   fitCards();
   window.scrollTo(0, 0);
 }
@@ -804,6 +884,8 @@ const SETS = [
     icon: 'M5 19v-3M10 19v-6M15 19v-9M20 19V5' },
   { id: 'concept', title: 'Concepts', note: 'Size, shade, position and amount, drawn as simple shapes.',
     icon: 'M7.5 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM14 4.5h6v6h-6zM12 20H3l4.5-7.5z' },
+  { id: 'feelings', title: 'Feelings', note: 'Match a feeling to a picture of one of the cast. Open labels by default: the student\'s own word counts.',
+    icon: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5v.5M15 9.5v.5' },
   { id: 'other', title: 'Other stories', note: '',
     icon: 'M5 4h14v16H5zM9 9h6M9 13h6' }
 ];
@@ -849,8 +931,8 @@ function renderSetup() {
       const name = el('span', '');
       name.append(setIcon(set, 'setIc'), s.title);
       b.append(name);
-      const plays = new Set(log.filter(a => a.storyId === s.id).map(a => a.run)).size;
-      const meta = [s.gradeBand, s.cards.length + ' cards'];
+      const plays = new Set([...log, ...matches].filter(a => a.storyId === s.id).map(a => a.run)).size;
+      const meta = [s.gradeBand, s.cards.length + (s.kind === 'match' ? ' feelings' : ' cards')];
       if (s.reversible) meta.push('reversible');
       if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
       b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
@@ -862,7 +944,7 @@ function renderSetup() {
   const styleRow = $('styleRow');
   styleRow.replaceChildren();
   for (const st of story.styles) {
-    const b = el('button', 'btn mini', st);
+    const b = el('button', 'btn mini', STYLE_NAME[st] || st);
     b.setAttribute('aria-pressed', st === pick.style);
     b.onclick = () => { pick.style = st; renderSetup(); };
     styleRow.append(b);
@@ -894,6 +976,8 @@ function renderSetup() {
     }
   }
 
+  renderMatchOpts(story);
+
   $('startTitle').textContent = story.title;
   $('captions').onchange = $('storyCursor').onchange = renderSetup;
   $('settingsSummary').textContent = [
@@ -903,9 +987,45 @@ function renderSetup() {
     $('zoomOk').checked ? 'enlarge on' : 'enlarge off'
   ].join(' · ');
 
-  const runs = new Set(log.map(a => a.run)).size;
-  $('sessionBar').hidden = !runs;
-  $('sessionCount').textContent = runs + (runs === 1 ? ' story' : ' stories') + ' logged this session';
+  const runs = new Set(log.map(a => a.run)).size, sets = new Set(matches.map(a => a.run)).size;
+  $('sessionBar').hidden = !runs && !sets;
+  $('sessionCount').textContent = [
+    runs ? runs + (runs === 1 ? ' story' : ' stories') : '',
+    sets ? sets + (sets === 1 ? ' feelings set' : ' feelings sets') : ''
+  ].filter(Boolean).join(' and ') + ' logged this session';
+}
+
+// Start bar choices for a feelings match. Choices and labels apply to every
+// character; the feelings in play are the same words for the whole cast.
+function renderMatchOpts(story) {
+  const on = story.kind === 'match';
+  for (const id of ['choiceRow', 'labelRow', 'feelRow']) $(id).hidden = !on;
+  if (!on) return;
+  const seg = (row, label, key, options) => {
+    row.replaceChildren(el('span', 'lbl', label));
+    for (const [value, text] of options) {
+      const b = el('button', 'btn mini', text);
+      b.setAttribute('aria-pressed', pick[key] === value);
+      b.onclick = () => { pick[key] = value; renderSetup(); };
+      row.append(b);
+    }
+  };
+  seg($('choiceRow'), 'Choose from', 'choices', [['words', 'words'], ['emoji', 'emoji'], ['both', 'both']]);
+  seg($('labelRow'), 'Labels', 'labels', [['open', 'open'], ['fixed', 'fixed words']]);
+  const row = $('feelRow');
+  row.replaceChildren(el('span', 'lbl', 'Feelings in play'));
+  for (const c of story.cards) {
+    const f = c.text, on = pick.feelings.includes(f);
+    const b = el('button', 'btn mini', f);
+    b.setAttribute('aria-pressed', on);
+    // At least two feelings, so there is always a choice to make.
+    b.disabled = on && feelingsInPlay(story).length <= 2;
+    b.onclick = () => {
+      pick.feelings = on ? pick.feelings.filter(x => x !== f) : [...pick.feelings, f];
+      renderSetup();
+    };
+    row.append(b);
+  }
 }
 
 /* ---------- Play ---------- */
@@ -1527,6 +1647,199 @@ function check() {
   tour('done');
 }
 
+/* ---------- Feelings match ---------- */
+
+// Each picture was drawn as one feeling (card.text). In open mode that is
+// only the illustrator's intent: the student's choice or own word is logged
+// as given and nothing is compared. In fixed mode the same words are offered
+// every time and the log records whether the choice matches the drawn
+// feeling. The student never sees right or wrong either way.
+const STYLE_NAME = { colour: 'lines and colour' };
+const CHOICE_NAME = { words: 'words', emoji: 'emoji', both: 'words and emoji' };
+const feelingsInPlay = story => story.cards.map(c => c.text).filter(f => pick.feelings.includes(f));
+
+function startMatch() {
+  const story = stories.find(s => s.id === pick.storyId);
+  const offered = feelingsInPlay(story);
+  const order = [...offered];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  M = {
+    story, style: pick.style, labels: pick.labels, choices: pick.choices,
+    offered, order, at: 0, run: ++runCount
+  };
+  S = null;
+  $('matchTitle').textContent = story.title;
+  $('match').classList.remove('finished');
+  $('matchDone').textContent = '';
+  $('matchNext').hidden = false;
+  $('matchToSetup').hidden = $('matchEnd').hidden = true;
+  newPicture();
+  show('match');
+}
+
+function newPicture() {
+  Object.assign(M, { chosen: null, own: '', cues: [], narrow: null, shown: false, t0: performance.now() });
+  $('ownWord').value = '';
+  $('ownWordBox').hidden = true;
+  const f = M.order[M.at];
+  const card = M.story.cards.find(c => c.text === f);
+  const img = $('matchImg');
+  $('matchPic').classList.remove('missing');
+  img.onerror = () => $('matchPic').classList.add('missing');
+  img.src = 'img/' + M.story.id + '/' + M.style + '/' + (card.img || f + '.jpg');
+  // The picture's name never says the feeling, so nothing gives it away.
+  img.alt = 'Picture of ' + (M.story.who || 'a character');
+  renderMatch();
+}
+
+function renderMatch() {
+  const drawn = M.order[M.at];
+  $('matchCount').textContent = 'Picture ' + Math.min(M.at + 1, M.order.length) + ' of ' + M.order.length;
+  $('matchAsk').textContent = 'How does ' + (M.story.who || 'this one') + ' feel?';
+  $('matchDrawn').hidden = !M.shown;
+  $('matchDrawn').textContent = 'Drawn as ' + drawn;
+  const row = $('matchChoices');
+  row.replaceChildren();
+  for (const f of M.offered) {
+    const card = M.story.cards.find(c => c.text === f);
+    const b = el('button', 'btn choice');
+    if (M.choices !== 'words' && card.emoji) b.append(el('span', 'emo', card.emoji));
+    if (M.choices !== 'emoji' || !card.emoji) b.append(el('span', 'word', f));
+    b.setAttribute('aria-label', f);
+    b.setAttribute('aria-pressed', M.chosen === f && !M.own);
+    const dim = !!M.narrow && !M.narrow.includes(f);
+    b.classList.toggle('dim', dim);
+    b.disabled = dim;
+    b.onclick = () => { M.chosen = f; M.own = ''; $('ownWordBox').hidden = true; renderMatch(); };
+    row.append(b);
+  }
+  if (M.own) {
+    const b = el('button', 'btn choice', M.own);
+    b.setAttribute('aria-pressed', 'true');
+    b.setAttribute('aria-label', 'own word: ' + M.own);
+    b.onclick = () => { $('ownWordBox').hidden = false; $('ownWord').focus(); };
+    row.append(b);
+  }
+  $('ownWordBtn').hidden = M.labels !== 'open';
+  $('matchNext').disabled = !M.chosen && !M.own;
+  $('matchNext').lastChild.previousSibling.textContent = M.at === M.order.length - 1 ? 'Done' : 'Next picture';
+  const verbal = M.cues.filter(c => c === 'verbal cue').length;
+  $('mcVerbal').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
+  // Narrowing needs a target, so it is only offered with fixed words.
+  $('mcNarrow').hidden = M.labels !== 'fixed' || M.offered.length < 3;
+  $('mcNarrow').disabled = !!M.narrow;
+  $('mcShow').disabled = M.shown;
+}
+
+function matchCue(name) {
+  if (!M || M.at >= M.order.length) return;
+  M.cues.push(name);
+  if (name === 'choice narrowed to two') {
+    const drawn = M.order[M.at];
+    const others = M.offered.filter(f => f !== drawn);
+    M.narrow = [drawn, others[Math.floor(Math.random() * others.length)]];
+    if (M.chosen && !M.narrow.includes(M.chosen)) M.chosen = null;
+  }
+  if (name === 'drawn feeling shown') M.shown = true;
+  renderMatch();
+}
+
+function nextPicture() {
+  if (!M.chosen && !M.own) return;
+  const drawn = M.order[M.at];
+  const chosen = M.own || M.chosen;
+  matches.push({
+    run: M.run,
+    storyId: M.story.id,
+    who: M.story.who || M.story.title,
+    style: M.style,
+    labels: M.labels,
+    choices: M.choices,
+    offered: [...M.offered],
+    drawnAs: drawn,
+    chosen,
+    ownWord: !!M.own,
+    matched: M.labels === 'fixed' ? chosen === drawn : null,
+    cues: [...M.cues],
+    cueLevel: M.shown ? 'model' : M.narrow ? 'visual' : M.cues.length ? 'verbal' : 'independent',
+    seconds: Math.round((performance.now() - M.t0) / 1000)
+  });
+  M.at++;
+  if (M.at < M.order.length) { newPicture(); return; }
+  $('match').classList.add('finished');
+  $('matchDone').textContent = 'All ' + M.order.length + ' pictures done.';
+  $('matchNext').hidden = true;
+  $('matchToSetup').hidden = false;
+  $('matchEnd').hidden = false;
+  $('matchCount').textContent = '';
+  $('matchToSetup').focus();
+}
+
+function useOwnWord() {
+  const w = $('ownWord').value.trim().toLowerCase();
+  if (!w) return;
+  M.own = w;
+  M.chosen = null;
+  $('ownWordBox').hidden = true;
+  renderMatch();
+}
+
+// One sentence per group of pictures with the same labels, style, choices and
+// feelings in play. Fixed: how many choices matched the drawn feeling, and
+// what was chosen instead. Open: what was said, with no comparison.
+function matchSentence(ms) {
+  if (!ms.length) return '';
+  const groups = new Map();
+  for (const m of ms) {
+    const key = [m.labels, m.style, m.choices, m.offered.join(',')].join('|');
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(m);
+  }
+  const count = (list, f) => list.filter(f).length;
+  return [...groups.values()].map(g => {
+    const a = g[0], N = g.length;
+    const who = [...new Set(g.map(m => m.who))].join(', ');
+    const pics = N + ' ' + (STYLE_NAME[a.style] || a.style) + (N === 1 ? ' picture' : ' pictures') + ' (' + who + ')';
+    const words = a.offered.length + ' words shown as ' + CHOICE_NAME[a.choices] + ' (' + a.offered.join(', ') + ')';
+    const cued = count(g, m => m.cues.length);
+    const cueNames = [['verbal cue', 'verbal'], ['choice narrowed to two', 'narrowed to two'], ['drawn feeling shown', 'drawn feeling shown']]
+      .map(([n, label]) => [label, count(g, m => m.cues.includes(n))]).filter(([, k]) => k)
+      .map(([label, k]) => label + ' ' + k + '/' + N).join(', ');
+    const cues = cued ? '; cues on ' + cued + '/' + N + ' (' + cueNames + ')' : ', independently';
+    if (a.labels === 'fixed') {
+      let s = 'Matched feelings to ' + pics + ' with a fixed set of ' + words + ': chose the drawn feeling for ' +
+        count(g, m => m.matched) + '/' + N + cues + '.';
+      const other = new Map();
+      for (const m of g.filter(m => !m.matched)) {
+        const k = m.chosen + ' for ' + m.drawnAs;
+        other.set(k, (other.get(k) || 0) + 1);
+      }
+      if (other.size) s += ' Other choices: ' + [...other].map(([k, n]) => k + ' (' + n + '/' + N + ')').join(', ') + '.';
+      return s;
+    }
+    const own = g.filter(m => m.ownWord);
+    const used = new Map();
+    for (const m of g) used.set(m.chosen, (used.get(m.chosen) || 0) + 1);
+    return 'Named feelings for ' + pics + ' with open labels, from ' + words + ' or the student\'s own: a listed word for ' +
+      (N - own.length) + '/' + N + ', own words for ' + own.length + '/' + N + cues + '. Words used: ' +
+      [...used].map(([w, n]) => w + ' (' + n + '/' + N + ')').join(', ') + '.';
+  }).join(' ');
+}
+
+function buildMatchRaw(ms) {
+  const head = ['storyId', 'who', 'style', 'labels', 'choices', 'offered', 'drawnAs', 'chosen',
+    'ownWord', 'matched', 'cueLevel', 'cues', 'seconds'];
+  const rows = ms.map(m => [
+    m.storyId, m.who, m.style, m.labels, m.choices, m.offered.join(','), m.drawnAs, m.chosen,
+    m.ownWord ? 'yes' : 'no', m.matched == null ? '-' : m.matched ? 'yes' : 'no',
+    m.cueLevel, m.cues.join('; ') || '-', m.seconds
+  ]);
+  return [head, ...rows].map(r => r.join('\t')).join('\n');
+}
+
 /* ---------- Summary ---------- */
 
 function groupRuns(entries) {
@@ -1684,8 +1997,16 @@ function buildRaw(entries) {
 }
 
 function showSummary() {
-  $('oline').textContent = buildOLine(log) + (retells.length ? ' ' + retellSentence(retells) : '');
-  $('raw').textContent = buildRaw(log) + (retells.length ? '\n\nRetell\n' + buildRetellRaw(retells) : '');
+  $('oline').textContent = [
+    log.length || !matches.length ? buildOLine(log) : '',
+    retellSentence(retells),
+    matchSentence(matches)
+  ].filter(Boolean).join(' ');
+  $('raw').textContent = [
+    log.length || !matches.length ? buildRaw(log) : '',
+    retells.length ? 'Retell\n' + buildRetellRaw(retells) : '',
+    matches.length ? 'Feelings\n' + buildMatchRaw(matches) : ''
+  ].filter(Boolean).join('\n\n');
   show('summary');
   tour('summary');
 }
@@ -1729,7 +2050,20 @@ async function init() {
   }
   stories = loaded.filter(usable);
 
-  $('startBtn').onclick = () => { startStory(); tour('start'); };
+  $('startBtn').onclick = () => {
+    const story = stories.find(s => s.id === pick.storyId);
+    if (story && story.kind === 'match') { startMatch(); return; }
+    startStory(); tour('start');
+  };
+  $('matchBack').onclick = $('matchToSetup').onclick = () => { renderSetup(); show('setup'); };
+  $('matchEnd').onclick = showSummary;
+  $('matchNext').onclick = nextPicture;
+  $('mcVerbal').onclick = () => matchCue('verbal cue');
+  $('mcNarrow').onclick = () => matchCue('choice narrowed to two');
+  $('mcShow').onclick = () => matchCue('drawn feeling shown');
+  $('ownWordBtn').onclick = () => { $('ownWordBox').hidden = false; $('ownWord').focus(); };
+  $('ownWordUse').onclick = useOwnWord;
+  $('ownWord').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); useOwnWord(); } };
   $('tourBtn').onclick = $('aboutTour').onclick = startTour;
   $('tourExit').onclick = $('tourDone').onclick = () => { tourAt = -1; paintTour(); };
   $('aboutBtn').onclick = () => show('about');
@@ -1788,7 +2122,7 @@ async function init() {
   $('copyRaw').onclick = e => copyText($('raw').textContent, e.currentTarget);
   $('newSession').onclick = () => {
     if (!confirm('Clear this session\'s data and start over?')) return;
-    log = []; retells = []; runCount = 0;
+    log = []; retells = []; matches = []; runCount = 0;
     renderSetup(); show('setup');
   };
   $('tray').onclick = e => {

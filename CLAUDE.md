@@ -287,6 +287,41 @@ never Story Champs stories, icons or names in
 the app. Parts are counts of clinician taps,
 never a score.
 
+## Feelings match (set "feelings")
+Stories with kind: "match" (one per cast
+member: feelings-jo … feelings-puppy) are not
+sequenced: one picture at a time, the student
+picks a word / emoji / both, or (open labels)
+the clinician types the student's own word.
+- card.text is the feeling the picture was
+  drawn as; story.who names the character for
+  "How does {who} feel?". Styles: subtle |
+  exaggerated | colour (lines and colour).
+  Images: img/<storyId>/<style>/<feeling>.jpg,
+  cut from the F1-F3 sheets (image-prompts.md
+  Part 5): same nine feelings, same order.
+- Start bar: Choose from (words | emoji |
+  both), Labels (open | fixed words), Feelings
+  in play (min 2; same words for the whole
+  cast; choices always in card order, so
+  positions stay consistent).
+- Open: nothing is compared. "Drawn as" is the
+  illustrator's intent, never "the answer".
+  Fixed: logs matched (chosen = drawn). The
+  student never sees right or wrong in either.
+- Cues (logged per picture): Verbal | Narrow to
+  two (fixed only) | Show the drawn feeling.
+- Record: storyId, who, style, labels, choices,
+  offered [], drawnAs, chosen, ownWord, matched
+  (fixed only), cues [], cueLevel, seconds.
+- O-line adds one sentence per group (labels,
+  style, choices, feelings): open = listed vs
+  own words + words used; fixed = drawn feeling
+  chosen X/N + "Other choices: A for B (k/N)".
+  Raw data gets a "Feelings" table.
+- Never log anything about the student's own
+  feelings ("that's how I feel").
+
 ## Output (End session)
 Summary + "Copy" button. Template:
 "Sequenced X/N {k}-card stories ({style}
