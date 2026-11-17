@@ -33,8 +33,14 @@ local server. Images load either way.
 
 ## A session
 
-1. **Setup (clinician):** pick a story, a style, and for reversible stories a
-   direction, shown with the story's end labels (e.g. `calm → puffed`).
+New to the tool? Add `#tour` to the address (or press "Take the 2-minute tour"
+on the first screen) for a guided walk through one session. "About this tool"
+explains the thinking behind it and how it was made.
+
+1. **Setup (clinician):** pick a story and press Start. The bar at the bottom
+   of the screen shows the story's style and, for reversible stories, its
+   direction with the story's end labels (e.g. `calm → puffed`). Session
+   settings at the top hold card size, captions, story pointers and appearance.
 2. **Arrange (student):** drag cards into the numbered spots, or tap a card and
    then tap a spot. Tapping a placed card while another is selected swaps them.
    In reversible stories the first card is pinned in spot 1.
@@ -43,7 +49,11 @@ local server. Images load either way.
    and is logged as modeled.
 4. **Cue:** the small control at the bottom right sets the cue level for the
    attempt in progress. It returns to `independent` at the start of each attempt.
-5. **End session:** shows the O-line and the raw attempt table, each with a
+5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
+   on screen while the student tells the story. Tap a card when its part is
+   told; tap again if it needed a prompt, and once more to clear it. Count
+   sequence words (first, next, then, last…) with the − and + buttons.
+6. **End session:** shows the O-line and the raw data tables, each with a
    copy button.
 
 ## stories.json
@@ -148,3 +158,13 @@ were swaps of two neighboring events at the end of the sequence."
 If more than one cue level was used in a group, each level is reported
 separately per attempt. Stories whose order had to be shown add "Correct order
 modeled for Z/N."
+
+Each retell records: `storyId`, `cardCount`, `style`, `direction`, `told`,
+`prompted`, `orderTold`, `sequenceWords`, `seconds`. `told` lists the spots
+that were mentioned at all, `prompted` the ones among them that needed a
+prompt, and `orderTold` the spots in the order they were first tapped. The app
+only counts the clinician's taps. Retells add one sentence to the O-line and a
+second table to the raw data:
+
+> Retell of 2 stories: mentioned 6/8 events, 1/6 after a prompt; events told in
+> story order in 1/2 retells; 2 sequence words used.

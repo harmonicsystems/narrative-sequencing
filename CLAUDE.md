@@ -39,6 +39,19 @@ probably wrong. Full statement: top of README.
 - Keep contrast: text 4.5:1+, outlines of cards,
   spots and buttons 3:1+. No pure black/white.
   Never signal state by colour alone.
+- Buttons have roles: go (sage green: Start,
+  Check, Next story, Back to stories), talk
+  (dusty blue: Retell), plain outline (End
+  session, Stories). Every action button also
+  carries an icon and plain wording.
+- Theme (memory only, data-look on :root):
+  colour-coded buttons (default) | high contrast
+  | one colour. Each works in light and dark.
+  New colours go in as tokens for all of them.
+- Navigation: back is always top left; the next
+  step is always the filled button; a finished
+  story drops the empty tray so its buttons sit
+  under the cards.
 - Short fades only; honour prefers-reduced-motion.
 - Appearance link on setup: device / light / dark
   (memory only).
@@ -135,6 +148,36 @@ order) as the student left them. Raw data only.
 cueLevel defaults to "independent"; small
 clinician-only control sets it per attempt:
 independent | verbal | visual | model.
+
+## Tour and About
+- Tour: a strip at the top that walks a new
+  clinician through one real session (8 steps in
+  the TOUR array). Steps advance on real events
+  via tour('pick' | 'start' | 'filled' | 'wrong' |
+  'done' | 'retell' | 'summary'); nothing is
+  blocked or faked. A link ending in #tour opens
+  straight into it; #about opens the About page.
+- About: what the tool is, why it works this way,
+  how it was made and who did what. Written in
+  the author's voice. Keep its counts (stories,
+  cards) true when content changes.
+
+## Retell (optional, after a story is finished)
+"Retell" keeps the finished sequence on screen
+while the student tells the story. The clinician
+taps a card as its part is told (tap again: told
+with a prompt; again: clear) and counts sequence
+words with − / +. The app only counts taps: it
+never decides what was said. One record per
+retell: storyId, cardCount, style, direction,
+told [], prompted [], orderTold [] (spot numbers,
+in the order first marked), sequenceWords,
+seconds. Leaving the story saves it; "Discard
+this retell" drops it. O-line adds one sentence:
+"Retell of N stories: mentioned X/T events, P/X
+after a prompt; events told in story order in
+A/B retells; W sequence words used." Raw data
+gets a second "Retell" table.
 
 ## Output (End session)
 Summary + "Copy" button. Template:

@@ -17,6 +17,11 @@
     --line: #d9cdb8;       /* decorative rules only */
     --accent: #7a5236;     /* primary brown */
     --accent-ink: #fdf9f1;
+    /* Button roles. Each also has its own icon and wording, never colour alone. */
+    --go: #4a6943;         /* move forward: Start, Check, Next story (sage green) */
+    --go-ink: #fdf9f1;
+    --talk: #3d6183;       /* Retell (dusty blue) */
+    --talk-ink: #fdf9f1;
     --shadow: 0 1px 2px rgba(70, 48, 24, 0.10), 0 5px 14px rgba(70, 48, 24, 0.07);
     --cw: clamp(96px, 16vw, 172px);
     --cap: 1;              /* caption text scale, grows with the cards */
@@ -31,6 +36,7 @@
       --bg: #2a231d; --surface: #43382e; --soft: #352c25;
       --ink: #efe6d6; --muted: #c2b39d; --edge: #a8977f; --line: #54483c;
       --accent: #d9a878; --accent-ink: #2a231d;
+      --go: #a9c99e; --go-ink: #1d281a; --talk: #a3c4e3; --talk-ink: #17232e;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 5px 14px rgba(0, 0, 0, 0.18);
     }
   }
@@ -38,7 +44,35 @@
     --bg: #2a231d; --surface: #43382e; --soft: #352c25;
     --ink: #efe6d6; --muted: #c2b39d; --edge: #a8977f; --line: #54483c;
     --accent: #d9a878; --accent-ink: #2a231d;
+    --go: #a9c99e; --go-ink: #1d281a; --talk: #a3c4e3; --talk-ink: #17232e;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 5px 14px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Theme "high contrast": same warm family, stronger text and outlines. */
+  :root[data-look="contrast"] {
+    --bg: #fbf8f1; --surface: #fffdf8; --soft: #ece2cf;
+    --ink: #1f1811; --muted: #473c30; --edge: #4d4135; --line: #8f7f68;
+    --accent: #5c3716; --accent-ink: #fffdf8;
+    --go: #2d5127; --go-ink: #fffdf8; --talk: #21486d; --talk-ink: #fffdf8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-look="contrast"]:not([data-theme="light"]) {
+      --bg: #191411; --surface: #2c251f; --soft: #231d18;
+      --ink: #f8f1e3; --muted: #e0d3bd; --edge: #d8cab3; --line: #8f7f68;
+      --accent: #f2c491; --accent-ink: #191411;
+      --go: #c2e3b6; --go-ink: #14200f; --talk: #badaf7; --talk-ink: #0f1c28;
+    }
+  }
+  :root[data-look="contrast"][data-theme="dark"] {
+    --bg: #191411; --surface: #2c251f; --soft: #231d18;
+    --ink: #f8f1e3; --muted: #e0d3bd; --edge: #d8cab3; --line: #8f7f68;
+    --accent: #f2c491; --accent-ink: #191411;
+    --go: #c2e3b6; --go-ink: #14200f; --talk: #badaf7; --talk-ink: #0f1c28;
+  }
+  /* Theme "one colour": every action button uses the brown accent. */
+  :root[data-look="plain"] {
+    --go: var(--accent); --go-ink: var(--accent-ink);
+    --talk: var(--accent); --talk-ink: var(--accent-ink);
   }
 
   * { box-sizing: border-box; }
@@ -68,6 +102,14 @@
     background: var(--accent); border-color: var(--accent); color: var(--accent-ink);
     font-weight: 600; padding-inline: 30px;
   }
+  .btn.go { background: var(--go); border-color: var(--go); color: var(--go-ink); font-weight: 600; padding-inline: 28px; }
+  .btn.talk { background: var(--talk); border-color: var(--talk); color: var(--talk-ink); font-weight: 600; }
+  .btn .ic, .link .ic {
+    width: 1.15em; height: 1.15em; vertical-align: -0.2em; margin-right: 8px;
+    fill: none; stroke: currentColor; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn .ic.after { margin: 0 0 0 8px; }
+  .btn .ic.solid { fill: currentColor; stroke-width: 1.5; }
   .btn:disabled { opacity: 0.5; cursor: default; }
   /* Chosen option: thicker ring and a tinted fill, so it never depends on hue alone. */
   .btn[aria-pressed="true"] {
@@ -80,6 +122,30 @@
   }
   :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+  /* Tour: a strip that stays at the top and says what to try next. The thing
+     it is talking about gets a dashed ring. Nothing is blocked: every step
+     is done on the real screens. */
+  #tour {
+    position: sticky; top: 0; z-index: 20; margin: -40px -6px 28px;
+    padding: 14px 18px; border-radius: 0 0 18px 18px;
+    background: var(--talk); color: var(--talk-ink);
+    display: flex; gap: 8px 18px; align-items: center; flex-wrap: wrap;
+  }
+  #tour[hidden] { display: none; }
+  #tourBody { flex: 1; min-width: 240px; }
+  #tourStep { font-size: 0.85rem; letter-spacing: 0.02em; }
+  #tourText { margin: 2px 0 0; font-size: 1.02rem; line-height: 1.45; }
+  #tour .link { color: var(--talk-ink); }
+  #tour .btn { color: var(--ink); }
+  .tour-focus { outline: 3px dashed var(--talk); outline-offset: 6px; border-radius: 14px; }
+  #introRow { margin-top: 14px; }
+  #about { max-width: 720px; }
+  #about p, #about li { line-height: 1.6; }
+  #about li { margin-bottom: 8px; }
+  #about ul { padding-left: 22px; }
+  #aboutHead { gap: 18px; }
+  #aboutHead h1 { margin: 0; }
 
   /* Setup */
   #storyList { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
@@ -150,7 +216,8 @@
   #sessionBar { margin-top: 28px; padding-top: 0; border-top: 0; justify-content: space-between; }
 
   /* Play */
-  #playHead { justify-content: space-between; margin-bottom: 32px; }
+  #playHead { justify-content: flex-start; gap: 18px; margin-bottom: 32px; }
+  #playHead h1 { margin: 0; }
   #slots, #tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 34px 16px; }
   #slots { padding-top: 30px; }
   .slot {
@@ -201,6 +268,24 @@
   /* Optional story pointer (story.cursor): decoration only, set in startStory.
      Buttons and the cue menu keep their own pointers. */
   #play.themed, #play.themed .card, #play.themed .slot { cursor: var(--story-cursor), auto; }
+  /* Retell: the finished sequence stays up while the student tells the story.
+     The clinician marks each part; the mark is words under the card plus a ring. */
+  .slot .mark {
+    position: absolute; left: -8px; right: -8px; top: calc(100% + 6px);
+    text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--ink); pointer-events: none;
+  }
+  /* Every card placed: the tray shrinks to a thin strip (still a place to drop
+     a card back), so Check comes up into view. */
+  #tray.empty { min-height: 64px; padding-block: 0; }
+  /* A finished story has an empty tray: drop it so the next buttons sit right under the cards. */
+  .locked #tray { display: none; }
+  .retelling #slots { row-gap: 64px; padding-bottom: 30px; }
+  .retelling .slot, #play.retelling .slot .card { cursor: pointer; }
+  .retelling .slot.told { box-shadow: 0 0 0 3px var(--accent); }
+  .retelling .slot.prompted { box-shadow: 0 0 0 3px var(--accent); outline: 2px dashed var(--accent); outline-offset: 5px; }
+  #retellBox { margin-top: 8px; text-align: center; }
+  #retellRow { justify-content: center; margin-top: 6px; }
+  #wordsCount { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
   #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); }
@@ -227,9 +312,22 @@
 <body>
 <main>
 
+  <aside id="tour" hidden>
+    <div id="tourBody" role="status" aria-live="polite">
+      <b id="tourStep"></b>
+      <p id="tourText"></p>
+    </div>
+    <button class="btn mini" id="tourDone" hidden>Finish tour</button>
+    <button class="link small" id="tourExit">Exit tour</button>
+  </aside>
+
   <section id="setup">
     <h1>Narrative Sequencing</h1>
     <p class="muted">Choose a story for the student to put in order.</p>
+    <div class="row" id="introRow">
+      <button class="btn talk" id="tourBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"/></svg>New here? Take the 2-minute tour</button>
+      <button class="link" id="aboutBtn">About this tool</button>
+    </div>
     <p class="muted small" id="sourceNote" hidden></p>
 
     <details id="settings">
@@ -248,6 +346,7 @@
           <h3>This screen</h3>
           <button class="link small" id="viewBtn"></button>
           <button class="link small" id="themeBtn"></button>
+          <button class="link small" id="lookBtn"></button>
         </div>
       </div>
     </details>
@@ -263,28 +362,40 @@
           <div class="row" id="dirRow" role="group" aria-label="Which way the story goes"></div>
         </div>
       </div>
-      <button class="btn primary" id="startBtn">Start</button>
+      <button class="btn go" id="startBtn"><svg class="ic solid" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Start</button>
     </div>
 
     <div class="row" id="sessionBar" hidden>
       <span class="muted small" id="sessionCount"></span>
-      <button class="btn" id="endFromSetup">End session</button>
+      <button class="btn" id="endFromSetup"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
     </div>
 
   </section>
 
   <section id="play" hidden>
     <div class="row" id="playHead">
+      <button class="btn mini" id="backBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
       <h1 id="playTitle"></h1>
-      <button class="link small" id="backBtn">Stories</button>
+      
     </div>
     <div id="slots"></div>
     <div id="tray" aria-label="Cards to place"></div>
     <p id="feedback" role="status" aria-live="polite"></p>
     <div class="row" id="actions">
-      <button class="btn primary" id="checkBtn">Check</button>
-      <button class="btn primary" id="nextBtn" hidden>Next story</button>
-      <button class="btn" id="endBtn" hidden>End session</button>
+      <button class="btn go" id="checkBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Check</button>
+      <button class="btn talk" id="retellBtn" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>Retell</button>
+      <button class="btn go" id="nextBtn" hidden>Next story<svg class="ic after" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button class="btn" id="endBtn" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
+    </div>
+    <div id="retellBox" hidden>
+      <p class="muted small">Tap a card when the student tells that part. Tap again if it needed a prompt, and once more to clear it.</p>
+      <div class="row" id="retellRow">
+        <span id="wordsLabel">Sequence words (first, next, then, last…)</span>
+        <button class="btn mini" id="wordsLess" aria-label="One fewer sequence word">−</button>
+        <output id="wordsCount" aria-labelledby="wordsLabel">0</output>
+        <button class="btn mini" id="wordsMore" aria-label="One more sequence word">+</button>
+        <button class="link small" id="retellDiscard">Discard this retell</button>
+      </div>
     </div>
     <div class="row" id="cueBox">
       <label for="cue">Cue</label>
@@ -294,6 +405,50 @@
         <option value="visual">visual</option>
         <option value="model">model</option>
       </select>
+    </div>
+  </section>
+
+  <section id="about" hidden>
+    <div class="row" id="aboutHead">
+      <button class="btn mini" id="aboutBack"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
+      <h1>About this tool</h1>
+    </div>
+
+    <h2>What it is</h2>
+    <p>A calm screen where a student puts the events of a short story in order, and a record for the clinician of what happened: the order placed, the time taken and the help given. At the end it writes an objective line ready to paste into a SOAP note.</p>
+    <p>It runs in a web browser with nothing to install. There are no accounts and no student names, and nothing is saved: closing the page clears the session.</p>
+
+    <h2>Why it works the way it does</h2>
+    <ul>
+      <li><b>It records and does not judge.</b> The order a student builds shows how they understand the story. A wrong order is information, not a failure, so the app never marks a card right or wrong. A first wrong try gets only "Try again".</li>
+      <li><b>Interpretation stays with the clinician.</b> The app counts and reports. It does not score, label or diagnose.</li>
+      <li><b>Support is part of the data.</b> Each attempt carries its cue level (independent, verbal, visual, model), so a cued success is never written up as independent.</li>
+      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in and sequence words used.</li>
+      <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
+      <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
+    </ul>
+
+    <h2>How it was made</h2>
+    <p>I built this with Claude, Anthropic's AI model, working as a coding partner. I described what a session needs to look like and what the note needs to say; Claude wrote the code, and I tried each version and corrected it. The whole app is one web page with no outside services, which keeps student data on the device and makes the tool easy to host and to trust.</p>
+    <p>The cartoon pictures were made with Google's Gemini image generator, one card at a time from written prompts, with each card built on the one before so the character and scene stay the same and only the event changes. The shape cards for the concept stories are simple drawings written directly as code.</p>
+
+    <h2>Who did what</h2>
+    <div class="box">
+      <p><b>My part: the clinical design and every decision.</b> What to measure and what to leave out. What the student should and should not see. How cues are named and logged. The wording of the objective line. Which stories to include and what each card must show. Trying each version as a clinician would, and saying what was unclear.</p>
+      <p><b>Claude's part: the building.</b> Writing and testing the code, drafting the image prompts and running the image generation, checking colour contrast and screen sizes, and keeping the documentation current. Claude also suggested features, such as the retell step, which I chose from.</p>
+    </div>
+
+    <h2>How much work went into it</h2>
+    <ul>
+      <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
+      <li>16 stories: 8 picture stories with 33 illustrated cards, and 8 concept stories with 31 shape cards.</li>
+      <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
+      <li>Setup, card sizes, themes, the retell step and this tour were each added in response to trying the tool and finding what got in the way.</li>
+    </ul>
+    <p>The speed came from the combination. Knowing what a session and a note require made it possible to give precise direction and to recognise a wrong answer quickly; Claude made it possible to act on each decision within minutes.</p>
+
+    <div class="row" style="margin-top:32px">
+      <button class="btn talk" id="aboutTour">Take the 2-minute tour</button>
     </div>
   </section>
 
@@ -308,7 +463,7 @@
     <button class="btn" id="copyRaw">Copy raw data</button>
 
     <div class="row" style="margin-top:40px">
-      <button class="btn" id="resumeBtn">Back to stories</button>
+      <button class="btn go" id="resumeBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back to stories</button>
       <button class="link" id="newSession">Start a new session</button>
     </div>
     <p class="muted small" style="margin-top:16px">Nothing is saved. Closing or reloading this page clears the session.</p>
@@ -333,12 +488,13 @@ const $ = id => document.getElementById(id);
 
 let stories = [];
 let log = [];          // one record per checked attempt
+let retells = [];      // one record per retell (optional step after a story)
 let runCount = 0;      // one run = one presentation of a story
 let S = null;          // state of the story on screen
 const pick = { storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures' };
 
 function show(name) {
-  for (const id of ['setup', 'play', 'summary']) $(id).hidden = id !== name;
+  for (const id of ['setup', 'play', 'summary', 'about']) $(id).hidden = id !== name;
   window.scrollTo(0, 0);
 }
 
@@ -347,6 +503,60 @@ function el(tag, cls, text) {
   if (cls) n.className = cls;
   if (text != null) n.textContent = text;
   return n;
+}
+
+/* ---------- Tour ---------- */
+
+// Each step is entered when its event happens on the real screens. `focus`
+// is the element the step is talking about.
+const TOUR = [
+  { focus: '#storyList',
+    text: 'This is the clinician\'s setup screen. Pick any story below. "Brushing teeth" is a quick one with three cards.' },
+  { when: 'pick', focus: '#startBar',
+    text: 'The bar at the bottom shows your pick, with choices for how the cards look. Press Start when you are ready.' },
+  { when: 'start', focus: '#tray',
+    text: 'This is what the student sees. Drag each card up to a numbered spot, or click a card and then a spot. Try a wrong order on purpose first.' },
+  { when: 'filled', focus: '#checkBtn',
+    text: 'Every spot is filled. Press Check.' },
+  { when: 'wrong', focus: '#cueBox',
+    text: 'A wrong first try only says "Try again". The app never shows which cards are wrong. Fix the order and Check again. The Cue menu at the bottom right records the help you gave on this try.' },
+  { when: 'done', focus: '#retellBtn',
+    text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
+  { when: 'retell', focus: '#retellBox',
+    text: 'Click a card when its part is told; click again if it needed a prompt. Count sequence words with − and +. Then press End session.' },
+  { when: 'summary', focus: '#oline',
+    text: 'This objective line is ready to paste into a SOAP note, with the raw data below it. Nothing is saved: closing the page clears the session.' }
+];
+let tourAt = -1;       // -1 = tour off
+
+function paintTour() {
+  document.querySelectorAll('.tour-focus').forEach(e => e.classList.remove('tour-focus'));
+  const on = tourAt >= 0;
+  $('tour').hidden = !on;
+  $('tourBtn').hidden = on;
+  if (!on) return;
+  const step = TOUR[tourAt];
+  $('tourStep').textContent = 'Tour · step ' + (tourAt + 1) + ' of ' + TOUR.length;
+  $('tourText').textContent = step.text;
+  $('tourDone').hidden = tourAt !== TOUR.length - 1;
+  const target = document.querySelector(step.focus);
+  if (target) target.classList.add('tour-focus');
+}
+
+// Called from the app whenever something the tour cares about happens.
+function tour(event) {
+  if (tourAt < 0) return;
+  let to = TOUR.findIndex((s, i) => i > tourAt && s.when === event);
+  if (event === 'start') to = 2;                      // a second story restarts the play steps
+  if (event === 'pick' && tourAt > 0) to = -1;        // already past the first step
+  if (to >= 0) { tourAt = to; paintTour(); }
+}
+
+function startTour() {
+  tourAt = 0;
+  renderSetup();
+  show('setup');
+  paintTour();
 }
 
 /* ---------- Setup ---------- */
@@ -371,7 +581,7 @@ function renderSetup() {
     if (s.reversible) meta.push('reversible');
     if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
     b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
-    b.onclick = () => { pick.storyId = s.id; renderSetup(); };
+    b.onclick = () => { pick.storyId = s.id; renderSetup(); tour('pick'); };
     list.append(b);
   }
 
@@ -565,6 +775,7 @@ function startStory() {
       slot.onclick = e => { if (!e.target.closest('.card')) tapSlot(i); };
       slot.onkeydown = e => { if (e.target === slot && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); tapSlot(i); } };
     }
+    slot.append(el('span', 'mark'));
     S.slotEls.push(slot);
     slotsEl.append(slot);
   }
@@ -579,6 +790,7 @@ function startStory() {
   $('cue').value = 'independent';
   $('feedback').textContent = '';
   $('checkBtn').hidden = false;
+  $('retellBtn').hidden = true;
   $('nextBtn').hidden = true;
   $('endBtn').hidden = true;
   render();
@@ -592,10 +804,67 @@ function render() {
     slot.classList.toggle('filled', c != null);
   });
   for (const c of S.tray) $('tray').append(S.cardEls[c]);
+  $('tray').classList.toggle('empty', !S.tray.length);
   S.cardEls.forEach((card, i) => card.classList.toggle('selected', i === S.selected));
   $('play').classList.toggle('picking', S.selected != null);
   $('play').classList.toggle('locked', S.locked);
   $('checkBtn').disabled = S.locked || S.slots.includes(null);
+
+  const R = S.retell;
+  $('play').classList.toggle('retelling', !!R);
+  $('retellBox').hidden = !R;
+  S.slotEls.forEach((slot, i) => {
+    const m = R ? R.marks[i] : 0;
+    slot.classList.toggle('told', m === 1);
+    slot.classList.toggle('prompted', m === 2);
+    slot.querySelector('.mark').textContent = ['', 'told', 'told with a prompt'][m];
+  });
+  if (R) $('wordsCount').textContent = R.words;
+  if (!S.locked && !S.slots.includes(null)) tour('filled');
+}
+
+/* ---------- Retell (optional, after a story is finished) ---------- */
+
+// The app only counts what the clinician marks. marks[i] is for spot i + 1:
+// 0 not mentioned, 1 told, 2 told with a prompt. order = spots in the order
+// they were first marked, so it shows the order the student told them in.
+function startRetell() {
+  if (!S || !S.locked || S.retell) return;
+  S.retell = { marks: Array(S.story.cards.length).fill(0), order: [], words: 0, t0: performance.now() };
+  $('retellBtn').hidden = true;
+  $('feedback').textContent = 'Now tell the story.';
+  render();
+  tour('retell');
+}
+
+function markSpot(i) {
+  const R = S && S.retell;
+  if (!R) return;
+  R.marks[i] = (R.marks[i] + 1) % 3;
+  if (R.marks[i] === 1) R.order.push(i + 1);
+  if (R.marks[i] === 0) R.order = R.order.filter(p => p !== i + 1);
+  render();
+}
+
+function endRetell(save) {
+  const R = S && S.retell;
+  if (!R) return;
+  if (save) {
+    const spots = m => R.marks.map((v, i) => v >= m ? i + 1 : 0).filter(Boolean);
+    retells.push({
+      run: S.run,
+      storyId: S.story.id,
+      cardCount: S.story.cards.length,
+      style: S.style,
+      direction: S.direction,
+      told: spots(1),            // spot numbers mentioned at all
+      prompted: spots(2),        // of those, the ones that needed a prompt
+      orderTold: [...R.order],
+      sequenceWords: R.words,
+      seconds: Math.round((performance.now() - R.t0) / 1000)
+    });
+  }
+  S.retell = null;
 }
 
 // dest: a slot index, or 'tray'
@@ -707,15 +976,18 @@ function check() {
     $('cue').value = 'independent';
     $('feedback').textContent = 'Try again.';
     render();
+    tour('wrong');
     return;
   }
   if (modeled) { S.slots = [...S.order]; S.tray = []; }
   S.locked = true;
   $('feedback').textContent = correct ? "That's the order." : 'Here is the order.';
   $('checkBtn').hidden = true;
+  $('retellBtn').hidden = false;
   $('nextBtn').hidden = false;
   $('endBtn').hidden = false;
   render();
+  tour('done');
 }
 
 /* ---------- Summary ---------- */
@@ -806,6 +1078,32 @@ function buildOLine(entries) {
   return groupRuns(entries).map(groupSentence).join(' ') + ' ' + errorSentence(entries);
 }
 
+function retellSentence(rs) {
+  if (!rs.length) return '';
+  const N = rs.length;
+  const sum = f => rs.reduce((n, r) => n + f(r), 0);
+  const total = sum(r => r.cardCount), told = sum(r => r.told.length), prompted = sum(r => r.prompted.length);
+  let s = 'Retell of ' + N + (N === 1 ? ' story' : ' stories') + ': mentioned ' + told + '/' + total + ' events';
+  if (told) s += ', ' + prompted + '/' + told + ' after a prompt';
+  // Order only means something when at least two events were told.
+  const multi = rs.filter(r => r.orderTold.length > 1);
+  if (multi.length) {
+    const inOrder = multi.filter(r => r.orderTold.every((p, i, a) => i === 0 || p > a[i - 1])).length;
+    s += '; events told in story order in ' + inOrder + '/' + multi.length + (multi.length === 1 ? ' retell' : ' retells');
+  }
+  const words = sum(r => r.sequenceWords);
+  return s + '; ' + words + (words === 1 ? ' sequence word' : ' sequence words') + ' used.';
+}
+
+function buildRetellRaw(rs) {
+  const head = ['storyId', 'cardCount', 'style', 'direction', 'told', 'prompted', 'orderTold', 'sequenceWords', 'seconds'];
+  const rows = rs.map(r => [
+    r.storyId, r.cardCount, r.style, r.direction, r.told.join(',') || '-',
+    r.prompted.join(',') || '-', r.orderTold.join(',') || '-', r.sequenceWords, r.seconds
+  ]);
+  return [head, ...rows].map(r => r.join('\t')).join('\n');
+}
+
 function buildRaw(entries) {
   const head = ['storyId', 'cardCount', 'style', 'direction', 'attemptNumber', 'correct',
     'misplacedPositions', 'placedOrder', 'cueLevel', 'seconds', 'modeled'];
@@ -818,9 +1116,10 @@ function buildRaw(entries) {
 }
 
 function showSummary() {
-  $('oline').textContent = buildOLine(log);
-  $('raw').textContent = buildRaw(log);
+  $('oline').textContent = buildOLine(log) + (retells.length ? ' ' + retellSentence(retells) : '');
+  $('raw').textContent = buildRaw(log) + (retells.length ? '\n\nRetell\n' + buildRetellRaw(retells) : '');
   show('summary');
+  tour('summary');
 }
 
 async function copyText(text, btn) {
@@ -862,18 +1161,40 @@ async function init() {
   }
   stories = loaded.filter(usable);
 
-  $('startBtn').onclick = startStory;
+  $('startBtn').onclick = () => { startStory(); tour('start'); };
+  $('tourBtn').onclick = $('aboutTour').onclick = startTour;
+  $('tourExit').onclick = $('tourDone').onclick = () => { tourAt = -1; paintTour(); };
+  $('aboutBtn').onclick = () => show('about');
+  $('aboutBack').onclick = () => { renderSetup(); show('setup'); };
   $('checkBtn').onclick = check;
-  $('nextBtn').onclick = () => { renderSetup(); show('setup'); };
-  $('backBtn').onclick = () => { renderSetup(); show('setup'); };
-  $('endBtn').onclick = showSummary;
+  // Leaving the story keeps a retell in progress; only "Discard" drops it.
+  $('nextBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); };
+  $('backBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); };
+  $('endBtn').onclick = () => { endRetell(true); showSummary(); };
+  $('retellBtn').onclick = startRetell;
+  $('retellDiscard').onclick = () => {
+    endRetell(false);
+    $('retellBtn').hidden = false;
+    $('feedback').textContent = '';
+    render();
+  };
+  $('wordsMore').onclick = () => { S.retell.words++; render(); };
+  $('wordsLess').onclick = () => { S.retell.words = Math.max(0, S.retell.words - 1); render(); };
+  $('slots').addEventListener('click', e => {
+    const slot = e.target.closest('.slot');
+    if (slot && S && S.retell) markSpot(Number(slot.dataset.slot));
+  });
+  $('slots').addEventListener('keydown', e => {
+    const slot = e.target.closest('.slot');
+    if (slot && S && S.retell && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); markSpot(Number(slot.dataset.slot)); }
+  });
   $('endFromSetup').onclick = showSummary;
   $('resumeBtn').onclick = () => { renderSetup(); show('setup'); };
   $('copyO').onclick = e => copyText($('oline').textContent, e.currentTarget);
   $('copyRaw').onclick = e => copyText($('raw').textContent, e.currentTarget);
   $('newSession').onclick = () => {
     if (!confirm('Clear this session\'s data and start over?')) return;
-    log = []; runCount = 0;
+    log = []; retells = []; runCount = 0;
     renderSetup(); show('setup');
   };
   $('tray').onclick = e => {
@@ -890,12 +1211,26 @@ async function init() {
   $('themeBtn').onclick = () => { theme = (theme + 1) % themes.length; paintTheme(); };
   paintTheme();
 
+  // Theme (memory only): colour-coded buttons, high contrast, or one colour.
+  const looks = [['', 'colour-coded buttons'], ['contrast', 'high contrast'], ['plain', 'one colour']];
+  let look = 0;
+  const paintLook = () => {
+    if (looks[look][0]) document.documentElement.dataset.look = looks[look][0];
+    else delete document.documentElement.dataset.look;
+    $('lookBtn').textContent = 'Theme: ' + looks[look][1];
+  };
+  $('lookBtn').onclick = () => { look = (look + 1) % looks.length; paintLook(); };
+  paintLook();
+
   if (!stories.length) {
     $('storyList').textContent = 'No stories found in stories.json.';
     $('startBtn').disabled = true;
     return;
   }
   renderSetup();
+  // A link ending in #tour opens straight into the tour; #about opens the About page.
+  if (location.hash === '#tour') startTour();
+  if (location.hash === '#about') show('about');
 }
 
 init();
