@@ -4,11 +4,12 @@
     "title": "Brushing teeth",
     "gradeBand": "K-2",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Put toothpaste on the brush", "emoji": "🪥"},
-      {"text": "Brush all your teeth", "emoji": "😬"},
-      {"text": "Rinse with water", "emoji": "🚰"}
+      {"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"},
+      {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"},
+      {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}
     ]
   },
   {
@@ -16,12 +17,13 @@
     "title": "Planting a seed",
     "gradeBand": "K-2",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Dig a hole", "emoji": "🕳️"},
-      {"text": "Drop in the seed", "emoji": "🌰"},
-      {"text": "Water the soil", "emoji": "💧"},
-      {"text": "A sprout comes up", "emoji": "🌱"}
+      {"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"},
+      {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"},
+      {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"},
+      {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}
     ]
   },
   {
@@ -29,12 +31,13 @@
     "title": "Making a sandwich",
     "gradeBand": "3-5",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Lay out two slices of bread", "emoji": "🍞"},
-      {"text": "Add cheese and lettuce", "emoji": "🧀"},
-      {"text": "Put the top slice on", "emoji": "🥪"},
-      {"text": "Eat the sandwich", "emoji": "😋"}
+      {"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"},
+      {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"},
+      {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"},
+      {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}
     ]
   },
   {
@@ -42,13 +45,14 @@
     "title": "Mailing a letter",
     "gradeBand": "3-5",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Write the letter", "emoji": "✍️"},
-      {"text": "Seal it in an envelope", "emoji": "✉️"},
-      {"text": "Stick on a stamp", "emoji": "🏷️"},
-      {"text": "Drop it in the mailbox", "emoji": "📮"},
-      {"text": "The letter arrives", "emoji": "📬"}
+      {"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"},
+      {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"},
+      {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"},
+      {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"},
+      {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}
     ]
   },
   {
@@ -71,12 +75,13 @@
     "gradeBand": "3-5",
     "reversible": true,
     "endLabels": ["cold", "boiling"],
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Cold water, no bubbles", "emoji": "🧊"},
-      {"text": "Warm water, tiny bubbles", "emoji": "🌡️"},
-      {"text": "Hot water, lots of bubbles", "emoji": "♨️"},
-      {"text": "Boiling, steam whistling out", "emoji": "💨"}
+      {"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"},
+      {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"},
+      {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"},
+      {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}
     ]
   },
   {
@@ -85,13 +90,13 @@
     "gradeBand": "3-5",
     "reversible": true,
     "endLabels": ["clear", "storm"],
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
     "cards": [
-      {"text": "Clear blue sky", "emoji": "☀️"},
-      {"text": "A few clouds", "emoji": "🌤️"},
-      {"text": "Gray clouds cover the sky", "emoji": "☁️"},
-      {"text": "Rain is falling", "emoji": "🌧️"},
-      {"text": "Thunder and lightning", "emoji": "⛈️"}
+      {"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"},
+      {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"},
+      {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"},
+      {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"},
+      {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}
     ]
   },
   {
@@ -100,13 +105,14 @@
     "gradeBand": "K-8",
     "reversible": true,
     "endLabels": ["silent", "yelling"],
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Silent, no sound", "emoji": "🔇"},
-      {"text": "Whisper", "emoji": "🤫"},
-      {"text": "Talking voice", "emoji": "🗣️"},
-      {"text": "Loud voice", "emoji": "📣"},
-      {"text": "Yelling voice", "emoji": "🔊"}
+      {"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"},
+      {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"},
+      {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"},
+      {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"},
+      {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}
     ]
   },
   {
