@@ -155,7 +155,11 @@ Verbal (log only) | Place first card (not for
 reversible stories, whose first card is pinned)
 | Place last card | Narrow to two (dims the tray
 to the right card and one other for the next
-open spot) | Show the order (ends the attempt,
+open spot) | Pointer hint (toggle, mouse only:
+the pointer grows over the card that belongs in
+the first spot not yet right; uses story.cursor
+or 👆; logged once when turned on, off again on
+attempt 2) | Show the order (ends the attempt,
 logged as modeled, not counted as an error).
 Each press adds its name to the attempt's
 `cues` list and raises Level to at least

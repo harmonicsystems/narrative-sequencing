@@ -411,6 +411,7 @@
         <button class="btn mini" id="cueFirst">Place first card</button>
         <button class="btn mini" id="cueLast">Place last card</button>
         <button class="btn mini" id="cueNarrow">Narrow to two</button>
+        <button class="btn mini" id="cuePointer" aria-pressed="false">Pointer hint</button>
         <button class="btn mini" id="cueModel">Show the order</button>
       </div>
       <label for="cue">Level</label>
@@ -437,7 +438,7 @@
     <ul>
       <li><b>It records and does not judge.</b> The order a student builds shows how they understand the story. A wrong order is information, not a failure, so the app never marks a card right or wrong. A first wrong try gets only "Try again".</li>
       <li><b>Interpretation stays with the clinician.</b> The app counts and reports. It does not score, label or diagnose.</li>
-      <li><b>Support is part of the data.</b> Each attempt carries its cue level (independent, verbal, visual, model), so a cued success is never written up as independent.</li>
+      <li><b>Support is part of the data.</b> The clinician gives help from a ladder of cues, lightest first: a verbal cue, placing the first or last card, narrowing the choice to two, a pointer that grows over the next card, or showing the order. Each one is logged on the attempt with its level (independent, verbal, visual, model), so a cued success is never written up as independent. The app never gives a cue on its own.</li>
       <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in and sequence words used.</li>
       <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
       <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
@@ -458,7 +459,7 @@
       <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
       <li>16 stories: 8 picture stories with 33 illustrated cards, and 8 concept stories with 31 shape cards.</li>
       <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
-      <li>Setup, card sizes, themes, the retell step and this tour were each added in response to trying the tool and finding what got in the way.</li>
+      <li>Setup, card sizes, themes, the retell step, the cue ladder and this tour were each added in response to trying the tool and finding what got in the way.</li>
     </ul>
     <p>The speed came from the combination. Knowing what a session and a note require made it possible to give precise direction and to recognise a wrong answer quickly; Claude made it possible to act on each decision within minutes.</p>
 
@@ -534,7 +535,7 @@ const TOUR = [
   { when: 'filled', focus: '#checkBtn',
     text: 'Every spot is filled. Press Check.' },
   { when: 'wrong', focus: '#cueBox',
-    text: 'A wrong first try only says "Try again". The app never shows which cards are wrong. Fix the order and Check again. The Cue menu at the bottom right records the help you gave on this try.' },
+    text: 'A wrong first try only says "Try again". The app never shows which cards are wrong. Fix the order and Check again. The row at the bottom gives a cue (place a card, narrow the choice, grow the pointer over the next card) and logs it, so help is never reported as independent work.' },
   { when: 'done', focus: '#retellBtn',
     text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
   { when: 'retell', focus: '#retellBox',
@@ -694,8 +695,9 @@ function buildThumb(story) {
 // story.cursor: an emoji drawn as the mouse pointer on the play screen.
 // Decoration only: it is the same over every card and spot.
 const cursorCache = {};
-function emojiCursor(emoji) {
-  if (cursorCache[emoji]) return cursorCache[emoji];
+function emojiCursor(emoji, size = 40) {
+  const key = emoji + size;
+  if (cursorCache[key]) return cursorCache[key];
   const draw = px => {
     const c = document.createElement('canvas');
     c.width = c.height = px;
@@ -706,9 +708,10 @@ function emojiCursor(emoji) {
     g.fillText(emoji, px / 2, px / 2 + px * 0.06);
     return 'url(' + c.toDataURL('image/png') + ')';
   };
-  const sharp = 'image-set(' + draw(40) + ' 1x, ' + draw(80) + ' 2x) 20 20';
-  const value = CSS.supports('cursor', sharp + ', auto') ? sharp : draw(40) + ' 20 20';
-  return cursorCache[emoji] = value;
+  const spot = ' ' + size / 2 + ' ' + size / 2;
+  const sharp = 'image-set(' + draw(size) + ' 1x, ' + draw(size * 2) + ' 2x)' + spot;
+  const value = CSS.supports('cursor', sharp + ', auto') ? sharp : draw(size) + spot;
+  return cursorCache[key] = value;
 }
 
 function buildCard(story, idx, style, captions) {
@@ -770,7 +773,8 @@ function startStory() {
     slotEls: [], cardEls: [],
     fixed: new Set(),      // cards placed by a cue: they stay where they are
     cues: [],              // cues given during the attempt in progress, in order
-    narrow: null           // { spot, cards: [a, b] } while "Narrow to two" is showing
+    narrow: null,          // { spot, cards: [a, b] } while "Narrow to two" is showing
+    hint: false            // "Pointer hint" is on for this attempt
   };
   if (pinned != null) S.slots[0] = pinned;
 
@@ -834,6 +838,8 @@ function render() {
   $('cueFirst').disabled = S.fixed.has(S.order[0]);
   $('cueLast').disabled = S.fixed.has(S.order[last]);
   $('cueNarrow').disabled = narrowSpot() < 0;
+  $('cuePointer').setAttribute('aria-pressed', S.hint);
+  if (grow && S.cardEls.indexOf(grow.el) !== hintCard()) stopGrow();   // the next card changed
   const verbal = S.cues.filter(c => c === 'verbal cue').length;
   $('cueVerbal').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
   $('play').classList.toggle('picking', S.selected != null);
@@ -1026,6 +1032,32 @@ function narrowCue() {
   render();
 }
 
+// Pointer hint (mouse or trackpad): while it is on, the pointer grows when
+// it is over the card that belongs in the first spot that is not right yet.
+function hintCard() {
+  if (!S || S.locked || !S.hint) return -1;
+  const spot = S.slots.findIndex((c, i) => c !== S.order[i]);
+  return spot < 0 ? -1 : S.order[spot];
+}
+
+let grow = null;       // { el, timer } while the pointer is growing over a card
+function stopGrow() {
+  if (!grow) return;
+  clearInterval(grow.timer);
+  grow.el.style.cursor = '';
+  grow = null;
+}
+function startGrow(el) {
+  if (grow && grow.el === el) return;
+  stopGrow();
+  const emoji = S.story.cursor || '👆';
+  const sizes = matchMedia('(prefers-reduced-motion: reduce)').matches ? [64] : [46, 52, 58, 64];
+  let i = 0;
+  const step = () => { el.style.cursor = emojiCursor(emoji, sizes[i]) + ', auto'; if (++i >= sizes.length) clearInterval(grow.timer); };
+  grow = { el, timer: setInterval(step, 110) };
+  step();
+}
+
 // Show the whole order now. Logged as a modeled attempt.
 function modelCue() {
   if (S.locked) return;
@@ -1081,6 +1113,7 @@ function check() {
     S.t0 = performance.now();
     // Cards a cue placed stay on the board, so they still count on the second try.
     S.cues = S.cues.filter(c => c.endsWith('card placed'));
+    S.hint = false;
     $('cue').value = S.cues.length ? 'visual' : 'independent';
     $('feedback').textContent = 'Try again.';
     render();
@@ -1184,7 +1217,7 @@ function errorSentence(entries) {
 
 // Which cues were given, counted by attempt, always over the same denominator.
 function cueSentence(entries) {
-  const names = ['verbal cue', 'first card placed', 'last card placed', 'choice narrowed to two', 'order shown'];
+  const names = ['verbal cue', 'first card placed', 'last card placed', 'choice narrowed to two', 'pointer hint', 'order shown'];
   const N = entries.length;
   const parts = names.map(n => [n, entries.filter(a => (a.cues || []).includes(n)).length])
     .filter(([, k]) => k).map(([n, k]) => n + ' (' + k + '/' + N + ')');
@@ -1296,6 +1329,19 @@ async function init() {
   $('cueLast').onclick = () => placeCue(S.order.length - 1, 'last card placed');
   $('cueNarrow').onclick = narrowCue;
   $('cueModel').onclick = modelCue;
+  $('cuePointer').onclick = () => {
+    if (S.locked) return;
+    S.hint = !S.hint;
+    if (S.hint) noteCue('pointer hint', 'visual');   // turning it off does not unlog it
+    render();
+  };
+  $('play').addEventListener('pointerover', e => {
+    const card = e.target.closest('.card');
+    if (card && S && S.cardEls.indexOf(card) === hintCard()) startGrow(card);
+  });
+  $('play').addEventListener('pointerout', e => {
+    if (grow && !grow.el.contains(e.relatedTarget)) stopGrow();
+  });
   $('retellDiscard').onclick = () => {
     endRetell(false);
     $('retellBtn').hidden = false;
