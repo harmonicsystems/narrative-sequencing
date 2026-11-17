@@ -151,15 +151,16 @@
     "reversible": false,
     "cover": 2,
     "cursor": "🐾",
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f7eee3"},
     "cards": [
-      {"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "part": "setting"},
-      {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "part": "feeling"},
-      {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "part": "problem"},
-      {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "part": "feeling"},
-      {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "part": "action"},
-      {"text": "Max's family gives the puppy a home", "emoji": "🏡", "part": "ending"},
-      {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "part": "end feeling"}
+      {"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "img": "01.jpg", "part": "setting"},
+      {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "img": "02.jpg", "part": "feeling"},
+      {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "img": "03.jpg", "part": "problem"},
+      {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "img": "04.jpg", "part": "feeling"},
+      {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "img": "05.jpg", "part": "action"},
+      {"text": "Max's family gives the puppy a home", "emoji": "🏡", "img": "06.jpg", "part": "ending"},
+      {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "img": "07.jpg", "part": "end feeling"}
     ]
   },
   {
