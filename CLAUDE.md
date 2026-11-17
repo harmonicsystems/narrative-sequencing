@@ -142,12 +142,27 @@ and would need clinician control and logging.
 storyId, cardCount, style, direction,
 attemptNumber (1|2), correct (bool),
 misplacedPositions [], placedOrder [],
-cueLevel, seconds, modeled.
+cueLevel, cues [], seconds, modeled.
 placedOrder = card numbers (from 1, forward
 order) as the student left them. Raw data only.
 cueLevel defaults to "independent"; small
 clinician-only control sets it per attempt:
 independent | verbal | visual | model.
+
+## Cue ladder (clinician-only, play screen)
+Buttons beside the Level menu, lightest first:
+Verbal (log only) | Place first card (not for
+reversible stories, whose first card is pinned)
+| Place last card | Narrow to two (dims the tray
+to the right card and one other for the next
+open spot) | Show the order (ends the attempt,
+logged as modeled, not counted as an error).
+Each press adds its name to the attempt's
+`cues` list and raises Level to at least
+verbal / visual / model. A cue-placed card
+cannot be moved and still counts on attempt 2.
+O-line adds "Cues given, by attempt: name (k/N),
+…". The app never gives a cue on its own.
 
 ## Tour and About
 - Tour: a strip at the top that walks a new

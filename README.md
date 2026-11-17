@@ -47,8 +47,12 @@ explains the thinking behind it and how it was made.
 3. **Check:** a wrong first attempt gets a neutral "Try again" with no hint
    about which cards are wrong. A wrong second attempt shows the correct order
    and is logged as modeled.
-4. **Cue:** the small control at the bottom right sets the cue level for the
-   attempt in progress. It returns to `independent` at the start of each attempt.
+4. **Cue:** the row at the bottom of the play screen gives a cue and logs it:
+   Verbal, Place first card, Place last card, Narrow to two, Show the order.
+   Each press is recorded on the attempt and raises the Level menu beside it
+   (independent, verbal, visual, model), which can also be set by hand. The
+   level returns to `independent` at the start of each attempt unless a
+   cue-placed card is still on the board.
 5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
    on screen while the student tells the story. Tap a card when its part is
    told; tap again if it needed a prompt, and once more to clear it. Count
@@ -138,7 +142,9 @@ EOF
 
 Each checked attempt records: `storyId`, `cardCount`, `style`, `direction`,
 `attemptNumber`, `correct`, `misplacedPositions`, `placedOrder`, `cueLevel`,
-`seconds`, `modeled`.
+`cues`, `seconds`, `modeled`. `cues` lists each cue given during the attempt,
+and the O-line ends with a count of them: "Cues given, by attempt: verbal cue
+(1/3), first card placed (2/3)."
 
 `placedOrder` is the order the student left the cards in, as card numbers
 counted from 1 in the story's forward order. A correct forward attempt on a
