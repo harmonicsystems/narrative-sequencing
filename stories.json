@@ -6,6 +6,7 @@
     "reversible": false,
     "cover": 2,
     "cursor": "🦷",
+    "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -20,6 +21,7 @@
     "gradeBand": "K-2",
     "reversible": false,
     "cursor": "🪴",
+    "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -36,6 +38,7 @@
     "reversible": false,
     "cover": 3,
     "cursor": "🍽️",
+    "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -52,6 +55,7 @@
     "reversible": false,
     "cover": 4,
     "cursor": "💌",
+    "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -63,12 +67,31 @@
     ]
   },
   {
+    "id": "kite-in-the-tree",
+    "title": "The kite in the tree",
+    "gradeBand": "K-5",
+    "reversible": false,
+    "cover": 2,
+    "cursor": "🍃",
+    "grammar": ["character", "setting", "problem", "feeling", "action", "ending"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
+    "cards": [
+      {"text": "Flying a kite in the park", "emoji": "🪁", "img": "01.jpg"},
+      {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg"},
+      {"text": "Feeling sad about the kite", "emoji": "😢", "img": "03.jpg"},
+      {"text": "Grandparent reaches it with a rake", "emoji": "🧓", "img": "04.jpg"},
+      {"text": "Happy to have the kite back", "emoji": "😊", "img": "05.jpg"}
+    ]
+  },
+  {
     "id": "puffer-fish",
     "title": "Puffer fish",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["calm", "puffed"],
     "cursor": "💧",
+    "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f7f2e7"},
     "cards": [
@@ -84,6 +107,7 @@
     "reversible": true,
     "endLabels": ["cold", "boiling"],
     "cursor": "🔥",
+    "grammar": ["setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -100,6 +124,7 @@
     "reversible": true,
     "endLabels": ["clear", "storm"],
     "cursor": "☂️",
+    "grammar": ["setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "cards": [
       {"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"},
@@ -117,6 +142,7 @@
     "endLabels": ["silent", "yelling"],
     "cover": 4,
     "cursor": "🎤",
+    "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -133,6 +159,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["small", "large"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -148,6 +175,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["light", "dark"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -163,6 +191,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["low", "high"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -177,6 +206,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["empty", "full"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -193,6 +223,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["thin", "thick"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -208,6 +239,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["few", "many"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -223,6 +255,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["left", "right"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -237,6 +270,7 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["short", "tall"],
+    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [

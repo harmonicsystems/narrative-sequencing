@@ -247,6 +247,7 @@
     font-size: calc(var(--cw) * 0.42); line-height: 1;
   }
   .card .art img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .card.whole .art img { object-fit: contain; }
   /* Room for two lines on every card, so pictures sit at the same height
      whether a caption wraps or not. */
   .card .cap {
@@ -284,7 +285,9 @@
   .retelling .slot.told { box-shadow: 0 0 0 3px var(--accent); }
   .retelling .slot.prompted { box-shadow: 0 0 0 3px var(--accent); outline: 2px dashed var(--accent); outline-offset: 5px; }
   #retellBox { margin-top: 8px; text-align: center; }
-  #retellRow { justify-content: center; margin-top: 6px; }
+  #retellRow, #partsRow { justify-content: center; margin-top: 6px; }
+  #partsChips { gap: 8px; }
+  #partsChips .btn[data-mark="2"] { outline: 2px dashed var(--accent); outline-offset: 4px; }
   #wordsCount { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
@@ -396,6 +399,10 @@
     </div>
     <div id="retellBox" hidden>
       <p class="muted small">Tap a card when the student tells that part. Tap again if it needed a prompt, and once more to clear it.</p>
+      <div class="row" id="partsRow" role="group" aria-labelledby="partsLabel">
+        <span id="partsLabel">Story parts included:</span>
+        <span class="row" id="partsChips"></span>
+      </div>
       <div class="row" id="retellRow">
         <span id="wordsLabel">Sequence words (first, next, then, last…)</span>
         <button class="btn mini" id="wordsLess" aria-label="One fewer sequence word">−</button>
@@ -439,7 +446,7 @@
       <li><b>It records and does not judge.</b> The order a student builds shows how they understand the story. A wrong order is information, not a failure, so the app never marks a card right or wrong. A first wrong try gets only "Try again".</li>
       <li><b>Interpretation stays with the clinician.</b> The app counts and reports. It does not score, label or diagnose.</li>
       <li><b>Support is part of the data.</b> The clinician gives help from a ladder of cues, lightest first: a verbal cue, placing the first or last card, narrowing the choice to two, a pointer that grows over the next card, or showing the order. Each one is logged on the attempt with its level (independent, verbal, visual, model), so a cued success is never written up as independent. The app never gives a cue on its own.</li>
-      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in and sequence words used.</li>
+      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in, sequence words used, and which story grammar parts (character, setting, problem, feeling, action, ending) the student included.</li>
       <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
       <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
     </ul>
@@ -457,7 +464,7 @@
     <h2>How much work went into it</h2>
     <ul>
       <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
-      <li>16 stories: 8 picture stories with 33 illustrated cards, and 8 concept stories with 31 shape cards.</li>
+      <li>17 stories: 9 picture stories with 38 illustrated cards, and 8 concept stories with 31 shape cards.</li>
       <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
       <li>Setup, card sizes, themes, the retell step, the cue ladder and this tour were each added in response to trying the tool and finding what got in the way.</li>
     </ul>
@@ -492,7 +499,7 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "title": "The kite in the tree", "gradeBand": "K-5", "reversible": false, "cover": 2, "cursor": "🍃", "grammar": ["character", "setting", "problem", "feeling", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Flying a kite in the park", "emoji": "🪁", "img": "01.jpg"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg"}, {"text": "Feeling sad about the kite", "emoji": "😢", "img": "03.jpg"}, {"text": "Grandparent reaches it with a rake", "emoji": "🧓", "img": "04.jpg"}, {"text": "Happy to have the kite back", "emoji": "😊", "img": "05.jpg"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
 
 const CUES = {
   independent: 'independently',
@@ -500,6 +507,10 @@ const CUES = {
   visual: 'with visual cues',
   model: 'with a model'
 };
+// Story grammar parts the clinician can mark during a retell. A story lists
+// the ones that apply to it in story.grammar; without that, all six are offered.
+const PARTS = ['character', 'setting', 'problem', 'feeling', 'action', 'ending'];
+const storyParts = story => Array.isArray(story.grammar) ? story.grammar.filter(p => PARTS.includes(p)) : PARTS;
 const $ = id => document.getElementById(id);
 
 let stories = [];
@@ -539,7 +550,7 @@ const TOUR = [
   { when: 'done', focus: '#retellBtn',
     text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
   { when: 'retell', focus: '#retellBox',
-    text: 'Click a card when its part is told; click again if it needed a prompt. Count sequence words with − and +. Then press End session.' },
+    text: 'Click a card when its part is told; click again if it needed a prompt. Mark the story parts the student included (character, setting, action, ending) and count sequence words with − and +. Then press End session.' },
   { when: 'summary', focus: '#oline',
     text: 'This objective line is ready to paste into a SOAP note, with the raw data below it. Nothing is saved: closing the page clears the session.' }
 ];
@@ -698,15 +709,32 @@ const cursorCache = {};
 function emojiCursor(emoji, size = 40) {
   const key = emoji + size;
   if (cursorCache[key]) return cursorCache[key];
+  // The emoji gets a cream rim with a thin dark edge, so it stays readable
+  // over light cards, dark cards and pictures alike.
   const draw = px => {
-    const c = document.createElement('canvas');
-    c.width = c.height = px;
-    const g = c.getContext('2d');
-    g.font = Math.round(px * 0.8) + 'px system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillText(emoji, px / 2, px / 2 + px * 0.06);
-    return 'url(' + c.toDataURL('image/png') + ')';
+    const blank = () => { const c = document.createElement('canvas'); c.width = c.height = px; return c; };
+    const glyph = blank(), gg = glyph.getContext('2d');
+    gg.font = Math.round(px * 0.7) + 'px system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+    gg.textAlign = 'center';
+    gg.textBaseline = 'middle';
+    gg.fillText(emoji, px / 2, px / 2 + px * 0.05);
+    const shape = colour => {              // the emoji's outline filled with one colour
+      const c = blank(), g = c.getContext('2d');
+      g.drawImage(glyph, 0, 0);
+      g.globalCompositeOperation = 'source-in';
+      g.fillStyle = colour;
+      g.fillRect(0, 0, px, px);
+      return c;
+    };
+    const out = blank(), g = out.getContext('2d');
+    const ring = (colour, r) => {
+      const s = shape(colour);
+      for (let i = 0; i < 24; i++) g.drawImage(s, Math.cos(i * Math.PI / 12) * r, Math.sin(i * Math.PI / 12) * r);
+    };
+    ring('#3a2f25', px * 0.085);
+    ring('#fdf9f1', px * 0.055);
+    g.drawImage(glyph, 0, 0);
+    return 'url(' + out.toDataURL('image/png') + ')';
   };
   const spot = ' ' + size / 2 + ' ' + size / 2;
   const sharp = 'image-set(' + draw(size) + ' 1x, ' + draw(size * 2) + ' 2x)' + spot;
@@ -748,6 +776,8 @@ function buildCard(story, idx, style, captions) {
     if (/^#[0-9a-f]{6}$/i.test(paper || '')) {
       const [r, g, b] = [1, 3, 5].map(i => parseInt(paper.substr(i, 2), 16));
       card.style.background = paper;
+      // The paper fills any gap, so show the whole picture instead of trimming it.
+      card.classList.add('whole');
       card.style.color = (r * 299 + g * 587 + b * 114) / 1000 > 140 ? '#3a2f25' : '#efe6d6';
     }
   } else {
@@ -855,7 +885,19 @@ function render() {
     slot.classList.toggle('prompted', m === 2);
     slot.querySelector('.mark').textContent = ['', 'told', 'told with a prompt'][m];
   });
-  if (R) $('wordsCount').textContent = R.words;
+  if (R) {
+    $('wordsCount').textContent = R.words;
+    const names = Object.keys(R.parts);
+    $('partsRow').hidden = !names.length;
+    $('partsChips').replaceChildren(...names.map(p => {
+      const m = R.parts[p];
+      const b = el('button', 'btn mini', p + ['', ' · told', ' · with a prompt'][m]);
+      b.setAttribute('aria-pressed', m > 0);
+      b.dataset.mark = m;
+      b.onclick = () => { R.parts[p] = (m + 1) % 3; render(); };
+      return b;
+    }));
+  }
   if (!S.locked && !S.slots.includes(null)) tour('filled');
 }
 
@@ -866,7 +908,10 @@ function render() {
 // they were first marked, so it shows the order the student told them in.
 function startRetell() {
   if (!S || !S.locked || S.retell) return;
-  S.retell = { marks: Array(S.story.cards.length).fill(0), order: [], words: 0, t0: performance.now() };
+  S.retell = {
+    marks: Array(S.story.cards.length).fill(0), order: [], words: 0, t0: performance.now(),
+    parts: Object.fromEntries(storyParts(S.story).map(p => [p, 0]))   // 0 not included, 1 included, 2 with a prompt
+  };
   $('retellBtn').hidden = true;
   $('feedback').textContent = 'Now tell the story.';
   render();
@@ -896,6 +941,9 @@ function endRetell(save) {
       told: spots(1),            // spot numbers mentioned at all
       prompted: spots(2),        // of those, the ones that needed a prompt
       orderTold: [...R.order],
+      partsOffered: Object.keys(R.parts),
+      partsTold: Object.keys(R.parts).filter(p => R.parts[p] > 0),
+      partsPrompted: Object.keys(R.parts).filter(p => R.parts[p] === 2),
       sequenceWords: R.words,
       seconds: Math.round((performance.now() - R.t0) / 1000)
     });
@@ -1244,14 +1292,27 @@ function retellSentence(rs) {
     s += '; events told in story order in ' + inOrder + '/' + multi.length + (multi.length === 1 ? ' retell' : ' retells');
   }
   const words = sum(r => r.sequenceWords);
-  return s + '; ' + words + (words === 1 ? ' sequence word' : ' sequence words') + ' used.';
+  s += '; ' + words + (words === 1 ? ' sequence word' : ' sequence words') + ' used.';
+  // Story grammar: each part over the number of retells that offered it.
+  const offered = sum(r => r.partsOffered.length);
+  if (offered) {
+    const pTold = sum(r => r.partsTold.length), pPrompted = sum(r => r.partsPrompted.length);
+    const each = PARTS.map(p => [p, rs.filter(r => r.partsOffered.includes(p)).length, rs.filter(r => r.partsTold.includes(p)).length])
+      .filter(([, n]) => n).map(([p, n, k]) => p + ' ' + k + '/' + n).join(', ');
+    s += ' Story parts included: ' + pTold + '/' + offered + ' (' + each + ')' +
+      (pTold ? ', ' + pPrompted + '/' + pTold + ' after a prompt.' : '.');
+  }
+  return s;
 }
 
 function buildRetellRaw(rs) {
-  const head = ['storyId', 'cardCount', 'style', 'direction', 'told', 'prompted', 'orderTold', 'sequenceWords', 'seconds'];
+  const head = ['storyId', 'cardCount', 'style', 'direction', 'told', 'prompted', 'orderTold',
+    'partsOffered', 'partsTold', 'partsPrompted', 'sequenceWords', 'seconds'];
   const rows = rs.map(r => [
     r.storyId, r.cardCount, r.style, r.direction, r.told.join(',') || '-',
-    r.prompted.join(',') || '-', r.orderTold.join(',') || '-', r.sequenceWords, r.seconds
+    r.prompted.join(',') || '-', r.orderTold.join(',') || '-',
+    r.partsOffered.join(',') || '-', r.partsTold.join(',') || '-', r.partsPrompted.join(',') || '-',
+    r.sequenceWords, r.seconds
   ]);
   return [head, ...rows].map(r => r.join('\t')).join('\n');
 }
