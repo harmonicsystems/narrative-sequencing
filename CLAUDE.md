@@ -27,7 +27,9 @@ probably wrong. Full statement: top of README.
 - Browsers block fetch() of stories.json when
   index.html is opened from disk, so index.html
   carries an embedded copy on the line ending
-  `// @seed`. After editing stories.json, refresh
+  `// @seed` (and the shape drawings on the line
+  ending `// @shapes`). After editing stories.json
+  or a shape SVG, refresh
   it with the script in README ("Updating the
   built-in copy").
 - To test stories.json edits directly:
@@ -57,6 +59,27 @@ probably wrong. Full statement: top of README.
   (memory only).
 
 ## Content model
+- Optional card.part: character | setting |
+  problem | feeling | action | ending | end
+  feeling. Four story grammar stories use it
+  (kite-in-the-tree, spilled-paint,
+  lost-library-book, block-tower). Each has its
+  own child (Sam, Ana, Jo, Max; no pronouns in
+  captions) plus Gran and the puppy.
+- Cast bible (image-prompts.md Part 4): sheets
+  in img/_cast/<name>/ (turnaround first). Cards
+  are made with Codex (`codex exec -i <refs>`,
+  the ChatGPT app's bundled CLI, not Homebrew's
+  old one): card 2 first as the master layout,
+  then the rest from it. One tool per story.
+  Drafts go in img/_drafts/ (git-ignored) with a
+  review.html per round.
+- Caption-safe band: with words shown the card
+  keeps about the middle 65% of the picture, so
+  heads and key props sit between 20% and 80%
+  of the height. Full-scene cards are padded
+  evenly at install (same amount per story).
+  Keep captions to about three lines.
 story = {
   id, title, gradeBand,
   reversible: bool,
@@ -72,6 +95,15 @@ story = {
 - Concept stories (size, shade, position, fill
   pattern) use style "shape": simple SVGs, one
   hue, outlined so they never rely on fill alone.
+  Fill #b07a55 (shades #f3e6d8 #d6ae8c #a06c44
+  #553521), outline #6f5f4a. index.html keeps a
+  built-in copy on the line ending `// @shapes`
+  (same README script as the seed) so they can
+  be recoloured: the student picks one of 8
+  muted swatches on the play screen (memory
+  only, per story; each story starts in its own
+  colour). Shades keep their lightness steps.
+  Colour is decoration, not data: not logged.
 - Optional story.paper = { <style>: "#rrggbb" }:
   the image set's background colour. Cards take
   it so captions blend into the picture; caption
@@ -120,6 +152,13 @@ Three parts, top to bottom:
 Card size: standard | large | largest (memory
 only; sets --cw through data-size on :root).
 Story list view: pictures (default) | list.
+The list is grouped by story.set, in this
+order: narrative "Stories", routine "Everyday
+steps", change "Step-by-step change", concept
+"Concepts" (unknown set: "Other stories"). Each
+set has a heading with a line icon and one line
+on what it holds; the icon repeats small on its
+tiles. New sets go in the SETS array.
 Pictures shows each story as a small deck with a
 close-up of one card: optional story.cover (card
 number from 1, default the last card), from the
@@ -193,27 +232,41 @@ O-line adds "Cues given, by attempt: name (k/N),
 "Retell" keeps the finished sequence on screen
 while the student tells the story. The clinician
 taps a card as its part is told (tap again: told
-with a prompt; again: clear) and counts sequence
-words with − / +. The app only counts taps: it
-never decides what was said. One record per
-retell: storyId, cardCount, style, direction,
-told [], prompted [], orderTold [] (spot numbers,
-in the order first marked), sequenceWords,
-seconds. Story grammar: chips for the parts in
-story.grammar (from character, setting, problem,
-feeling, action, ending; all six if the field is
-absent, none if it is []), tapped the same way
-(told / with a prompt / clear), saved as
-partsOffered, partsTold, partsPrompted. The
-O-line counts each part over the retells that
-offered it. Only list parts a story really has:
-the routine and change stories have no problem
-or feeling. Leaving the story saves it; "Discard
-this retell" drops it. O-line adds one sentence:
-"Retell of N stories: mentioned X/T events, P/X
-after a prompt; events told in story order in
-A/B retells; W sequence words used." Raw data
-gets a second "Retell" table.
+with a prompt; again: clear) and counts time
+words and cause words with − / +. Support
+(clinician fades it): pictures | words only |
+no cards (spots stay tappable); a new retell
+starts at the last level used. The app only
+counts taps: it never decides what was said.
+Story parts: stories whose cards name their
+part (card.part) get them from the card taps;
+other stories get chips for the parts in
+story.grammar (all six if absent, none if []),
+tapped the same way. Only list parts a story
+really has: routines and change stories have no
+problem or feeling. One record per retell:
+storyId, cardCount, style, direction, told [],
+prompted [], orderTold [] (spot numbers, in the
+order first marked), partsOffered, partsTold,
+partsPrompted, support [] (levels in order
+used), timeWords, causeWords, seconds. Leaving
+the story saves it; "Discard this retell" drops
+it. O-line adds: "Retell of N stories:
+mentioned X/T events, P/X after a prompt;
+events told in story order in A/B retells{;
+least support reached: …}; W time words and C
+cause words used.{ Story parts included: k/n
+(part k/n, …), p/k after a prompt.}" Support
+clause only when faded. Raw data gets a second
+"Retell" table.
+
+## Research
+research-notes.md: what narrative intervention
+research (mostly Story Champs) suggests, how the
+app maps to it, caveats. Borrow principles only:
+never Story Champs stories, icons or names in
+the app. Parts are counts of clinician taps,
+never a score.
 
 ## Output (End session)
 Summary + "Copy" button. Template:

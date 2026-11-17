@@ -31,6 +31,15 @@ python3 -m http.server 8000
 then visit http://localhost:8000. GitHub Pages behaves the same way as the
 local server. Images load either way.
 
+## Research
+
+`research-notes.md` summarises the narrative intervention research (story
+grammar, many examples of the same shape, fading picture support, time and
+cause words), how this tool maps to it, and its caveats. `image-prompts.md`
+Part 4 is the cast bible: how the story grammar pictures were made (character
+sheets in `img/_cast/`, cards drawn with Codex from a master layout), with a
+log of every round's feedback.
+
 ## A session
 
 New to the tool? Add `#tour` to the address (or press "Take the 2-minute tour"
@@ -56,9 +65,13 @@ explains the thinking behind it and how it was made.
    cue-placed card is still on the board.
 5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
    on screen while the student tells the story. Tap a card when its part is
-   told; tap again if it needed a prompt, and once more to clear it. Mark the
-   story parts the student included (character, setting, action, ending…) the
-   same way, and count sequence words (first, next, then, last…) with − and +.
+   told; tap again if it needed a prompt, and once more to clear it. In
+   stories whose cards don't name their part, also mark the story parts the
+   student included (character, setting, action, ending…) the same way. Count
+   time words (first, then, after, when…) and cause words (because, so…)
+   with the − and + buttons. **Support** steps the cards back: Pictures,
+   Words only (captions, no pictures), No cards (empty numbered spots, still
+   tappable). A new retell starts at the level the last one ended on.
 6. **End session:** shows the O-line and the raw data tables, each with a
    copy button.
 
@@ -86,6 +99,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 |---|---|
 | `id` | Unique, lowercase with hyphens. Also the image folder name. |
 | `title` | Shown on the setup and play screens. |
+| `set` | Which group the setup screen lists it under: `narrative` (Stories), `routine` (Everyday steps), `change` (Step-by-step change) or `concept` (Concepts). Anything else goes under "Other stories". |
 | `gradeBand` | Free text, e.g. `K-2`. |
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
@@ -98,6 +112,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
+| `cards[].part` | Optional. The card's story grammar part: `character`, `setting`, `problem`, `feeling`, `action`, `ending` or `end feeling`. Stories with parts show "story parts" on the setup screen, and their retells report parts told. |
 
 For reversible stories, write each card as a **state** ("Half puffed"), not a
 change ("Starts to puff up"), so the text reads correctly in both directions.
@@ -128,19 +143,33 @@ emoji, otherwise its text, so a partial set still works.
 
 ## Updating the built-in copy
 
-After editing `stories.json`, refresh the copy inside `index.html` so opening
-the file from disk matches:
+After editing `stories.json` or any concept drawing (`img/*/shape/*.svg`),
+refresh the copies inside `index.html` so opening the file from disk matches:
 
 ```
 python3 - <<'EOF'
-import json, re
+import json, re, glob, os
 s = json.load(open('stories.json', encoding='utf-8'))
+shapes = {f.split('/')[1] + '/' + os.path.basename(f): open(f, encoding='utf-8').read().strip()
+          for f in sorted(glob.glob('img/*/shape/*.svg'))}
 h = open('index.html', encoding='utf-8').read()
-line = 'const SEED = ' + json.dumps(s, ensure_ascii=False) + ';// @seed'
-open('index.html', 'w', encoding='utf-8').write(
-    re.sub(r'^const SEED = .*// @seed$', lambda m: line, h, flags=re.M))
+for name, mark, data in (('SEED', 'seed', s), ('SHAPES', 'shapes', shapes)):
+    line = 'const ' + name + ' = ' + json.dumps(data, ensure_ascii=False) + ';// @' + mark
+    h = re.sub(r'^const ' + name + r' = .*// @' + mark + '$', lambda m: line, h, flags=re.M)
+open('index.html', 'w', encoding='utf-8').write(h)
 EOF
 ```
+
+## Concept colours
+
+Concept stories (style `shape`) show a row of colour swatches on the play
+screen. The student picks a favourite and the shapes change colour on the
+spot; the choice is kept for that story until the page is closed. Each concept
+story starts in a different colour. The drawings keep their brown outline, so
+no shape depends on its fill, and *Light to dark* gets four shades of the
+picked colour at the original lightness steps. A drawing can be recoloured
+when its fill is `#b07a55` (and, for shades, `#f3e6d8`, `#d6ae8c`, `#a06c44`,
+`#553521`); anything drawn in the outline colour `#6f5f4a` stays as it is.
 
 ## Data and output
 
@@ -171,14 +200,21 @@ modeled for Z/N."
 
 Each retell records: `storyId`, `cardCount`, `style`, `direction`, `told`,
 `prompted`, `orderTold`, `partsOffered`, `partsTold`, `partsPrompted`,
-`sequenceWords`, `seconds`. The three `parts` fields are the story grammar
-parts offered for that story, the ones marked as included, and the ones among
-them that needed a prompt. `told` lists the spots
+`support`, `timeWords`, `causeWords`, `seconds`. The three `parts` fields are
+the story grammar parts offered for that story, the ones included, and the
+ones among them that needed a prompt; stories with `cards[].part` take them
+from the cards tapped, others from the part buttons (`grammar`). `support`
+lists each support level used, in order. `told` lists the spots
 that were mentioned at all, `prompted` the ones among them that needed a
 prompt, and `orderTold` the spots in the order they were first tapped. The app
 only counts the clinician's taps. Retells add one sentence to the O-line and a
 second table to the raw data:
 
-> Retell of 2 stories: mentioned 6/8 events, 1/6 after a prompt; events told in
-> story order in 1/2 retells; 2 sequence words used. Story parts included: 5/7
-> (character 1/1, setting 1/2, action 2/2, ending 1/2), 1/5 after a prompt.
+> Retell of 2 stories: mentioned 8/10 events, 1/8 after a prompt; events told
+> in story order in 1/2 retells; least support reached: pictures 1/2, no cards
+> 1/2; 3 time words and 1 cause word used. Story parts included: 8/10
+> (character 2/2, problem 2/2, feeling 1/2, action 2/2, ending 1/2), 1/8 after
+> a prompt.
+
+The support clause appears only when support was faded. Each retell counts
+once, at the least support it reached.

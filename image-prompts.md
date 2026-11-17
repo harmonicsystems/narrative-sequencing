@@ -205,7 +205,10 @@ still shows the back, which is right for sealing.
 
 ---
 
-# Part 3: a full narrative (problem, feeling, action, ending)
+# Part 3a: the first kite set (Gemini, replaced)
+
+The app now uses the Part 4 kite set (Sam and Gran, drawn with Codex). These
+prompts and notes are kept for the lessons in them.
 
 ## kite-in-the-tree (5 cards)
 
@@ -266,3 +269,498 @@ Notes from generating this set (2026-11-17):
 - The kite sits at the very top of cards 2 and 3, and the app used to trim
   the top of each picture. Cards with a `paper` colour now show the whole
   picture, so nothing is cut off.
+
+---
+
+# Part 3: story grammar stories (character, problem, feeling, action, ending)
+
+Four short stories with a character, a problem, a feeling, an action and an
+ending: `kite-in-the-tree`, `spilled-paint`, `lost-library-book`,
+`block-tower`. They are already in `stories.json` with emoji and text; each
+card names its story part (`"part"`). This part makes their cartoon sets.
+
+A story needs the same people, objects and place in every card, at the same
+size. Gemini keeps those far better when it is shown them than when it is
+told, so this part makes **reference images first** and attaches them to
+every card prompt.
+
+## Budget
+
+About 6 reference images and 21 cards: two evenings at the free limit (about
+19 images). `spilled-paint` is now the Part 4 trial (about 13 images on its
+own). Evening 1: the references, then `kite-in-the-tree`. Evening 2: `lost-library-book` and `block-tower`. Save every
+reference image in `img/_refs/` (not used by the app) so evening 2 can attach
+the same files.
+
+## Settings stay quiet
+
+Each setting is a few simple pieces of furniture or scenery drawn on the
+plain cream background, the same way `mailing-a-letter/05` draws a door
+frame: no wall colour, no sky fill, no patterned floor. This keeps the cards
+calm and lets `paper.cartoon` blend the caption into the picture.
+
+## SCALE block
+
+Paste after STYLE in every card prompt, word for word.
+
+```
+Scale: the child is about 7 years old. In full-body pictures the child
+fills about two-thirds of the picture height, with their feet about a
+quarter of the way up from the bottom edge. In waist-up pictures the
+child's head and shoulders fill the top half. Every object is the same
+size as in the attached size line-up. Camera at the child's eye level,
+looking straight on, exactly as in the attached setting picture.
+```
+
+## REFS block
+
+Start every card prompt with this. Attach the files it names.
+
+```
+Use the attached images as references. The child, the grandparent and the
+puppy must look exactly as in their reference pictures: same face, hair,
+clothes, outline and colours. Objects keep the sizes in the size line-up.
+The place matches the attached setting picture: same furniture, same
+positions, same camera. New picture:
+```
+
+## Reference images
+
+R1 and R2 are made in one new chat. Attach the child anchor (any full-body
+card with the child, or the anchor if kept) to R1 and R2.
+
+**R0, the grandparent.** Use `img/mailing-a-letter/cartoon/05.jpg` as it is.
+In prompts call them "the grandparent": grey curly hair, round glasses,
+dusty-blue cardigan, tan trousers.
+
+**R1, the puppy.**
+`[STYLE]` A small tan puppy with floppy brown ears, a short wagging tail and
+a sage-green collar, standing side-on facing right, whole body visible. Calm,
+friendly face. Nothing else in the picture.
+
+**R2, the size line-up.** Attach the child anchor, R0 and R1.
+`[STYLE]` Landscape 4:3 for this one picture only. A row of things standing
+on one flat floor line, evenly spaced, all the same distance from the
+viewer. Left to right: the child from the attached picture, standing; the
+grandparent from the attached picture, standing, one head taller than the
+child; the puppy from the attached picture, its back level with the child's
+knee; a dusty-blue diamond kite with a tan bow tail, propped up, as wide as
+the child's shoulders; a garden rake with a long wooden handle, standing
+upright, its top level with the grandparent's head; a small clear cup of
+water, as tall as the child's hand; one wooden toy block, the size of the
+child's fist; a red book with a simple white whale on the cover and no words,
+as big as the child's two hands side by side. No text or labels.
+
+Check R2 before going on: if any size is off, regenerate it. Every card
+depends on it.
+
+**Setting plates S1 to S4.** One each, in the same chat, no people. Each one
+sets the camera for its story.
+
+- **S1, park.** `[STYLE]` A low, gently rounded grassy hill across the
+  bottom third of the picture. One big round tree on the right, its trunk on
+  the hill and its crown reaching near the top edge. Open cream space on the
+  left half above the hill. No people, no kite.
+- **S2, painting table.** `[STYLE]` A small wooden table seen from the
+  side, its top a third of the way up the picture, with one low stool on the
+  left. A simple window frame on the wall area above the right half of the
+  table. Nothing on the table. No people.
+- **S3, bedroom.** `[STYLE]` A low single bed along the bottom left, with
+  a sage-green blanket and a dark gap under it. A small bookshelf on the
+  right with one shelf of four books standing up and one empty gap between
+  them. A tan backpack lying on the floor in front of the shelf. No people.
+- **S4, living room.** `[STYLE]` A low dusty-blue sofa across the back,
+  its seat a third of the way up the picture. A round tan rug on the floor in
+  front of it, filling the bottom third. Nothing on the rug. No people.
+
+## kite-in-the-tree (5 cards)
+
+Attach the child anchor, R0, R2 and S1 to every card.
+
+1. `[REFS] [STYLE] [SCALE]` *character* The child stands on the hill on the
+   left, full body, holding a kite string in one raised hand, smiling. The
+   string runs up to the kite flying high in the open space at the top left.
+   The tree is empty.
+2. `[REFS] [STYLE] [SCALE]` *problem* The kite is caught in the top of the
+   tree's crown, tilted, its tail tangled in the leaves. The string hangs
+   down from it to the ground. The child stands on the left looking up, mouth
+   open in surprise. Nobody else is there.
+3. `[REFS] [STYLE] [SCALE]` *feeling* Waist-up close view of the child,
+   looking up and to the right, with a sad face: eyebrows raised in the
+   middle, mouth turned down, one tear. Only a few tree leaves at the top
+   right corner. No kite visible.
+4. `[REFS] [STYLE] [SCALE]` *action* The grandparent stands under the tree
+   and lifts the rake high, its teeth hooking the kite in the crown. The
+   child stands beside the grandparent, pointing up at the kite.
+5. `[REFS] [STYLE] [SCALE]` *ending* The child holds the kite against their
+   chest in both hands, smiling widely. The grandparent stands beside them
+   holding the rake upright, smiling. The tree is empty again.
+
+## spilled-paint (5 cards)
+
+Moved to Part 4: this story is the trial for the cast bible, with Ana as her
+own character. Use the prompts there.
+
+## lost-library-book (6 cards)
+
+Attach the child anchor, R2 and S3 to every card. The red whale book is the
+only red thing in the room.
+
+1. `[REFS] [STYLE] [SCALE]` *setting* The bedroom from S3. The child
+   stands in the middle, full body, holding the empty backpack open with
+   both hands, looking at the viewer. The gap on the shelf is empty. No book
+   anywhere.
+2. `[REFS] [STYLE] [SCALE]` *problem* The child stands in front of the
+   shelf, pointing at the empty gap between the books. Puzzled face. The
+   backpack lies on the floor.
+3. `[REFS] [STYLE] [SCALE]` *feeling* Waist-up close view of the child, one
+   hand on top of their head, eyebrows pulled together, mouth a small wavy
+   line: worried. The shelf is a plain edge behind them.
+4. `[REFS] [STYLE] [SCALE]` *action* The child lies on their tummy on the
+   floor beside the bed, shining a yellow flashlight into the dark gap under
+   it. A pale beam of light goes under the bed. The book cannot be seen yet.
+5. `[REFS] [STYLE] [SCALE]` *ending* The child kneels beside the bed and
+   holds the red whale book up high in one hand, mouth open in a happy
+   surprise. The flashlight lies on the floor.
+6. `[REFS] [STYLE] [SCALE]` *end feeling* The child stands beside the
+   backpack and slides the red book into it. Shoulders relaxed, eyes soft,
+   a gentle smile: relieved. The gap on the shelf is still empty, because the
+   book is going back to the library.
+
+## block-tower (5 cards)
+
+Attach the child anchor, R1, R2 and S4 to every card. The tower is always
+six blocks stacked straight up, as tall as the kneeling child's shoulder.
+
+1. `[REFS] [STYLE] [SCALE]` *character* The child kneels on the rug on the
+   left, placing the sixth block on top of a straight tower of six wooden
+   blocks in the middle of the rug. Proud smile. The puppy sits on the right
+   edge of the rug, watching.
+2. `[REFS] [STYLE] [SCALE]` *problem* The blocks lie scattered across the
+   rug. The puppy stands where the tower was, tail wagging, looking happy.
+   The child kneels on the left, mouth open, hands up in surprise.
+3. `[REFS] [STYLE] [SCALE]` *feeling* Waist-up close view of the child,
+   both hands in fists at their sides, eyebrows pulled down, lips pressed
+   together: frustrated, not shouting. A few blocks at the bottom edge.
+4. `[REFS] [STYLE] [SCALE]` *action* The child kneels with cheeks puffed,
+   breathing out slowly (three small curved breath lines in front of the
+   mouth), and rolls a sage-green ball across the rug to the puppy on the
+   right. The blocks are still scattered.
+5. `[REFS] [STYLE] [SCALE]` *ending* The six-block tower stands again in
+   the middle of the rug. The child kneels beside it, calm and smiling. The
+   puppy lies on the right edge of the rug, chewing the green ball.
+
+## Checks before saving a set
+
+- Same child, same clothes, in every card. Regenerate a card that drifts.
+- Neighbouring cards look clearly different at thumbnail size. The feeling
+  card is always a waist-up close view, so it never looks like the problem
+  card before it.
+- The size line-up holds: kite about shoulder-wide, book two hands big,
+  puppy knee-high, blocks fist-sized.
+- No text anywhere, including on the book cover and the painting.
+- Then follow the saving steps in "Rules for every set" above (resize to
+  640 wide, `img`, `cartoon` in `styles`, `paper.cartoon`, refresh the
+  built-in copy).
+
+---
+
+# Part 4: the cast bible
+
+A small set of characters, each drawn once in detail and then reused. Every
+card attaches the exact sheet it needs ("Ana, upset"), so faces and sizes
+come from a picture, not from words. The sheets are also teaching cards for
+story grammar: **character**, **setting**, the **props** and the
+**feelings**, shown before the story is told.
+
+The painting story (`spilled-paint`) is the trial. If Ana stays the same
+across its cards, the other stories get their own characters the same way.
+
+## The cast (planned)
+
+| Who | Stories | Status |
+|---|---|---|
+| Ana | spilled-paint | trial, below |
+| Sam | kite-in-the-tree | after the trial |
+| Jo | lost-library-book | after the trial |
+| Max and the puppy | block-tower | after the trial |
+| the grandparent | kite-in-the-tree | `mailing-a-letter/05` is the reference |
+
+Each child looks clearly different (hair, skin tone, clothes colour) so the
+names in the captions mean something. Keep the cast small: every extra
+character costs a set of sheets and makes it easier for faces to drift.
+
+## Rules for character sheets
+
+- **One chat per character.** Make the sheets in this order, each attaching
+  the ones before. If files can't be attached (for example when Claude is
+  pasting the prompts), keep the whole trial in that one chat and swap
+  "the attached X" for "X earlier in this chat", which is how the Part 2
+  child stayed consistent. Attach a file by hand only if something drifts.
+- **Grids, then crop.** Faces drawn together in one grid image match each
+  other better than faces made one at a time. Crop each cell into its own
+  file afterwards (see "Files" below).
+- **Feelings show in the body as well as the face.** Hands, shoulders and
+  posture carry the feeling too, because many children (autistic children
+  especially) don't read or show feelings mainly through the face. Feeling
+  cards are words for the story character, never labels for the student.
+- **Coping shown as ordinary.** A deep breath, headphones, a fidget, a quiet
+  corner, flapping or rocking when excited: drawn calmly and plainly, never
+  as a problem.
+- **No text** in any sheet: no labels under cells, no captions.
+
+## Ana
+
+About 7 years old. Warm brown skin, black hair in two round puffs tied with
+sage-green bands, a round face, dark eyes. Dusty-blue overalls over a cream
+t-shirt, tan sneakers. She looks clearly different from the anchor child
+(short dark curls, sage t-shirt).
+
+### A1, Ana turnaround
+
+`[STYLE]` Landscape 4:3 for this sheet only. A character reference sheet:
+the same girl drawn three times side by side at exactly the same size,
+standing on one floor line. Left: facing forward. Middle: facing right,
+side view. Right: from behind. She is about 7 years old, with warm brown
+skin, black hair in two round puffs tied with sage-green bands, a round
+face and dark eyes. She wears dusty-blue overalls over a cream t-shirt and
+tan sneakers. Relaxed pose, arms at her sides, calm friendly face. No text.
+
+### A2, Ana feelings grid
+
+Attach A1.
+
+`[STYLE]` Square 1:1 for this sheet only. A 3 by 3 grid of nine equal
+cells, separated only by plain cream space (no lines). In every cell, the
+same girl from the attached sheet, head and shoulders, facing forward, at
+exactly the same size and position. Same hair, skin, clothes and outline in
+every cell. Only the face, hands and shoulders change. Row 1: calm (soft
+smile, relaxed shoulders); happy (big smile, eyes crinkled); surprised (eyes
+wide, mouth a small round O, eyebrows high). Row 2: focused (eyes looking
+down, lips pressed lightly, tongue tip just showing at the corner); upset
+(eyebrows pulled together, mouth turned down, both hands on her cheeks);
+worried (eyebrows raised in the middle, mouth a small wavy line, one hand
+holding the other). Row 3: frustrated (eyebrows pulled down, lips pressed
+tight, shoulders up); proud (chin up, closed-mouth smile, one hand on her
+chest); relieved (eyes half closed, a small smile, shoulders dropped low).
+No text or labels.
+
+Check: same girl in all nine? Can each feeling be told apart at thumbnail
+size? Regenerate the whole grid rather than fixing one cell.
+
+### A3, Ana poses for this story
+
+Attach A1.
+
+`[STYLE]` Landscape 4:3 for this sheet only. The same girl from the
+attached sheet drawn four times side by side at the same size, all on one
+floor line. 1: sitting on a low stool, side view facing right, one arm
+reaching forward holding a paintbrush. 2: standing, side view facing right,
+both arms pulled back in surprise. 3: standing, leaning forward over an
+unseen table, brush in hand. 4: standing facing forward, both arms up in
+front of her chest as if holding up a sheet of paper (no paper). No text.
+
+## Props and the painting
+
+### P1, painting props line-up
+
+Attach A1.
+
+`[STYLE]` Landscape 4:3 for this sheet only. On one floor line, evenly
+spaced, all seen from the side at the same distance: the girl from the
+attached sheet standing, for scale; a small wooden table whose top reaches
+her waist; a low wooden stool whose seat reaches her knee; on the table, a
+clear cup of blue-tinted water as tall as her hand; two paintbrushes as
+long as her forearm; a small white paint tray with red, yellow and blue
+paint; a sheet of white paper lying flat, as wide as her shoulders. Beside
+the table on the floor, the same cup tipped on its side with a small blue
+puddle. No text.
+
+### P2, the painting in four stages (edit chain)
+
+The painting is drawn flat and face-on, filling the picture, so it can be
+copied onto the paper in each card. Make 1, then edit for 2, 3 and 4 with
+the EDIT block from Part 1.
+
+1. `[STYLE]` A child's painting on a sheet of white paper, seen straight on,
+   the paper filling the picture with a thin cream margin. Painted in simple
+   brush strokes: a small house with a red roof, a yellow door and one
+   window, standing on a green line of grass in the upper half. The bottom
+   half of the paper is blank white. No text, no signature.
+2. `[EDIT]` A wide puddle of blue water now covers the bottom half of the
+   paper, with soft wavy edges, a few drips reaching the bottom edge. The
+   house is untouched.
+3. `[EDIT]` On the blue area, one small boat with a brown hull and a white
+   triangle sail is painted on the left. A second boat on the right is only
+   half painted: hull only, no sail.
+4. `[EDIT]` The second boat now has its sail. Add three short blue wave
+   lines between the boats. The blue area now reads as a lake.
+
+### S2, the painting table
+
+Use the S2 prompt in Part 3 (table, stool, window, nothing on the table),
+and attach P1 so the table and stool match.
+
+## spilled-paint cards (trial)
+
+Every card attaches A1, the A2 cell it names, the A3 pose it names, P1, S2
+and the P2 stage it names. Start each prompt with CAST, then STYLE and
+SCALE (Part 3).
+
+```
+Use the attached images as references. The girl must look exactly as in
+her character sheet: same face, hair, skin, clothes, outline and colours.
+Her face and body show the feeling in the attached feeling picture. Her pose
+follows the attached pose picture. The table, stool, cup and brushes match
+the attached props sheet in shape and size. The room matches the attached
+setting. The painting on the paper is the attached painting, seen at the
+angle of the paper in this picture. New picture:
+```
+
+1. *character* (A2 focused, A3 pose 1, P2 stage 1) `[CAST] [STYLE] [SCALE]`
+   Ana sits on the stool at the table, side view facing right, painting. The
+   paper lies flat on the table, tilted toward the viewer so the house shows.
+   The cup of water stands upright to the right of the paper, two brushes
+   beside it.
+2. *problem* (A2 surprised, A3 pose 2, P2 stage 2) `[CAST] [STYLE]
+   [SCALE]` Same view. Ana has jumped up beside the stool, arms pulled back.
+   The cup lies on its side; blue water runs from it over the bottom half of
+   the paper and drips off the table edge.
+3. *feeling* (A2 upset) `[CAST] [STYLE] [SCALE]` Waist-up close view of
+   Ana, facing forward, hands on her cheeks, looking down at the wet paper
+   along the bottom edge of the picture. The window and table are only an
+   edge behind her.
+4. *action* (A2 focused, A3 pose 3, P2 stage 3) `[CAST] [STYLE] [SCALE]`
+   Same view as card 1. The cup stands upright again. Ana leans over the
+   paper and paints the second boat on the blue.
+5. *ending* (A2 proud, A3 pose 4, P2 stage 4) `[CAST] [STYLE] [SCALE]`
+   Ana stands beside the table facing forward, holding the finished
+   painting up in front of her chest with both hands so the viewer sees it
+   straight on: house, lake, two boats.
+
+## Later sheets for each character
+
+After the trial, each character gets the same A1 to A3 sheets, plus:
+
+- **Energy row** (5 full-body figures): sleepy (eyes half closed, slumped),
+  calm (relaxed, standing still), alert (upright, eyes open, ready), excited
+  (bouncing on toes, hands flapping), overwhelmed (hands over ears, eyes
+  shut). This can become a reversible concept story, like voice volume.
+- **Body needs** (grid): hungry, tired, too loud, cold, unwell.
+- **Coping** (grid): a deep breath, headphones on, squeezing a fidget,
+  sitting in a quiet corner with a cushion, rocking calmly, asking a grown-up
+  for help.
+
+## Files
+
+Drafts are kept out of the app until they pass review:
+
+```
+img/_drafts/spilled-paint/round-1/A1-turnaround.jpg
+                                  A2-feelings.jpg       (whole grid)
+                                  A2-feelings-upset.jpg (cropped cells)
+                                  A3-poses.jpg
+                                  P1-props.jpg
+                                  P2-painting-1.jpg … 4
+                                  S2-table.jpg
+                                  card-01.jpg … card-05.jpg
+```
+
+Each round is a new folder, so earlier versions stay for comparison. Accepted
+cards are copied to `img/spilled-paint/cartoon/01.jpg…` at 640 wide, then
+follow the saving steps in "Rules for every set". Accepted sheets go to
+`img/_cast/ana/`.
+
+## Prompt log
+
+One entry per round: what was tried, what came back, what changed and why.
+This is how the prompts get better.
+
+| Round | Image | Feedback | Prompt change |
+|---|---|---|---|
+| 1 | A1 turnaround | On model; Gemini added a thin floor line. | None. |
+| 1 | A2 feelings | All nine faces match. "Focused" reads cheeky (tongue out, eyes sideways); "worried" has a hand on the chest, not hands held; grid has thin white gutters (fine for cropping). | Pending your review. Possible: "focused: eyes down on her work, mouth closed, no tongue". |
+| 1 | A3 poses | Figures overlap; "surprised" arms not pulled back. | Pending your review. Possible: "wide even gaps between figures". |
+| 1 | P1 props | Sizes right (table at waist, stool at knee). First try came back as text only; "Please generate … as an image now" fixed it. | Start every prompt with "Generate an image." |
+| 1 | P2 stage 1, 2 | Clean; the spill edit kept the house exactly. Stage 2 is still in the Gemini chat, not saved (download didn't start once the limit hit). | None. |
+
+| 1 | card-01 to 05 (Codex) | All five are the same Ana. Cards 1, 2, 4, 5 share the table, camera and scale (card 2 as the layout reference worked). Card 3 is a close view of an upset face; a corner of the wet paper shows what she's looking at. **Continuity:** card 1 has the stool on the left, where she sits; cards 2, 4, 5 have it on the right. Card 4 adds a thin floor line. About 33–39k Codex tokens per card. | Pending your review. |
+
+| 1 | spilled-paint installed | Cards padded evenly for the caption crop, then saved to `img/spilled-paint/cartoon/`; Ana's sheets kept in `img/_cast/ana/`. | Caption-safe band added to the STAGE notes. |
+| 1 | kite-in-the-tree (Codex) | Sam and Gran turnarounds made first (Gran redrawn from `mailing-a-letter/05`). Card 2 made alone as the master layout, then 1, 3, 4, 5 together from it: same tree, hill and scale in all. Gran is only a little taller than Sam in card 4. 7 images, about 170k Codex tokens in all. | Pending your review. |
+
+| 1 | kite-in-the-tree installed | Padded by stretching edge colours (cream above, grass below), same amount on cards 1, 2, 4, 5. Card 3 lost the kite to the caption crop; padding it looked wrong, so it was redrawn with the kite inside the safe band (the tree became a smaller one there). | Write the safe band into every brief, close views included. |
+| 1 | lost-library-book (Codex) | Jo sheet, then card 2 as layout. First card 2 had an angry face and pointed at a book; redone with the first as the layout, and cards 1, 3–6 built from that layout. Red book is the only red thing; the shelf gap stays empty to the end. 8 images, about 150k tokens. | Pending your review. |
+
+| 1 | lost-library-book fixes | Card 5 flashlight was blue (card 4 yellow): recoloured in place with PIL, no new image. Card 3 shelf books were thin: redrawn at Jo's scale. Card 6 backpack had a phantom second flap: redrawn to match card 2's single open compartment. Installed. | Name small props' colours in every brief they appear in (flashlight: yellow). |
+| 1 | block-tower (Codex) | Max and puppy sheets, card 2 master, then 1, 3, 4, 5. Six blocks and the sage ball hold across cards. Card 3's scowl may read angry rather than frustrated. About 160k tokens. | Pending your review. |
+
+### Workflow notes from round 1
+
+- The free limit hit after **6 images** this time (resets 2:30 PM), not ~19.
+  Budget a round as two sittings, or one stage at a time.
+- Return sends the prompt even when the screen hasn't updated yet. Don't
+  press the arrow after it: it turns into Stop.
+- After each download the prompt box moves to the bottom of the page; click
+  there before typing.
+- Downloads land in ~/Downloads as `Gemini_Generated_Image_*.jpeg` and are
+  moved straight into the round folder.
+
+## Making cards with Codex (from round 1 on)
+
+Gemini's free tier ran out after 6 images, and its web app can't take
+reference files from Claude. Codex's image tool can: each reference is
+attached as a file and named in the prompt ("Image 1 is …"), which is what
+keeps Ana's face steady. One story comes from one tool, so every
+`spilled-paint` card is made in Codex.
+
+Claude runs each card with `codex exec -i <refs…>` and the brief below.
+Codex saves one image to the round folder and changes nothing else.
+
+### CAST block (Ana)
+
+```
+Match the supplied Ana reference exactly: a seven-year-old girl with warm
+brown skin, round face, dark oval eyes, black hair parted in the middle in
+two round puffs with sage-green bands, dusty-blue overalls with a front
+pocket over a cream short-sleeve t-shirt, tan sneakers. Preserve her age,
+skin tone, hair silhouette, proportions and clothing design. Flat simple
+children's picture-card illustration, even medium-brown outlines, muted
+warm tan, cream, sage and dusty-blue palette, plain uniform cream #f7f2e7
+background, solid fills, no shading, gradients or shadows. No text,
+lettering, numbers, arrows, logos, frames or watermark.
+```
+
+### STAGE block (every full-scene card)
+
+The master layout is card 2 (the spill). Attach it to every other
+full-scene card as the layout reference.
+
+```
+Portrait 3:4. Match the layout reference exactly: same camera height and
+angle, same table and stool in the same place and at the same size, same
+floor level. When Ana stands, her head top is about 15% from the top edge
+and her shoes rest about 12% above the bottom edge, so she fills about
+three-quarters of the card height. The table top is level with her waist.
+Generous plain cream space around everything.
+```
+
+Card 3 (feeling) is a waist-up close view and uses only CAST plus the
+matching A2 cell.
+
+**Caption-safe band.** With words shown, the app crops each card to a wider
+picture area, keeping about the middle 65% of the height. Keep everything
+that matters between about 20% and 80% of the height. Round 1 had heads too
+near the top, so the installed full-scene cards were padded evenly (one
+shared scale: 1086x1448 → 1248x1665, cream #f6f0e4) before resizing to
+640 wide. Close views (the feeling card) need no padding.
+
+### References per card
+
+| Card | Attach | Feeling |
+|---|---|---|
+| 1 character | A1, P1, P2-1, card 2 (layout) | calm, focused on her work |
+| 2 problem | A1, P1, P2-1 | surprised (master layout) |
+| 3 feeling | A1, A2 | upset |
+| 4 action | A1, P1, P2-2, card 2 (layout) | calm, thinking it through |
+| 5 ending | A1, P1, P2-1, card 2 (layout) | proud |

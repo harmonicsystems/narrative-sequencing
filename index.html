@@ -148,13 +148,23 @@
   #aboutHead h1 { margin: 0; }
 
   /* Setup */
-  #storyList { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  /* Stories are grouped into sets (story.set), each with a heading, one line
+     on what it holds and its own grid. The set's icon repeats on every tile. */
+  .set + .set { margin-top: 34px; }
+  .setHead { display: flex; align-items: center; gap: 10px; margin: 0 0 2px; font-size: 1.15rem; }
+  .setHead .ic {
+    width: 1.5em; height: 1.5em; margin: 0; color: var(--accent); flex: none;
+    fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .setNote { margin: 0 0 14px; }
+  .setGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .story .setIc { width: 1.1em; height: 1.1em; margin: 0 6px 0 0; vertical-align: -0.18em; color: var(--muted); }
   .story { text-align: left; }
   .story span { display: block; }
   .story .meta { font-size: 0.88rem; font-weight: 400; color: var(--muted); }
   /* Picture view: each story is a small deck of cards with a close-up of one
      card on top. The two lines under the tile are the edges of the cards below. */
-  #storyList.pictures { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 22px 16px; }
+  #storyList.pictures .setGrid { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 22px 16px; }
   .pictures .story {
     padding: 8px 8px 12px; border-radius: 18px; margin-bottom: 7px;
     box-shadow: 0 3.5px 0 -1.5px var(--surface), 0 3.5px 0 0 var(--edge),
@@ -218,6 +228,18 @@
   /* Play */
   #playHead { justify-content: flex-start; gap: 18px; margin-bottom: 32px; }
   #playHead h1 { margin: 0; }
+  /* Concept stories: the student picks a colour for the shapes. The picked
+     swatch gets a ring and a check mark, so the choice never rests on colour. */
+  #colourRow { margin-left: auto; gap: 8px; }
+  .swatch {
+    width: 40px; height: 40px; min-height: 0; padding: 0; border-radius: 50%;
+    border: 2px solid #6f5f4a; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .swatch svg { width: 22px; height: 22px; visibility: hidden; }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--ink); }
+  .swatch[aria-pressed="true"] svg { visibility: visible; }
+  .swatch path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
   #slots, #tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 34px 16px; }
   #slots { padding-top: 30px; }
   .slot {
@@ -295,10 +317,19 @@
   .retelling .slot.told { box-shadow: 0 0 0 3px var(--accent); }
   .retelling .slot.prompted { box-shadow: 0 0 0 3px var(--accent); outline: 2px dashed var(--accent); outline-offset: 5px; }
   #retellBox { margin-top: 8px; text-align: center; }
-  #retellRow, #partsRow { justify-content: center; margin-top: 6px; }
+  #retellBox .row { justify-content: center; margin-top: 6px; }
+  #supportRow { margin-bottom: 8px; }
+  #retellBox .stepper { display: inline-flex; align-items: center; gap: 12px; }
+  #retellBox .count { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
+  /* Retell support, faded by the clinician: words only drops the picture;
+     no cards hides the card itself, leaving the numbered spot to tap. */
+  .support-words .slot .card .art { display: none; }
+  .support-words .slot .card .cap, .support-words .slot .card .cap[hidden] {
+    display: flex; flex: 1; font-size: calc(clamp(0.9rem, 1.9vw, 1.15rem) * var(--cap)); padding: 12px;
+  }
+  .support-none .slot .card { visibility: hidden; }
   #partsChips { gap: 8px; }
   #partsChips .btn[data-mark="2"] { outline: 2px dashed var(--accent); outline-offset: 4px; }
-  #wordsCount { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
   #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); gap: 10px 14px; }
@@ -396,6 +427,9 @@
     <div class="row" id="playHead">
       <button class="btn mini" id="backBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
       <h1 id="playTitle"></h1>
+      <div class="row" id="colourRow" role="group" aria-labelledby="colourLabel" hidden>
+        <span class="muted small" id="colourLabel">Colour</span>
+      </div>
       
     </div>
     <div id="slots"></div>
@@ -409,17 +443,33 @@
     </div>
     <div id="retellBox" hidden>
       <p class="muted small">Tap a card when the student tells that part. Tap again if it needed a prompt, and once more to clear it.</p>
-      <div class="row" id="partsRow" role="group" aria-labelledby="partsLabel">
+      <div class="row" id="supportRow" role="group" aria-labelledby="supportLabel">
+        <span id="supportLabel">Support:</span>
+        <button class="btn mini" data-support="pictures">Pictures</button>
+        <button class="btn mini" data-support="words">Words only</button>
+        <button class="btn mini" data-support="none">No cards</button>
+      </div>
+      <div class="row" id="partsRow" role="group" aria-labelledby="partsLabel" hidden>
         <span id="partsLabel">Story parts included:</span>
         <span class="row" id="partsChips"></span>
       </div>
       <div class="row" id="retellRow">
-        <span id="wordsLabel">Sequence words (first, next, then, last…)</span>
-        <button class="btn mini" id="wordsLess" aria-label="One fewer sequence word">−</button>
-        <output id="wordsCount" aria-labelledby="wordsLabel">0</output>
-        <button class="btn mini" id="wordsMore" aria-label="One more sequence word">+</button>
-        <button class="link small" id="retellDiscard">Discard this retell</button>
+        <span id="timeLabel">Time words (first, then, after, when…)</span>
+        <span class="stepper">
+          <button class="btn mini" data-count="time" data-step="-1" aria-label="One fewer time word">−</button>
+          <output id="timeCount" class="count" aria-labelledby="timeLabel">0</output>
+          <button class="btn mini" data-count="time" data-step="1" aria-label="One more time word">+</button>
+        </span>
       </div>
+      <div class="row" id="causeRow">
+        <span id="causeLabel">Cause words (because, so…)</span>
+        <span class="stepper">
+          <button class="btn mini" data-count="cause" data-step="-1" aria-label="One fewer cause word">−</button>
+          <output id="causeCount" class="count" aria-labelledby="causeLabel">0</output>
+          <button class="btn mini" data-count="cause" data-step="1" aria-label="One more cause word">+</button>
+        </span>
+      </div>
+      <button class="link small" id="retellDiscard">Discard this retell</button>
     </div>
     <div class="row" id="cueBox">
       <div class="row" id="ladder" role="group" aria-label="Give a cue">
@@ -456,14 +506,25 @@
       <li><b>It records and does not judge.</b> The order a student builds shows how they understand the story. A wrong order is information, not a failure, so the app never marks a card right or wrong. A first wrong try gets only "Try again".</li>
       <li><b>Interpretation stays with the clinician.</b> The app counts and reports. It does not score, label or diagnose.</li>
       <li><b>Support is part of the data.</b> The clinician gives help from a ladder of cues, lightest first: a verbal cue, placing the first or last card, narrowing the choice to two, a pointer that grows over the next card, or showing the order. Each one is logged on the attempt with its level (independent, verbal, visual, model), so a cued success is never written up as independent. The app never gives a cue on its own.</li>
-      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in, sequence words used, and which story grammar parts (character, setting, problem, feeling, action, ending) the student included.</li>
+      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in, time words and cause words, which story parts (character, problem, feeling, action, ending…) the student included, and how much picture support was left on the table.</li>
       <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
       <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
     </ul>
 
+    <h2>What the research suggests</h2>
+    <p>Narrative intervention research, much of it from the developers of the Story Champs program, points to a few practices that this tool tries to support without taking over the clinician's role:</p>
+    <ul>
+      <li><b>Story grammar.</b> Stories with a character, a problem, a feeling, an action and an ending. Four stories here are built that way, and each card names its part, so the retell line can say which parts were told.</li>
+      <li><b>Many examples of the same shape.</b> Several short stories with the same parts, rather than one long one.</li>
+      <li><b>Pictures, then less.</b> Retell first with pictures, then with words only, then with no cards. The retell records each step the clinician takes.</li>
+      <li><b>Time and cause words.</b> Words like <i>then</i> and <i>after</i>, and <i>because</i> and <i>so</i>, are counted separately.</li>
+    </ul>
+    <p>Most of that research is with preschool to third grade, and much of it is by the program's own authors. Sources and caveats are in the <a href="https://github.com/harmonicsystems/narrative-sequencing/blob/main/research-notes.md">research notes</a>.</p>
+
     <h2>How it was made</h2>
     <p>I built this with Claude, Anthropic's AI model, working as a coding partner. I described what a session needs to look like and what the note needs to say; Claude wrote the code, and I tried each version and corrected it. The whole app is one web page with no outside services, which keeps student data on the device and makes the tool easy to host and to trust.</p>
     <p>The cartoon pictures were made with Google's Gemini image generator, one card at a time from written prompts, with each card built on the one before so the character and scene stay the same and only the event changes. The shape cards for the concept stories are simple drawings written directly as code.</p>
+    <p>The four story grammar stories were drawn differently. Each child (Ana, Sam, Jo, Max), Gran and the puppy got a character sheet first; every card was then drawn by OpenAI's image model, through Codex, with those sheets attached and one master layout per story, so faces, rooms and sizes stay the same from card to card. I reviewed each round and asked for fixes: a face that looked angry instead of puzzled, a flashlight that changed colour, a backpack with a flap it shouldn't have.</p>
 
     <h2>Who did what</h2>
     <div class="box">
@@ -474,7 +535,7 @@
     <h2>How much work went into it</h2>
     <ul>
       <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
-      <li>17 stories: 9 picture stories with 38 illustrated cards, and 8 concept stories with 31 shape cards.</li>
+      <li>20 stories: 8 picture stories with 33 illustrated cards, 4 story grammar stories with 21 illustrated cards, and 8 concept stories with 31 shape cards.</li>
       <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
       <li>Setup, card sizes, themes, the retell step, the cue ladder and this tour were each added in response to trying the tool and finding what got in the way.</li>
     </ul>
@@ -509,7 +570,61 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "zoom": {"cartoon": 1.25}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "zoom": {"cartoon": 1.3}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "zoom": {"cartoon": 1.4}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "title": "The kite in the tree", "gradeBand": "K-5", "reversible": false, "cover": 2, "cursor": "🍃", "grammar": ["character", "setting", "problem", "feeling", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Flying a kite in the park", "emoji": "🪁", "img": "01.jpg"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg"}, {"text": "Feeling sad about the kite", "emoji": "😢", "img": "03.jpg"}, {"text": "Grandparent reaches it with a rake", "emoji": "🧓", "img": "04.jpg"}, {"text": "Happy to have the kite back", "emoji": "😊", "img": "05.jpg"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "zoom": {"cartoon": 1.18}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "zoom": {"cartoon": 1.12}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "zoom": {"cartoon": 1.08}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "grammar": [], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "set": "routine", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "set": "routine", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "set": "routine", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "set": "routine", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "set": "narrative", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6eee1"}, "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}]}, {"id": "spilled-paint", "set": "narrative", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6f0e4"}, "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}]}, {"id": "lost-library-book", "set": "narrative", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}]}, {"id": "block-tower", "set": "narrative", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"}, {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"}, {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}]}, {"id": "puffer-fish", "set": "change", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "set": "change", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "set": "change", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "set": "change", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "set": "concept", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "set": "concept", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "set": "concept", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "set": "concept", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "set": "concept", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "set": "concept", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "set": "concept", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "set": "concept", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+// Built-in copy of the concept drawings (img/<storyId>/shape/*.svg), so they
+// can be recoloured even when index.html is opened from disk. Refreshed by the
+// script in the README, like SEED.
+const SHAPES = {"few-to-many/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "few-to-many/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"179.3\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "few-to-many/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"158.6\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"200\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"200\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"104\" cy=\"241.4\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"150\" cy=\"241.4\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"196\" cy=\"241.4\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "few-to-many/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"137.9\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"179.3\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"179.3\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"104\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"150\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"196\" cy=\"220.7\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"81\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"127\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"173\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/><circle cx=\"219\" cy=\"262.1\" r=\"15\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"3\"/></svg>", "filling-up/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#fdf9f1\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "filling-up/05.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"45\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"115\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"185\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><circle cx=\"255\" cy=\"200\" r=\"27\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "left-to-right/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"40\" y1=\"200\" x2=\"260\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"64\" cy=\"200\" r=\"34\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "left-to-right/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"40\" y1=\"200\" x2=\"260\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"200\" r=\"34\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "left-to-right/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"40\" y1=\"200\" x2=\"260\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"236\" cy=\"200\" r=\"34\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#f3e6d8\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#d6ae8c\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#a06c44\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "light-to-dark/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"96\" fill=\"#553521\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "low-to-high/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"150\" y1=\"60\" x2=\"150\" y2=\"340\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"300\" r=\"36\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "low-to-high/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"150\" y1=\"60\" x2=\"150\" y2=\"340\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"200\" r=\"36\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "low-to-high/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"150\" y1=\"60\" x2=\"150\" y2=\"340\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-dasharray=\"2 14\"/><circle cx=\"150\" cy=\"100\" r=\"36\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "short-to-tall/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"280\" width=\"70\" height=\"40\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "short-to-tall/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"215\" width=\"70\" height=\"105\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "short-to-tall/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"150\" width=\"70\" height=\"170\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "short-to-tall/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"115\" y=\"85\" width=\"70\" height=\"235\" rx=\"6\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/><line x1=\"60\" y1=\"322\" x2=\"240\" y2=\"322\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "small-to-large/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"26\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "small-to-large/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"56\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "small-to-large/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"88\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "small-to-large/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><circle cx=\"150\" cy=\"200\" r=\"120\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "thin-to-thick/01.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><line x1=\"62\" y1=\"200\" x2=\"238\" y2=\"200\" stroke=\"#6f5f4a\" stroke-width=\"4\" stroke-linecap=\"round\"/></svg>", "thin-to-thick/02.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"62\" y=\"195\" width=\"176\" height=\"10\" rx=\"5\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "thin-to-thick/03.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"62\" y=\"187\" width=\"176\" height=\"26\" rx=\"13\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>", "thin-to-thick/04.svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 400\"><rect width=\"300\" height=\"400\" fill=\"#fdf9f1\"/><rect x=\"62\" y=\"175\" width=\"176\" height=\"50\" rx=\"25\" fill=\"#b07a55\" stroke=\"#6f5f4a\" stroke-width=\"4\"/></svg>"};// @shapes
+
+// Colours a student can pick for a concept story. The drawings keep their
+// brown outline, so a shape never depends on its fill; only the fill changes.
+// Light to dark gets four shades of the picked colour at the original
+// lightness steps, so the order still reads light to dark.
+const PALETTE = [
+  { id: 'coral', hex: '#d9806a' }, { id: 'sky', hex: '#6a90bf' },
+  { id: 'sage', hex: '#7d9d68' },  { id: 'mustard', hex: '#d4a23c' },
+  { id: 'berry', hex: '#a75f86' }, { id: 'teal', hex: '#4f9893' },
+  { id: 'plum', hex: '#8a6fae' },  { id: 'clay', hex: '#b07a55' }
+];
+const SHAPE_FILL = '#b07a55';
+const SHAPE_SHADES = [['#f3e6d8', 0.90], ['#d6ae8c', 0.69], ['#a06c44', 0.45], ['#553521', 0.23]];
+const shapeColour = {};   // storyId -> palette id the student picked (memory only)
+
+const shapeStories = () => stories.filter(s => s.styles.includes('shape'));
+// Each concept story starts in a different colour, so the set looks varied.
+function colourOf(story) {
+  const id = shapeColour[story.id];
+  if (PALETTE.some(c => c.id === id)) return id;
+  const i = shapeStories().indexOf(story);
+  return PALETTE[(i < 0 ? 0 : i) % PALETTE.length].id;
+}
+function shade(hex, light) {
+  let [r, g, b] = [1, 3, 5].map(i => parseInt(hex.substr(i, 2), 16) / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0, s = 0;
+  if (d) {
+    s = d / (1 - Math.abs(max + min - 1));
+    h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  }
+  const c = (1 - Math.abs(2 * light - 1)) * s, x = c * (1 - Math.abs(((h % 2) + 2) % 2 - 1)), m = light - c / 2;
+  const seg = Math.floor(((h % 6) + 6) % 6);
+  [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][seg];
+  return '#' + [r, g, b].map(v => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('');
+}
+// The drawing for one card in the story's colour, or null if there is no
+// built-in copy (then the file is used as it is).
+function shapeSrc(story, file) {
+  const svg = SHAPES[story.id + '/' + file];
+  if (!svg) return null;
+  const hex = PALETTE.find(c => c.id === colourOf(story)).hex;
+  let out = svg;
+  if (hex !== SHAPE_FILL) {
+    out = out.split(SHAPE_FILL).join(hex);
+    for (const [from, light] of SHAPE_SHADES) out = out.split(from).join(shade(hex, light));
+  }
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(out);
+}
+
 
 const CUES = {
   independent: 'independently',
@@ -521,6 +636,29 @@ const CUES = {
 // the ones that apply to it in story.grammar; without that, all six are offered.
 const PARTS = ['character', 'setting', 'problem', 'feeling', 'action', 'ending'];
 const storyParts = story => Array.isArray(story.grammar) ? story.grammar.filter(p => PARTS.includes(p)) : PARTS;
+// Order for reporting parts; 'end feeling' only comes from card.part.
+const PART_ORDER = [...PARTS, 'end feeling'];
+// Stories whose cards name their part (card.part) take their parts from the
+// cards the clinician taps, so they need no separate part buttons.
+const cardParts = story => story.cards.some(c => c.part);
+// One record shape for both: parts offered, included, and included after a prompt.
+function partsRecord(R, story, spots) {
+  const uniq = list => PART_ORDER.filter(p => list.includes(p));
+  if (cardParts(story)) {
+    const partOf = n => story.cards[n - 1].part;
+    return {
+      partsOffered: uniq(story.cards.map(c => c.part).filter(Boolean)),
+      partsTold: uniq(spots(1).map(partOf).filter(Boolean)),
+      partsPrompted: uniq(spots(2).map(partOf).filter(Boolean))
+    };
+  }
+  const names = Object.keys(R.parts);
+  return {
+    partsOffered: names,
+    partsTold: names.filter(p => R.parts[p] > 0),
+    partsPrompted: names.filter(p => R.parts[p] === 2)
+  };
+}
 const $ = id => document.getElementById(id);
 
 let stories = [];
@@ -560,7 +698,7 @@ const TOUR = [
   { when: 'done', focus: '#retellBtn',
     text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
   { when: 'retell', focus: '#retellBox',
-    text: 'Click a card when its part is told; click again if it needed a prompt. Mark the story parts the student included (character, setting, action, ending) and count sequence words with − and +. Then press End session.' },
+    text: 'Click a card when its part is told; click again if it needed a prompt. In stories whose cards don\'t name their part, also mark the story parts the student included. Count time words (first, then) and cause words (because, so) with − and +. Support steps back from pictures to words only to no cards. Then press End session.' },
   { when: 'summary', focus: '#oline',
     text: 'This objective line is ready to paste into a SOAP note, with the raw data below it. Nothing is saved: closing the page clears the session.' }
 ];
@@ -598,6 +736,32 @@ function startTour() {
 
 /* ---------- Setup ---------- */
 
+// Story sets, in the order the setup list shows them. story.set names one;
+// a story without a known set goes under "Other stories" at the end.
+const SETS = [
+  { id: 'narrative', title: 'Stories', note: 'A character, a problem, a feeling and how it ends.',
+    icon: 'M3 6.5C5.5 5 8.5 5 12 7c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5zM12 7v12.5' },
+  { id: 'routine', title: 'Everyday steps', note: 'Routines done one step after another.',
+    icon: 'M10 6h10M10 12h10M10 18h10M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5 2.5-2.5M3.5 18l1.5 1.5 2.5-2.5' },
+  { id: 'change', title: 'Step-by-step change', note: 'Something changes a little at a time, and can run either way.',
+    icon: 'M5 19v-3M10 19v-6M15 19v-9M20 19V5' },
+  { id: 'concept', title: 'Concepts', note: 'Size, shade, position and amount, drawn as simple shapes.',
+    icon: 'M7.5 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM14 4.5h6v6h-6zM12 20H3l4.5-7.5z' },
+  { id: 'other', title: 'Other stories', note: '',
+    icon: 'M5 4h14v16H5zM9 9h6M9 13h6' }
+];
+const setOf = s => SETS.find(t => t.id === s.set && t.id !== 'other') || SETS[SETS.length - 1];
+function setIcon(set, cls) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'ic ' + cls);
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', set.icon);
+  svg.append(path);
+  return svg;
+}
+
 function renderSetup() {
   const story = stories.find(s => s.id === pick.storyId) || stories[0];
   pick.storyId = story.id;
@@ -608,18 +772,34 @@ function renderSetup() {
   list.classList.toggle('pictures', pick.view === 'pictures');
   $('viewBtn').textContent = 'View: ' + pick.view;
   $('viewBtn').onclick = () => { pick.view = pick.view === 'pictures' ? 'list' : 'pictures'; renderSetup(); };
-  for (const s of stories) {
-    const b = el('button', 'btn story');
-    b.setAttribute('aria-pressed', s.id === story.id);
-    if (pick.view === 'pictures') b.append(buildThumb(s));
-    b.append(el('span', '', s.title));
-    const plays = new Set(log.filter(a => a.storyId === s.id).map(a => a.run)).size;
-    const meta = [s.gradeBand, s.cards.length + ' cards'];
-    if (s.reversible) meta.push('reversible');
-    if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
-    b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
-    b.onclick = () => { pick.storyId = s.id; renderSetup(); tour('pick'); };
-    list.append(b);
+  for (const set of SETS) {
+    const members = stories.filter(s => setOf(s) === set);
+    if (!members.length) continue;
+    const section = el('section', 'set');
+    const head = el('h3', 'setHead');
+    head.id = 'set-' + set.id;
+    head.append(setIcon(set, 'setHeadIc'), set.title);
+    section.setAttribute('aria-labelledby', head.id);
+    section.append(head);
+    if (set.note) section.append(el('p', 'muted small setNote', set.note));
+    const grid = el('div', 'setGrid');
+    section.append(grid);
+    list.append(section);
+    for (const s of members) {
+      const b = el('button', 'btn story');
+      b.setAttribute('aria-pressed', s.id === story.id);
+      if (pick.view === 'pictures') b.append(buildThumb(s));
+      const name = el('span', '');
+      name.append(setIcon(set, 'setIc'), s.title);
+      b.append(name);
+      const plays = new Set(log.filter(a => a.storyId === s.id).map(a => a.run)).size;
+      const meta = [s.gradeBand, s.cards.length + ' cards'];
+      if (s.reversible) meta.push('reversible');
+      if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
+      b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
+      b.onclick = () => { pick.storyId = s.id; renderSetup(); tour('pick'); };
+      grid.append(b);
+    }
   }
 
   const styleRow = $('styleRow');
@@ -705,9 +885,10 @@ function buildThumb(story) {
   img.alt = '';
   img.draggable = false;
   img.onerror = useEmoji;
-  img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+  const file = data.img || pad2(idx + 1) + '.png';
+  img.src = (style === 'shape' && shapeSrc(story, file)) || 'img/' + story.id + '/' + style + '/' + file;
   thumb.append(img);
-  if (/\.svg$/.test(img.src)) img.style.objectFit = 'contain';   // shape cards: show the whole drawing
+  if (/\.svg$/.test(file)) img.style.objectFit = 'contain';   // shape cards: show the whole drawing
   const paper = story.paper && story.paper[style];
   if (/^#[0-9a-f]{6}$/i.test(paper || '')) thumb.style.background = paper;
   return thumb;
@@ -777,7 +958,10 @@ function buildCard(story, idx, style, captions) {
     img.alt = '';
     img.draggable = false;
     img.onerror = useEmoji;            // no image file: fall back to emoji, then text
-    img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+    const file = data.img || pad2(idx + 1) + '.png';
+    const drawn = style === 'shape' && shapeSrc(story, file);
+    if (drawn) img.dataset.shape = file;            // recoloured when the student picks a colour
+    img.src = drawn || 'img/' + story.id + '/' + style + '/' + file;
     art.append(img);
     cap.hidden = !captions;
     // Optional story.paper[style]: the image set's background colour. The card
@@ -799,6 +983,35 @@ function buildCard(story, idx, style, captions) {
     useEmoji();
   }
   return card;
+}
+
+// Colour swatches for concept stories (style "shape"). A pick recolours the
+// cards in place and is kept for that story for the rest of the session.
+function renderColours() {
+  const row = $('colourRow');
+  const on = S.style === 'shape' && S.story.cards.some((c, i) => shapeSrc(S.story, c.img || pad2(i + 1) + '.png'));
+  row.hidden = !on;
+  row.querySelectorAll('.swatch').forEach(b => b.remove());
+  if (!on) return;
+  const now = colourOf(S.story);
+  for (const c of PALETTE) {
+    const b = el('button', 'swatch');
+    b.type = 'button';
+    b.style.background = c.hex;
+    b.setAttribute('aria-pressed', c.id === now);
+    b.setAttribute('aria-label', c.id);
+    b.title = c.id;
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fdf9f1" stroke-width="6"/><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#3a2f25" stroke-width="2.6"/></svg>';
+    b.onclick = () => {
+      shapeColour[S.story.id] = c.id;
+      S.cardEls.forEach(card => {
+        const img = card.querySelector('img[data-shape]');
+        if (img) img.src = shapeSrc(S.story, img.dataset.shape);
+      });
+      renderColours();
+    };
+    row.append(b);
+  }
 }
 
 function startStory() {
@@ -824,6 +1037,7 @@ function startStory() {
   if (pinned != null) S.slots[0] = pinned;
 
   $('playTitle').textContent = story.title;
+  renderColours();
   const themed = !!story.cursor && $('storyCursor').checked;
   $('play').classList.toggle('themed', themed);
   if (themed) $('play').style.setProperty('--story-cursor', emojiCursor(story.cursor));
@@ -900,8 +1114,13 @@ function render() {
     slot.classList.toggle('prompted', m === 2);
     slot.querySelector('.mark').textContent = ['', 'told', 'told with a prompt'][m];
   });
+  const level = R ? R.support[R.support.length - 1] : '';
+  $('play').classList.toggle('support-words', level === 'words');
+  $('play').classList.toggle('support-none', level === 'none');
   if (R) {
-    $('wordsCount').textContent = R.words;
+    $('timeCount').textContent = R.timeWords;
+    $('causeCount').textContent = R.causeWords;
+    document.querySelectorAll('#supportRow [data-support]').forEach(b => b.setAttribute('aria-pressed', b.dataset.support === level));
     const names = Object.keys(R.parts);
     $('partsRow').hidden = !names.length;
     $('partsChips').replaceChildren(...names.map(p => {
@@ -921,16 +1140,34 @@ function render() {
 // The app only counts what the clinician marks. marks[i] is for spot i + 1:
 // 0 not mentioned, 1 told, 2 told with a prompt. order = spots in the order
 // they were first marked, so it shows the order the student told them in.
+// support lists the support levels in the order they were used; a new retell
+// starts at the level the last one ended on (memory only).
+const SUPPORT = ['pictures', 'words', 'none'];
+const SUPPORT_NAME = { pictures: 'pictures', words: 'words only', none: 'no cards' };
+let lastSupport = 'pictures';
 function startRetell() {
   if (!S || !S.locked || S.retell) return;
-  S.retell = {
-    marks: Array(S.story.cards.length).fill(0), order: [], words: 0, t0: performance.now(),
-    parts: Object.fromEntries(storyParts(S.story).map(p => [p, 0]))   // 0 not included, 1 included, 2 with a prompt
-  };
+  S.retell = { marks: Array(S.story.cards.length).fill(0), order: [], timeWords: 0, causeWords: 0,
+    support: [lastSupport], t0: performance.now(),
+    // Part buttons only for stories whose cards don't name their part; otherwise
+    // the parts come from the cards the clinician taps.
+    parts: cardParts(S.story) ? {} : Object.fromEntries(storyParts(S.story).map(p => [p, 0])) };
   $('retellBtn').hidden = true;
   $('feedback').textContent = 'Now tell the story.';
   render();
   tour('retell');
+}
+
+function setSupport(level) {
+  const R = S && S.retell;
+  if (!R || !SUPPORT.includes(level)) return;
+  // Before anything is marked or counted, a change only adjusts the starting
+  // level, so it never reads as support the student actually worked with.
+  const started = R.order.length || R.timeWords || R.causeWords;
+  if (!started) R.support = [level];
+  else if (R.support[R.support.length - 1] !== level) R.support.push(level);
+  lastSupport = level;
+  render();
 }
 
 function markSpot(i) {
@@ -956,10 +1193,10 @@ function endRetell(save) {
       told: spots(1),            // spot numbers mentioned at all
       prompted: spots(2),        // of those, the ones that needed a prompt
       orderTold: [...R.order],
-      partsOffered: Object.keys(R.parts),
-      partsTold: Object.keys(R.parts).filter(p => R.parts[p] > 0),
-      partsPrompted: Object.keys(R.parts).filter(p => R.parts[p] === 2),
-      sequenceWords: R.words,
+      ...partsRecord(R, S.story, spots),
+      support: [...R.support],
+      timeWords: R.timeWords,
+      causeWords: R.causeWords,
       seconds: Math.round((performance.now() - R.t0) / 1000)
     });
   }
@@ -1306,13 +1543,20 @@ function retellSentence(rs) {
     const inOrder = multi.filter(r => r.orderTold.every((p, i, a) => i === 0 || p > a[i - 1])).length;
     s += '; events told in story order in ' + inOrder + '/' + multi.length + (multi.length === 1 ? ' retell' : ' retells');
   }
-  const words = sum(r => r.sequenceWords);
-  s += '; ' + words + (words === 1 ? ' sequence word' : ' sequence words') + ' used.';
+  // Support: each retell counted once, at the least support it reached.
+  const least = r => SUPPORT[Math.max(...r.support.map(l => SUPPORT.indexOf(l)))];
+  const bySupport = SUPPORT.map(l => [l, rs.filter(r => least(r) === l).length]).filter(([, n]) => n);
+  if (!(bySupport.length === 1 && bySupport[0][0] === 'pictures')) {
+    s += '; least support reached: ' + bySupport.map(([l, n]) => SUPPORT_NAME[l] + ' ' + n + '/' + N).join(', ');
+  }
+  const time = sum(r => r.timeWords), cause = sum(r => r.causeWords);
+  s += '; ' + time + (time === 1 ? ' time word' : ' time words') + ' and ' +
+    cause + (cause === 1 ? ' cause word' : ' cause words') + ' used.';
   // Story grammar: each part over the number of retells that offered it.
   const offered = sum(r => r.partsOffered.length);
   if (offered) {
     const pTold = sum(r => r.partsTold.length), pPrompted = sum(r => r.partsPrompted.length);
-    const each = PARTS.map(p => [p, rs.filter(r => r.partsOffered.includes(p)).length, rs.filter(r => r.partsTold.includes(p)).length])
+    const each = PART_ORDER.map(p => [p, rs.filter(r => r.partsOffered.includes(p)).length, rs.filter(r => r.partsTold.includes(p)).length])
       .filter(([, n]) => n).map(([p, n, k]) => p + ' ' + k + '/' + n).join(', ');
     s += ' Story parts included: ' + pTold + '/' + offered + ' (' + each + ')' +
       (pTold ? ', ' + pPrompted + '/' + pTold + ' after a prompt.' : '.');
@@ -1322,12 +1566,12 @@ function retellSentence(rs) {
 
 function buildRetellRaw(rs) {
   const head = ['storyId', 'cardCount', 'style', 'direction', 'told', 'prompted', 'orderTold',
-    'partsOffered', 'partsTold', 'partsPrompted', 'sequenceWords', 'seconds'];
+    'partsOffered', 'partsTold', 'partsPrompted', 'support', 'timeWords', 'causeWords', 'seconds'];
   const rows = rs.map(r => [
     r.storyId, r.cardCount, r.style, r.direction, r.told.join(',') || '-',
     r.prompted.join(',') || '-', r.orderTold.join(',') || '-',
     r.partsOffered.join(',') || '-', r.partsTold.join(',') || '-', r.partsPrompted.join(',') || '-',
-    r.sequenceWords, r.seconds
+    r.support.map(l => SUPPORT_NAME[l]).join(' > '), r.timeWords, r.causeWords, r.seconds
   ]);
   return [head, ...rows].map(r => r.join('\t')).join('\n');
 }
@@ -1424,8 +1668,12 @@ async function init() {
     $('feedback').textContent = '';
     render();
   };
-  $('wordsMore').onclick = () => { S.retell.words++; render(); };
-  $('wordsLess').onclick = () => { S.retell.words = Math.max(0, S.retell.words - 1); render(); };
+  document.querySelectorAll('#retellBox [data-count]').forEach(b => b.onclick = () => {
+    const key = b.dataset.count + 'Words';
+    S.retell[key] = Math.max(0, S.retell[key] + Number(b.dataset.step));
+    render();
+  });
+  document.querySelectorAll('#supportRow [data-support]').forEach(b => b.onclick = () => setSupport(b.dataset.support));
   $('slots').addEventListener('click', e => {
     const slot = e.target.closest('.slot');
     if (slot && S && S.retell) markSpot(Number(slot.dataset.slot));

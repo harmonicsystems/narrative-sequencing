@@ -1,6 +1,7 @@
 [
   {
     "id": "brushing-teeth",
+    "set": "routine",
     "title": "Brushing teeth",
     "gradeBand": "K-2",
     "reversible": false,
@@ -9,7 +10,6 @@
     "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
-    "zoom": { "cartoon": 1.25 },
     "cards": [
       {"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"},
       {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"},
@@ -18,6 +18,7 @@
   },
   {
     "id": "planting-a-seed",
+    "set": "routine",
     "title": "Planting a seed",
     "gradeBand": "K-2",
     "reversible": false,
@@ -25,7 +26,6 @@
     "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
-    "zoom": { "cartoon": 1.3 },
     "cards": [
       {"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"},
       {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"},
@@ -35,6 +35,7 @@
   },
   {
     "id": "making-a-sandwich",
+    "set": "routine",
     "title": "Making a sandwich",
     "gradeBand": "3-5",
     "reversible": false,
@@ -43,7 +44,6 @@
     "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
-    "zoom": { "cartoon": 1.4 },
     "cards": [
       {"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"},
       {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"},
@@ -53,6 +53,7 @@
   },
   {
     "id": "mailing-a-letter",
+    "set": "routine",
     "title": "Mailing a letter",
     "gradeBand": "3-5",
     "reversible": false,
@@ -71,24 +72,80 @@
   },
   {
     "id": "kite-in-the-tree",
-    "title": "The kite in the tree",
-    "gradeBand": "K-5",
+    "set": "narrative",
+    "title": "Kite in the tree",
+    "gradeBand": "K-2",
     "reversible": false,
     "cover": 2,
-    "cursor": "🍃",
-    "grammar": ["character", "setting", "problem", "feeling", "action", "ending"],
+    "cursor": "🪁",
     "styles": ["cartoon", "emoji", "text"],
-    "paper": {"cartoon": "#f1ede1"},
+    "paper": {"cartoon": "#f6eee1"},
     "cards": [
-      {"text": "Flying a kite in the park", "emoji": "🪁", "img": "01.jpg"},
-      {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg"},
-      {"text": "Feeling sad about the kite", "emoji": "😢", "img": "03.jpg"},
-      {"text": "Grandparent reaches it with a rake", "emoji": "🧓", "img": "04.jpg"},
-      {"text": "Happy to have the kite back", "emoji": "😊", "img": "05.jpg"}
+      {"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"},
+      {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"},
+      {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"},
+      {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"},
+      {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}
+    ]
+  },
+  {
+    "id": "spilled-paint",
+    "set": "narrative",
+    "title": "Spilled paint",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "cover": 4,
+    "cursor": "🖌️",
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6f0e4"},
+    "cards": [
+      {"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"},
+      {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"},
+      {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"},
+      {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"},
+      {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}
+    ]
+  },
+  {
+    "id": "lost-library-book",
+    "set": "narrative",
+    "title": "Lost library book",
+    "gradeBand": "3-5",
+    "reversible": false,
+    "cover": 4,
+    "cursor": "🔦",
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6efe4"},
+    "cards": [
+      {"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"},
+      {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"},
+      {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"},
+      {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"},
+      {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"},
+      {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}
+    ]
+  },
+  {
+    "id": "block-tower",
+    "set": "narrative",
+    "title": "Block tower",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "cover": 2,
+    "cursor": "🧱",
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6efe4"},
+    "cards": [
+      {"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"},
+      {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"},
+      {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"},
+      {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"},
+      {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}
     ]
   },
   {
     "id": "puffer-fish",
+    "set": "change",
     "title": "Puffer fish",
     "gradeBand": "K-2",
     "reversible": true,
@@ -97,7 +154,6 @@
     "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f7f2e7"},
-    "zoom": { "cartoon": 1.18 },
     "cards": [
       {"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"},
       {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"},
@@ -106,6 +162,7 @@
   },
   {
     "id": "kettle",
+    "set": "change",
     "title": "Kettle",
     "gradeBand": "3-5",
     "reversible": true,
@@ -114,7 +171,6 @@
     "grammar": ["setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
-    "zoom": { "cartoon": 1.12 },
     "cards": [
       {"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"},
       {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"},
@@ -124,6 +180,7 @@
   },
   {
     "id": "storm",
+    "set": "change",
     "title": "Storm",
     "gradeBand": "3-5",
     "reversible": true,
@@ -141,6 +198,7 @@
   },
   {
     "id": "voice-volume",
+    "set": "change",
     "title": "Voice volume",
     "gradeBand": "K-8",
     "reversible": true,
@@ -150,7 +208,6 @@
     "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
-    "zoom": { "cartoon": 1.08 },
     "cards": [
       {"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"},
       {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"},
@@ -161,11 +218,11 @@
   },
   {
     "id": "small-to-large",
+    "set": "concept",
     "title": "Small to large",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["small", "large"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -177,11 +234,11 @@
   },
   {
     "id": "light-to-dark",
+    "set": "concept",
     "title": "Light to dark",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["light", "dark"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -193,11 +250,11 @@
   },
   {
     "id": "low-to-high",
+    "set": "concept",
     "title": "Low to high",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["low", "high"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -208,11 +265,11 @@
   },
   {
     "id": "filling-up",
+    "set": "concept",
     "title": "Filling up",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["empty", "full"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -225,11 +282,11 @@
   },
   {
     "id": "thin-to-thick",
+    "set": "concept",
     "title": "Thin to thick",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["thin", "thick"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -241,11 +298,11 @@
   },
   {
     "id": "few-to-many",
+    "set": "concept",
     "title": "Few to many",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["few", "many"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -257,11 +314,11 @@
   },
   {
     "id": "left-to-right",
+    "set": "concept",
     "title": "Left to right",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["left", "right"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
@@ -272,11 +329,11 @@
   },
   {
     "id": "short-to-tall",
+    "set": "concept",
     "title": "Short to tall",
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["short", "tall"],
-    "grammar": [],
     "styles": ["shape", "text"],
     "paper": {"shape": "#fdf9f1"},
     "cards": [
