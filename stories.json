@@ -1,0 +1,111 @@
+[
+  {
+    "id": "brushing-teeth",
+    "title": "Brushing teeth",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Put toothpaste on the brush", "emoji": "🪥" },
+      { "text": "Brush all your teeth", "emoji": "😬" },
+      { "text": "Rinse with water", "emoji": "🚰" }
+    ]
+  },
+  {
+    "id": "planting-a-seed",
+    "title": "Planting a seed",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Dig a hole", "emoji": "🕳️" },
+      { "text": "Drop in the seed", "emoji": "🌰" },
+      { "text": "Water the soil", "emoji": "💧" },
+      { "text": "A sprout comes up", "emoji": "🌱" }
+    ]
+  },
+  {
+    "id": "making-a-sandwich",
+    "title": "Making a sandwich",
+    "gradeBand": "3-5",
+    "reversible": false,
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Lay out two slices of bread", "emoji": "🍞" },
+      { "text": "Add cheese and lettuce", "emoji": "🧀" },
+      { "text": "Put the top slice on", "emoji": "🥪" },
+      { "text": "Eat the sandwich", "emoji": "😋" }
+    ]
+  },
+  {
+    "id": "mailing-a-letter",
+    "title": "Mailing a letter",
+    "gradeBand": "3-5",
+    "reversible": false,
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Write the letter", "emoji": "✍️" },
+      { "text": "Seal it in an envelope", "emoji": "✉️" },
+      { "text": "Stick on a stamp", "emoji": "🏷️" },
+      { "text": "Drop it in the mailbox", "emoji": "📮" },
+      { "text": "The letter arrives", "emoji": "📬" }
+    ]
+  },
+  {
+    "id": "puffer-fish",
+    "title": "Puffer fish",
+    "gradeBand": "K-2",
+    "reversible": true,
+    "endLabels": ["calm", "puffed"],
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Small and calm", "emoji": "🐟" },
+      { "text": "Half puffed", "emoji": "🐠" },
+      { "text": "Fully puffed, spikes out", "emoji": "🐡" }
+    ]
+  },
+  {
+    "id": "kettle",
+    "title": "Kettle",
+    "gradeBand": "3-5",
+    "reversible": true,
+    "endLabels": ["cold", "boiling"],
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Cold water, no bubbles", "emoji": "🧊" },
+      { "text": "Warm water, tiny bubbles", "emoji": "🌡️" },
+      { "text": "Hot water, lots of bubbles", "emoji": "♨️" },
+      { "text": "Boiling, steam whistling out", "emoji": "💨" }
+    ]
+  },
+  {
+    "id": "storm",
+    "title": "Storm",
+    "gradeBand": "3-5",
+    "reversible": true,
+    "endLabels": ["clear", "storm"],
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Clear blue sky", "emoji": "☀️" },
+      { "text": "A few clouds", "emoji": "🌤️" },
+      { "text": "Gray clouds cover the sky", "emoji": "☁️" },
+      { "text": "Rain is falling", "emoji": "🌧️" },
+      { "text": "Thunder and lightning", "emoji": "⛈️" }
+    ]
+  },
+  {
+    "id": "voice-volume",
+    "title": "Voice volume",
+    "gradeBand": "K-8",
+    "reversible": true,
+    "endLabels": ["silent", "yelling"],
+    "styles": ["emoji", "text"],
+    "cards": [
+      { "text": "Silent, no sound", "emoji": "🔇" },
+      { "text": "Whisper", "emoji": "🤫" },
+      { "text": "Talking voice", "emoji": "🗣️" },
+      { "text": "Loud voice", "emoji": "📣" },
+      { "text": "Yelling voice", "emoji": "🔊" }
+    ]
+  }
+]

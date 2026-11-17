@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Narrative Sequencing</title>
+<style>
+  :root {
+    --bg: #f3eee4;
+    --surface: #fbf8f1;
+    --ink: #3b352d;
+    --muted: #84796a;
+    --line: #d8cebd;
+    --accent: #66796a;
+    --accent-ink: #fbf8f1;
+    --soft: #e9e2d4;
+    --cw: clamp(92px, 16vw, 170px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #24211d;
+      --surface: #2f2b26;
+      --ink: #e6dfd2;
+      --muted: #a09584;
+      --line: #4a443b;
+      --accent: #8fa392;
+      --accent-ink: #1f1d19;
+      --soft: #38332d;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 16px 64px; }
+  [hidden] { display: none !important; }
+  h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 4px; }
+  h2 {
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); margin: 32px 0 10px;
+  }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 0.85rem; }
+
+  button, select { font: inherit; color: inherit; }
+  .btn {
+    min-height: 48px; padding: 10px 20px; border-radius: 12px;
+    border: 1.5px solid var(--line); background: var(--surface); cursor: pointer;
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .btn:disabled { opacity: 0.4; cursor: default; }
+  .btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .link { background: none; border: 0; padding: 10px 4px; color: var(--muted); cursor: pointer; min-height: 44px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+  /* Setup */
+  #storyList { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+  .story { text-align: left; }
+  .story span { display: block; }
+  .story .meta { font-size: 0.82rem; color: var(--muted); }
+  label.check { display: inline-flex; gap: 10px; align-items: center; min-height: 44px; cursor: pointer; }
+  label.check input { width: 20px; height: 20px; accent-color: var(--accent); }
+  #sessionBar { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); justify-content: space-between; }
+
+  /* Play */
+  #playHead { justify-content: space-between; margin-bottom: 28px; }
+  #slots, #tray { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px 14px; }
+  #slots { padding-top: 26px; }
+  .slot {
+    position: relative; width: var(--cw); aspect-ratio: 3 / 4;
+    border: 2px dashed var(--line); border-radius: 16px;
+  }
+  .slot::before {
+    content: attr(data-n); position: absolute; top: -26px; left: 0; right: 0;
+    text-align: center; font-size: 0.85rem; color: var(--muted);
+  }
+  .slot.filled { border-color: transparent; }
+  .picking .slot:not(.filled) { border-color: var(--accent); background: var(--soft); }
+  #tray {
+    margin-top: 36px; padding: 22px 14px; min-height: calc(var(--cw) * 1.34 + 44px);
+    background: var(--soft); border-radius: 20px; gap: 14px;
+  }
+  .card {
+    width: var(--cw); aspect-ratio: 3 / 4; display: flex; flex-direction: column;
+    background: var(--surface); border: 2px solid var(--line); border-radius: 16px;
+    overflow: hidden; cursor: grab; user-select: none; -webkit-user-select: none;
+    touch-action: none; position: relative;
+  }
+  .slot .card { width: calc(100% + 4px); height: calc(100% + 4px); margin: -2px; }
+  .card .art {
+    flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;
+    font-size: calc(var(--cw) * 0.42); line-height: 1;
+  }
+  .card .art img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .card .cap { padding: 6px 8px 9px; font-size: clamp(0.72rem, 1.5vw, 0.9rem); line-height: 1.25; text-align: center; }
+  .card.plain .art { display: none; }
+  .card.plain .cap {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    font-size: clamp(0.85rem, 1.9vw, 1.1rem); padding: 10px;
+  }
+  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent); }
+  .card.dragging { z-index: 10; cursor: grabbing; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
+  .card.pinned { cursor: default; border-color: var(--muted); }
+  .card.pinned::after {
+    content: "Start"; position: absolute; top: 6px; left: 6px; padding: 1px 8px;
+    font-size: 0.7rem; border-radius: 999px; background: var(--muted); color: var(--surface);
+  }
+  .locked .card { cursor: default; }
+  #feedback { min-height: 2.2em; margin: 30px 0 14px; text-align: center; font-size: 1.2rem; }
+  #actions { justify-content: center; }
+  #cueBox { margin-top: 48px; justify-content: flex-end; font-size: 0.8rem; color: var(--muted); }
+  #cueBox select {
+    min-height: 40px; padding: 4px 8px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--surface);
+  }
+
+  /* Summary */
+  .box {
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 16px; margin-bottom: 12px; user-select: text; -webkit-user-select: text;
+  }
+  pre.box { overflow-x: auto; font: 0.8rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; tab-size: 14; }
+</style>
+</head>
+<body>
+<main>
+
+  <section id="setup">
+    <h1>Narrative Sequencing</h1>
+    <p class="muted">Choose a story for the student to put in order.</p>
+    <p class="muted small" id="sourceNote" hidden></p>
+
+    <h2>Story</h2>
+    <div id="storyList"></div>
+
+    <h2>Style</h2>
+    <div class="row" id="styleRow"></div>
+    <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
+
+    <div id="dirBlock" hidden>
+      <h2>Direction</h2>
+      <div class="row" id="dirRow"></div>
+    </div>
+
+    <div class="row" style="margin-top:36px">
+      <button class="btn primary" id="startBtn">Start</button>
+    </div>
+
+    <div class="row" id="sessionBar" hidden>
+      <span class="muted small" id="sessionCount"></span>
+      <button class="btn" id="endFromSetup">End session</button>
+    </div>
+  </section>
+
+  <section id="play" hidden>
+    <div class="row" id="playHead">
+      <h1 id="playTitle"></h1>
+      <button class="link small" id="backBtn">Stories</button>
+    </div>
+    <div id="slots"></div>
+    <div id="tray" aria-label="Cards to place"></div>
+    <p id="feedback" role="status" aria-live="polite"></p>
+    <div class="row" id="actions">
+      <button class="btn primary" id="checkBtn">Check</button>
+      <button class="btn primary" id="nextBtn" hidden>Next story</button>
+      <button class="btn" id="endBtn" hidden>End session</button>
+    </div>
+    <div class="row" id="cueBox">
+      <label for="cue">Cue</label>
+      <select id="cue">
+        <option value="independent">independent</option>
+        <option value="verbal">verbal</option>
+        <option value="visual">visual</option>
+        <option value="model">model</option>
+      </select>
+    </div>
+  </section>
+
+  <section id="summary" hidden>
+    <h1>Session summary</h1>
+    <h2>O-line</h2>
+    <div class="box" id="oline"></div>
+    <button class="btn primary" id="copyO">Copy</button>
+
+    <h2>Raw data</h2>
+    <pre class="box" id="raw"></pre>
+    <button class="btn" id="copyRaw">Copy raw data</button>
+
+    <div class="row" style="margin-top:40px">
+      <button class="btn" id="resumeBtn">Back to stories</button>
+      <button class="link" id="newSession">Start a new session</button>
+    </div>
+    <p class="muted small" style="margin-top:16px">Nothing is saved. Closing or reloading this page clears the session.</p>
+  </section>
+
+</main>
+
+<script>
+'use strict';
+
+// Built-in copy of stories.json, used only when the file can't be fetched
+// (browsers block fetch when index.html is opened straight from disk).
+const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥"}, {"text": "Brush all your teeth", "emoji": "😬"}, {"text": "Rinse with water", "emoji": "🚰"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Dig a hole", "emoji": "🕳️"}, {"text": "Drop in the seed", "emoji": "🌰"}, {"text": "Water the soil", "emoji": "💧"}, {"text": "A sprout comes up", "emoji": "🌱"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞"}, {"text": "Add cheese and lettuce", "emoji": "🧀"}, {"text": "Put the top slice on", "emoji": "🥪"}, {"text": "Eat the sandwich", "emoji": "😋"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Write the letter", "emoji": "✍️"}, {"text": "Seal it in an envelope", "emoji": "✉️"}, {"text": "Stick on a stamp", "emoji": "🏷️"}, {"text": "Drop it in the mailbox", "emoji": "📮"}, {"text": "The letter arrives", "emoji": "📬"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "styles": ["emoji", "text"], "cards": [{"text": "Small and calm", "emoji": "🐟"}, {"text": "Half puffed", "emoji": "🐠"}, {"text": "Fully puffed, spikes out", "emoji": "🐡"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "styles": ["emoji", "text"], "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️"}, {"text": "Boiling, steam whistling out", "emoji": "💨"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "styles": ["emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️"}, {"text": "A few clouds", "emoji": "🌤️"}, {"text": "Gray clouds cover the sky", "emoji": "☁️"}, {"text": "Rain is falling", "emoji": "🌧️"}, {"text": "Thunder and lightning", "emoji": "⛈️"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "styles": ["emoji", "text"], "cards": [{"text": "Silent, no sound", "emoji": "🔇"}, {"text": "Whisper", "emoji": "🤫"}, {"text": "Talking voice", "emoji": "🗣️"}, {"text": "Loud voice", "emoji": "📣"}, {"text": "Yelling voice", "emoji": "🔊"}]}];// @seed
+
+const CUES = {
+  independent: 'independently',
+  verbal: 'with verbal cues',
+  visual: 'with visual cues',
+  model: 'with a model'
+};
+const IMAGE_STYLES = ['cartoon', 'realistic'];
+const $ = id => document.getElementById(id);
+
+let stories = [];
+let log = [];          // one record per checked attempt
+let runCount = 0;      // one run = one presentation of a story
+let S = null;          // state of the story on screen
+const pick = { storyId: null, style: null, direction: 'forward' };
+
+function show(name) {
+  for (const id of ['setup', 'play', 'summary']) $(id).hidden = id !== name;
+  window.scrollTo(0, 0);
+}
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+/* ---------- Setup ---------- */
+
+function renderSetup() {
+  const story = stories.find(s => s.id === pick.storyId) || stories[0];
+  pick.storyId = story.id;
+  if (!story.styles.includes(pick.style)) pick.style = story.styles[0];
+
+  const list = $('storyList');
+  list.replaceChildren();
+  for (const s of stories) {
+    const b = el('button', 'btn story');
+    b.setAttribute('aria-pressed', s.id === story.id);
+    b.append(el('span', '', s.title));
+    const plays = new Set(log.filter(a => a.storyId === s.id).map(a => a.run)).size;
+    const meta = [s.gradeBand, s.cards.length + ' cards'];
+    if (s.reversible) meta.push('reversible');
+    if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
+    b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
+    b.onclick = () => { pick.storyId = s.id; renderSetup(); };
+    list.append(b);
+  }
+
+  const styleRow = $('styleRow');
+  styleRow.replaceChildren();
+  for (const st of story.styles) {
+    const b = el('button', 'btn', st);
+    b.setAttribute('aria-pressed', st === pick.style);
+    b.onclick = () => { pick.style = st; renderSetup(); };
+    styleRow.append(b);
+  }
+
+  $('dirBlock').hidden = !story.reversible;
+  if (story.reversible) {
+    const [a, z] = story.endLabels || ['start', 'end'];
+    const dirRow = $('dirRow');
+    dirRow.replaceChildren();
+    for (const [dir, label] of [['forward', a + ' → ' + z], ['reverse', z + ' → ' + a]]) {
+      const b = el('button', 'btn', label);
+      b.setAttribute('aria-pressed', dir === pick.direction);
+      b.onclick = () => { pick.direction = dir; renderSetup(); };
+      dirRow.append(b);
+    }
+  }
+
+  const runs = new Set(log.map(a => a.run)).size;
+  $('sessionBar').hidden = !runs;
+  $('sessionCount').textContent = runs + (runs === 1 ? ' story' : ' stories') + ' logged this session';
+}
+
+/* ---------- Play ---------- */
+
+function shuffledAwayFrom(target) {
+  const a = [...target];
+  if (a.length < 2) return a;
+  do {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  } while (a.every((c, i) => c === target[i]));
+  return a;
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+function buildCard(story, idx, style, captions) {
+  const data = story.cards[idx];
+  const card = el('div', 'card');
+  card.tabIndex = 0;
+  card.setAttribute('role', 'button');
+  card.setAttribute('aria-label', data.text);
+  const art = el('div', 'art');
+  const cap = el('div', 'cap', data.text);
+  card.append(art, cap);
+
+  const useEmoji = () => {
+    art.replaceChildren();
+    if (data.emoji) { art.textContent = data.emoji; cap.hidden = !captions; }
+    else { card.classList.add('plain'); cap.hidden = false; }
+  };
+
+  if (style === 'text') {
+    card.classList.add('plain');
+  } else if (IMAGE_STYLES.includes(style)) {
+    const img = new Image();
+    img.alt = '';
+    img.draggable = false;
+    img.onerror = useEmoji;            // no image file: fall back to emoji, then text
+    img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+    art.append(img);
+    cap.hidden = !captions;
+  } else {
+    useEmoji();
+  }
+  return card;
+}
+
+function startStory() {
+  const story = stories.find(s => s.id === pick.storyId);
+  const n = story.cards.length;
+  const direction = story.reversible ? pick.direction : 'forward';
+  const order = [...Array(n).keys()];
+  if (direction === 'reverse') order.reverse();
+  const pinned = story.reversible ? order[0] : null;
+
+  S = {
+    story, style: pick.style, direction, order, pinned,
+    slots: Array(n).fill(null),
+    tray: shuffledAwayFrom(order.filter(c => c !== pinned)),
+    selected: null, locked: false, attempt: 1,
+    run: ++runCount, t0: performance.now(),
+    slotEls: [], cardEls: []
+  };
+  if (pinned != null) S.slots[0] = pinned;
+
+  $('playTitle').textContent = story.title;
+  const slotsEl = $('slots');
+  slotsEl.replaceChildren();
+  $('tray').replaceChildren();
+  for (let i = 0; i < n; i++) {
+    const slot = el('div', 'slot');
+    slot.dataset.slot = i;
+    slot.dataset.n = i + 1;
+    if (i !== 0 || pinned == null) {
+      slot.tabIndex = 0;
+      slot.setAttribute('role', 'button');
+      slot.setAttribute('aria-label', 'Spot ' + (i + 1));
+      slot.onclick = e => { if (!e.target.closest('.card')) tapSlot(i); };
+      slot.onkeydown = e => { if (e.target === slot && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); tapSlot(i); } };
+    }
+    S.slotEls.push(slot);
+    slotsEl.append(slot);
+  }
+  const captions = $('captions').checked;
+  for (let i = 0; i < n; i++) {
+    const card = buildCard(story, i, S.style, captions);
+    if (i === pinned) { card.classList.add('pinned'); card.tabIndex = -1; }
+    else wireCard(card, i);
+    S.cardEls.push(card);
+  }
+
+  $('cue').value = 'independent';
+  $('feedback').textContent = '';
+  $('checkBtn').hidden = false;
+  $('nextBtn').hidden = true;
+  $('endBtn').hidden = true;
+  render();
+  show('play');
+}
+
+function render() {
+  S.slotEls.forEach((slot, i) => {
+    const c = S.slots[i];
+    if (c != null) slot.append(S.cardEls[c]);
+    slot.classList.toggle('filled', c != null);
+  });
+  for (const c of S.tray) $('tray').append(S.cardEls[c]);
+  S.cardEls.forEach((card, i) => card.classList.toggle('selected', i === S.selected));
+  $('play').classList.toggle('picking', S.selected != null);
+  $('play').classList.toggle('locked', S.locked);
+  $('checkBtn').disabled = S.locked || S.slots.includes(null);
+}
+
+// dest: a slot index, or 'tray'
+function move(card, dest) {
+  if (S.locked || card === S.pinned) return;
+  const from = S.slots.indexOf(card);
+  if (dest === 'tray') {
+    if (from >= 0) { S.slots[from] = null; S.tray.push(card); }
+  } else {
+    const occupant = S.slots[dest];
+    if (occupant === S.pinned && S.pinned != null) return;
+    if (occupant !== card) {
+      if (from >= 0) S.slots[from] = null;
+      else S.tray = S.tray.filter(c => c !== card);
+      S.slots[dest] = card;
+      if (occupant != null) {
+        if (from >= 0) S.slots[from] = occupant;   // swap
+        else S.tray.push(occupant);
+      }
+    }
+  }
+  S.selected = null;
+  render();
+}
+
+function tapCard(card) {
+  if (S.locked || card === S.pinned) return;
+  if (S.selected == null) S.selected = card;
+  else if (S.selected === card) S.selected = null;
+  else {
+    const at = S.slots.indexOf(card);
+    if (at >= 0) return move(S.selected, at);     // tap a placed card = swap into its spot
+    S.selected = card;
+  }
+  render();
+}
+
+function tapSlot(i) {
+  if (S.selected != null) move(S.selected, i);
+}
+
+function wireCard(card, idx) {
+  let start = null, dragging = false;
+
+  card.addEventListener('pointerdown', e => {
+    if (S.locked || e.button > 0) return;
+    start = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    dragging = false;
+    try { card.setPointerCapture(e.pointerId); } catch {}
+  });
+
+  card.addEventListener('pointermove', e => {
+    if (!start || e.pointerId !== start.id) return;
+    const dx = e.clientX - start.x, dy = e.clientY - start.y;
+    if (!dragging && Math.hypot(dx, dy) > 8) {
+      dragging = true;
+      S.selected = null;
+      render();
+      card.classList.add('dragging');
+    }
+    if (dragging) card.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+  });
+
+  const finish = (e, cancelled) => {
+    if (!start || e.pointerId !== start.id) return;
+    const wasDrag = dragging;
+    start = null; dragging = false;
+    card.classList.remove('dragging');
+    card.style.transform = '';
+    if (cancelled) return;
+    if (!wasDrag) return tapCard(idx);
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const dest = under && under.closest('.slot, #tray');
+    if (dest) move(idx, dest.id === 'tray' ? 'tray' : Number(dest.dataset.slot));
+  };
+  card.addEventListener('pointerup', e => finish(e, false));
+  card.addEventListener('pointercancel', e => finish(e, true));
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tapCard(idx); }
+  });
+}
+
+function check() {
+  if (S.locked || S.slots.includes(null)) return;
+  const misplaced = [];
+  S.slots.forEach((c, i) => { if (c !== S.order[i]) misplaced.push(i + 1); });
+  const correct = misplaced.length === 0;
+  const modeled = !correct && S.attempt === 2;
+
+  log.push({
+    run: S.run,
+    storyId: S.story.id,
+    cardCount: S.story.cards.length,
+    style: S.style,
+    direction: S.direction,
+    attemptNumber: S.attempt,
+    correct,
+    misplacedPositions: misplaced,
+    cueLevel: $('cue').value,
+    seconds: Math.round((performance.now() - S.t0) / 1000),
+    modeled
+  });
+
+  S.selected = null;
+  if (!correct && S.attempt === 1) {
+    S.attempt = 2;
+    S.t0 = performance.now();
+    $('cue').value = 'independent';
+    $('feedback').textContent = 'Try again.';
+    render();
+    return;
+  }
+  if (modeled) { S.slots = [...S.order]; S.tray = []; }
+  S.locked = true;
+  $('feedback').textContent = correct ? "That's the order." : 'Here is the order.';
+  $('checkBtn').hidden = true;
+  $('nextBtn').hidden = false;
+  $('endBtn').hidden = false;
+  render();
+}
+
+/* ---------- Summary ---------- */
+
+function groupRuns(entries) {
+  const runs = new Map();
+  for (const a of entries) {
+    if (!runs.has(a.run)) runs.set(a.run, []);
+    runs.get(a.run).push(a);
+  }
+  const groups = new Map();
+  for (const attempts of runs.values()) {
+    const a = attempts[0];
+    const key = [a.cardCount, a.style, a.direction].join('|');
+    if (!groups.has(key)) groups.set(key, { k: a.cardCount, style: a.style, direction: a.direction, runs: [] });
+    groups.get(key).runs.push(attempts);
+  }
+  return [...groups.values()];
+}
+
+function groupSentence(g) {
+  const N = g.runs.length;
+  const what = g.k + '-card ' + (N === 1 ? 'story' : 'stories') +
+    ' (' + g.style + ' stimuli' + (g.direction === 'reverse' ? ', reverse order' : '') + ')';
+  const all = g.runs.flat();
+  const cues = Object.keys(CUES).filter(c => all.some(a => a.cueLevel === c));
+  const first = g.runs.filter(r => r[0].correct).length;
+  const bySecond = g.runs.filter(r => r.some(a => a.correct)).length;
+  const modeled = g.runs.filter(r => r.some(a => a.modeled)).length;
+
+  let s;
+  if (cues.length === 1) {
+    s = 'Sequenced ' + first + '/' + N + ' ' + what + ' correctly on first attempt, ' +
+      bySecond + '/' + N + ' by second attempt, ' + CUES[cues[0]] + '.';
+  } else {
+    // More than one cue level: report each separately, per attempt.
+    const perCue = n => {
+      const as = g.runs.map(r => r[n]).filter(Boolean);
+      return cues.filter(c => as.some(a => a.cueLevel === c)).map(c => {
+        const sub = as.filter(a => a.cueLevel === c);
+        return sub.filter(a => a.correct).length + '/' + sub.length + ' correct ' + CUES[c];
+      }).join(', ');
+    };
+    const second = perCue(1);
+    s = 'Sequenced ' + what + ': on first attempt, ' + perCue(0) + '; ' +
+      (second ? 'on second attempt, ' + second + '; ' : '') +
+      bySecond + '/' + N + ' correct by second attempt overall.';
+  }
+  if (modeled) s += ' Correct order modeled for ' + modeled + '/' + N + '.';
+  return s;
+}
+
+function errorSentence(entries) {
+  const wrong = entries.filter(a => !a.correct);
+  if (!wrong.length) return 'No sequencing errors.';
+  const M = wrong.length;
+  const count = test => wrong.filter(a => a.misplacedPositions.some(p => test(p, a.cardCount))).length;
+  const parts = [
+    ['first', count(p => p === 1)],
+    ['middle', count((p, k) => p > 1 && p < k)],
+    ['last', count((p, k) => p === k)]
+  ].filter(([, n]) => n).map(([name, n]) => name + ' events (' + n + '/' + M + ')');
+  return 'Errors across ' + M + ' incorrect ' + (M === 1 ? 'attempt' : 'attempts') +
+    ' involved ' + parts.join(', ') + '.';
+}
+
+function buildOLine(entries) {
+  if (!entries.length) return 'No attempts logged.';
+  return groupRuns(entries).map(groupSentence).join(' ') + ' ' + errorSentence(entries);
+}
+
+function buildRaw(entries) {
+  const head = ['storyId', 'cardCount', 'style', 'direction', 'attemptNumber', 'correct',
+    'misplacedPositions', 'cueLevel', 'seconds', 'modeled'];
+  const rows = entries.map(a => [
+    a.storyId, a.cardCount, a.style, a.direction, a.attemptNumber,
+    a.correct ? 'yes' : 'no', a.misplacedPositions.join(',') || '-',
+    a.cueLevel, a.seconds, a.modeled ? 'yes' : 'no'
+  ]);
+  return [head, ...rows].map(r => r.join('\t')).join('\n');
+}
+
+function showSummary() {
+  $('oline').textContent = buildOLine(log);
+  $('raw').textContent = buildRaw(log);
+  show('summary');
+}
+
+async function copyText(text, btn) {
+  let ok = false;
+  try {
+    await navigator.clipboard.writeText(text);
+    ok = true;
+  } catch {
+    const ta = el('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.append(ta);
+    ta.select();
+    try { ok = document.execCommand('copy'); } catch {}
+    ta.remove();
+  }
+  btn.dataset.label = btn.dataset.label || btn.textContent;
+  btn.textContent = ok ? 'Copied' : 'Could not copy. Select the text instead.';
+  setTimeout(() => { btn.textContent = btn.dataset.label; }, 1800);
+}
+
+/* ---------- Wiring ---------- */
+
+function usable(s) {
+  return s && s.id && Array.isArray(s.cards) && s.cards.length >= (s.reversible ? 3 : 2) &&
+    Array.isArray(s.styles) && s.styles.length;
+}
+
+async function init() {
+  let loaded = null;
+  try {
+    const r = await fetch('stories.json', { cache: 'no-cache' });
+    if (r.ok) loaded = await r.json();
+  } catch {}
+  if (!Array.isArray(loaded)) {
+    loaded = SEED;
+    $('sourceNote').hidden = false;
+    $('sourceNote').textContent = 'Using the built-in stories. Edits to stories.json show up when the page is served (GitHub Pages or a local server), not when opened straight from disk.';
+  }
+  stories = loaded.filter(usable);
+
+  $('startBtn').onclick = startStory;
+  $('checkBtn').onclick = check;
+  $('nextBtn').onclick = () => { renderSetup(); show('setup'); };
+  $('backBtn').onclick = () => { renderSetup(); show('setup'); };
+  $('endBtn').onclick = showSummary;
+  $('endFromSetup').onclick = showSummary;
+  $('resumeBtn').onclick = () => { renderSetup(); show('setup'); };
+  $('copyO').onclick = e => copyText($('oline').textContent, e.currentTarget);
+  $('copyRaw').onclick = e => copyText($('raw').textContent, e.currentTarget);
+  $('newSession').onclick = () => {
+    if (!confirm('Clear this session\'s data and start over?')) return;
+    log = []; runCount = 0;
+    renderSetup(); show('setup');
+  };
+  $('tray').onclick = e => {
+    if (S && S.selected != null && !e.target.closest('.card')) move(S.selected, 'tray');
+  };
+
+  if (!stories.length) {
+    $('storyList').textContent = 'No stories found in stories.json.';
+    $('startBtn').disabled = true;
+    return;
+  }
+  renderSetup();
+}
+
+init();
+</script>
+</body>
+</html>
