@@ -182,7 +182,12 @@ and would need clinician control and logging.
    target order is unambiguous.
 3. Student arranges: drag via pointer events,
    plus tap-card-then-tap-slot fallback.
-   Large touch targets.
+   Large touch targets. A magnifier in each
+   card's corner opens it full screen (<dialog>;
+   its presses stop at the button, so they never
+   pick up, drag or mark the card). Access, not
+   a cue: not logged. Hidden while retell support
+   is faded; a session setting turns it off.
 4. "Check" scores the whole sequence.
 5. Wrong, attempt 1: neutral "Try again" only.
    No indication of which cards are wrong.
