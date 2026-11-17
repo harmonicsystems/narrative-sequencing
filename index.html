@@ -116,7 +116,12 @@
     font-size: calc(var(--cw) * 0.42); line-height: 1;
   }
   .card .art img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-  .card .cap { padding: 6px 8px 10px; font-size: clamp(0.8rem, 1.5vw, 0.95rem); line-height: 1.3; text-align: center; }
+  /* Room for two lines on every card, so pictures sit at the same height
+     whether a caption wraps or not. */
+  .card .cap {
+    padding: 6px 8px 10px; font-size: clamp(0.8rem, 1.5vw, 0.95rem); line-height: 1.3; text-align: center;
+    min-height: calc(2.6em + 16px); display: flex; align-items: center; justify-content: center;
+  }
   .card.plain .art { display: none; }
   .card.plain .cap {
     flex: 1; display: flex; align-items: center; justify-content: center;
@@ -126,11 +131,8 @@
   .card.selected { border-color: var(--accent); box-shadow: 0 0 0 3.5px var(--accent), var(--shadow); translate: 0 -6px; }
   .card.dragging { z-index: 10; cursor: grabbing; transition: none; box-shadow: 0 14px 30px rgba(50, 34, 16, 0.24); }
   .card.pinned { cursor: default; box-shadow: none; }
-  .card.pinned::after {
-    content: "Start"; position: absolute; top: 8px; left: 8px; padding: 1px 10px;
-    font-size: 0.78rem; font-weight: 600; border-radius: 999px;
-    background: var(--accent); color: var(--accent-ink);
-  }
+  /* The fixed first card is labelled above its spot, never on the picture. */
+  .slot.start::before { color: var(--ink); }
   .locked .card { cursor: default; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
@@ -237,7 +239,7 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥"}, {"text": "Brush all your teeth", "emoji": "😬"}, {"text": "Rinse with water", "emoji": "🚰"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Dig a hole", "emoji": "🕳️"}, {"text": "Drop in the seed", "emoji": "🌰"}, {"text": "Water the soil", "emoji": "💧"}, {"text": "A sprout comes up", "emoji": "🌱"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞"}, {"text": "Add cheese and lettuce", "emoji": "🧀"}, {"text": "Put the top slice on", "emoji": "🥪"}, {"text": "Eat the sandwich", "emoji": "😋"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Write the letter", "emoji": "✍️"}, {"text": "Seal it in an envelope", "emoji": "✉️"}, {"text": "Stick on a stamp", "emoji": "🏷️"}, {"text": "Drop it in the mailbox", "emoji": "📮"}, {"text": "The letter arrives", "emoji": "📬"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "styles": ["emoji", "text"], "cards": [{"text": "Small and calm", "emoji": "🐟"}, {"text": "Half puffed", "emoji": "🐠"}, {"text": "Fully puffed, spikes out", "emoji": "🐡"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "styles": ["emoji", "text"], "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️"}, {"text": "Boiling, steam whistling out", "emoji": "💨"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "styles": ["emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️"}, {"text": "A few clouds", "emoji": "🌤️"}, {"text": "Gray clouds cover the sky", "emoji": "☁️"}, {"text": "Rain is falling", "emoji": "🌧️"}, {"text": "Thunder and lightning", "emoji": "⛈️"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "styles": ["emoji", "text"], "cards": [{"text": "Silent, no sound", "emoji": "🔇"}, {"text": "Whisper", "emoji": "🤫"}, {"text": "Talking voice", "emoji": "🗣️"}, {"text": "Loud voice", "emoji": "📣"}, {"text": "Yelling voice", "emoji": "🔊"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥"}, {"text": "Brush all your teeth", "emoji": "😬"}, {"text": "Rinse with water", "emoji": "🚰"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Dig a hole", "emoji": "🕳️"}, {"text": "Drop in the seed", "emoji": "🌰"}, {"text": "Water the soil", "emoji": "💧"}, {"text": "A sprout comes up", "emoji": "🌱"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞"}, {"text": "Add cheese and lettuce", "emoji": "🧀"}, {"text": "Put the top slice on", "emoji": "🥪"}, {"text": "Eat the sandwich", "emoji": "😋"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "styles": ["emoji", "text"], "cards": [{"text": "Write the letter", "emoji": "✍️"}, {"text": "Seal it in an envelope", "emoji": "✉️"}, {"text": "Stick on a stamp", "emoji": "🏷️"}, {"text": "Drop it in the mailbox", "emoji": "📮"}, {"text": "The letter arrives", "emoji": "📬"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "styles": ["emoji", "text"], "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️"}, {"text": "Boiling, steam whistling out", "emoji": "💨"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "styles": ["emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️"}, {"text": "A few clouds", "emoji": "🌤️"}, {"text": "Gray clouds cover the sky", "emoji": "☁️"}, {"text": "Rain is falling", "emoji": "🌧️"}, {"text": "Thunder and lightning", "emoji": "⛈️"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "styles": ["emoji", "text"], "cards": [{"text": "Silent, no sound", "emoji": "🔇"}, {"text": "Whisper", "emoji": "🤫"}, {"text": "Talking voice", "emoji": "🗣️"}, {"text": "Loud voice", "emoji": "📣"}, {"text": "Yelling voice", "emoji": "🔊"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}];// @seed
 
 const CUES = {
   independent: 'independently',
@@ -342,6 +344,7 @@ function buildCard(story, idx, style, captions) {
 
   const useEmoji = () => {
     art.replaceChildren();
+    card.style.background = card.style.color = '';
     if (data.emoji) { art.textContent = data.emoji; cap.hidden = !captions; }
     else { card.classList.add('plain'); cap.hidden = false; }
   };
@@ -357,6 +360,14 @@ function buildCard(story, idx, style, captions) {
     img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
     art.append(img);
     cap.hidden = !captions;
+    // Optional story.paper[style]: the image set's background colour. The card
+    // takes it so the caption strip blends into the picture, in any theme.
+    const paper = story.paper && story.paper[style];
+    if (/^#[0-9a-f]{6}$/i.test(paper || '')) {
+      const [r, g, b] = [1, 3, 5].map(i => parseInt(paper.substr(i, 2), 16));
+      card.style.background = paper;
+      card.style.color = (r * 299 + g * 587 + b * 114) / 1000 > 140 ? '#3a2f25' : '#efe6d6';
+    }
   } else {
     useEmoji();
   }
@@ -388,7 +399,8 @@ function startStory() {
   for (let i = 0; i < n; i++) {
     const slot = el('div', 'slot');
     slot.dataset.slot = i;
-    slot.dataset.n = i + 1;
+    slot.dataset.n = i === 0 && pinned != null ? '1 · Start' : i + 1;
+    slot.classList.toggle('start', i === 0 && pinned != null);
     if (i !== 0 || pinned == null) {
       slot.tabIndex = 0;
       slot.setAttribute('role', 'button');
@@ -609,8 +621,27 @@ function errorSentence(entries) {
     ['middle', count((p, k) => p > 1 && p < k)],
     ['last', count((p, k) => p === k)]
   ].filter(([, n]) => n).map(([name, n]) => name + ' events (' + n + '/' + M + ')');
-  return 'Errors across ' + M + ' incorrect ' + (M === 1 ? 'attempt' : 'attempts') +
+  let s = 'Errors across ' + M + ' incorrect ' + (M === 1 ? 'attempt' : 'attempts') +
     ' involved ' + parts.join(', ') + '.';
+
+  // Name the commonest pattern: exactly two wrong spots, side by side,
+  // can only be two neighboring cards swapped.
+  const where = { start: 0, middle: 0, end: 0 };
+  for (const a of wrong) {
+    const [p, q] = a.misplacedPositions;
+    if (a.misplacedPositions.length !== 2 || q - p !== 1) continue;
+    where[q === a.cardCount ? 'end' : p === 1 ? 'start' : 'middle']++;
+  }
+  const swaps = where.start + where.middle + where.end;
+  if (swaps) {
+    const label = { start: 'at the start', middle: 'in the middle', end: 'at the end' };
+    const used = Object.keys(where).filter(k => where[k]);
+    s += ' ' + swaps + '/' + M + (swaps === 1 ? ' was a swap' : ' were swaps') + ' of two neighboring events ' +
+      (used.length === 1
+        ? label[used[0]] + ' of the sequence.'
+        : '(' + used.map(k => where[k] + ' ' + label[k]).join(', ') + ' of the sequence).');
+  }
+  return s;
 }
 
 function buildOLine(entries) {

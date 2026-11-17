@@ -57,11 +57,12 @@
     "gradeBand": "K-2",
     "reversible": true,
     "endLabels": ["calm", "puffed"],
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f7f2e7"},
     "cards": [
-      {"text": "Small and calm", "emoji": "🐟"},
-      {"text": "Half puffed", "emoji": "🐠"},
-      {"text": "Fully puffed, spikes out", "emoji": "🐡"}
+      {"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"},
+      {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"},
+      {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}
     ]
   },
   {

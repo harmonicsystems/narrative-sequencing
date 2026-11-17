@@ -5,6 +5,15 @@ Static web app for speech-language therapy (K-8).
 Student orders story cards; app logs data and
 outputs a pasteable SOAP O-line.
 
+## Mission
+The order a student builds shows how they
+understand the story. The app records that
+faithfully and never judges: a wrong order is
+information, not a failure. Interpretation
+belongs to the clinician. If a change makes the
+app score, label or diagnose the student, it is
+probably wrong. Full statement: top of README.
+
 ## Stack
 - Single index.html, vanilla JS/CSS, no build,
   no dependencies, system font stack
@@ -50,6 +59,17 @@ story = {
 - Concept stories (size, shade, position, fill
   pattern) use style "shape": simple SVGs, one
   hue, outlined so they never rely on fill alone.
+- Optional story.paper = { <style>: "#rrggbb" }:
+  the image set's background colour. Cards take
+  it so captions blend into the picture; caption
+  ink is picked for contrast.
+- Generated image sets (puffer-fish/cartoon is
+  the first): make each card as an edit of the
+  previous one in the same chat, trim all images
+  identically, keep scale and position constant
+  so only the target property changes.
+- O-line names neighbouring swaps (exactly two
+  adjacent wrong spots) and where they fell.
 - Array order = forward order.
 - Card renders the chosen style: image if the
   file exists, else emoji, else text.

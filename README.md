@@ -1,5 +1,14 @@
 # Narrative Sequencing
 
+> When a student puts a story in order, they show us how they understand it.
+>
+> This app gives the student a calm place to arrange events, and gives the
+> clinician an honest record of what happened: the order placed, the time
+> taken, the help given.
+>
+> It records and does not judge. A wrong order is information, not a failure.
+> The interpretation belongs to the clinician, who knows the child.
+
 A static web app for speech-language therapy (K-8). A student puts story cards
 in order; the app logs each attempt and writes a pasteable SOAP O-line.
 
@@ -65,6 +74,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
 | `styles` | Which styles the setup screen offers. `emoji` and `text` are built in; any other name (`cartoon`, `realistic`, `shape`…) is an image folder. |
+| `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. |
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
@@ -127,6 +137,10 @@ The O-line groups stories by card count, style and direction:
 > Sequenced 2/3 4-card stories (emoji stimuli) correctly on first attempt, 3/3
 > by second attempt, independently. Errors across 1 incorrect attempt involved
 > middle events (1/1), last events (1/1).
+
+When an incorrect attempt has exactly two wrong spots side by side, it is
+counted as a swap of two neighboring events and the O-line says where: "2/2
+were swaps of two neighboring events at the end of the sequence."
 
 If more than one cue level was used in a group, each level is reported
 separately per attempt. Stories whose order had to be shown add "Correct order
