@@ -172,13 +172,36 @@ Same plate, same table-top view in cards 1 to 3.
    or words. No envelope in the picture.
 2. `[ANCHOR] [STYLE]` The child, waist up, presses the flap of a white
    envelope closed with both hands. The envelope has no stamp.
-3. `[ANCHOR] [STYLE]` The child, waist up, holds the sealed envelope in one
-   hand and presses a small red stamp onto its top corner with the other.
-4. `[ANCHOR] [STYLE]` The child stands beside a blue street mailbox and
-   pushes the stamped envelope into its slot. The envelope is half in.
-5. `[STYLE]` A grey-haired grandparent stands in an open doorway holding
-   the same envelope with the red stamp, now opened, and reads the sheet of
-   paper from inside it with a smile. The child is not in this picture.
+Cards 3, 4 and 5 carry this ENVELOPE block so the stamp is on the address
+side, not on the flap:
+
+```
+We see the FRONT of the envelope, the address side: a plain white rectangle
+with NO triangular flap and NO diagonal fold lines. In the middle are three
+short wavy scribble lines standing in for an address (no real letters). The
+small red square stamp is in the top right corner as we look at it. Exactly
+one envelope, exactly one stamp.
+```
+
+3. `[ANCHOR] [STYLE] [ENVELOPE]` The child, waist up, holds the envelope in
+   front of their chest with one hand and presses one finger of the other
+   on the stamp.
+4. `[ANCHOR] [STYLE] [ENVELOPE]` A blue street mailbox on the right with a
+   wide dark slot near the top of its front. The child stands on the left,
+   turned towards it, one arm stretched out, pushing the envelope into the
+   slot. The envelope is half in.
+5. `[STYLE] [ENVELOPE]` A grey-haired grandparent stands in an open doorway
+   holding the same envelope, its top edge torn open, and reads the sheet
+   of paper from inside it with a smile. The child is not in this picture.
+
+Redone 2026-11-17: the first set had the stamp on the flap side. Card 4
+needed four tries. "The envelope has no other lines on it at all: no flap,
+no triangle, no diagonal lines, no folds" removed the flap. Asking for the
+same picture "again" with the envelope further in changed almost nothing;
+asking for "a different composition" with the child turned towards the
+mailbox and an arm stretched out is what made it read as posting. Gemini
+would not draw the envelope level and half hidden in the slot. Card 2
+still shows the back, which is right for sealing.
 
 ---
 

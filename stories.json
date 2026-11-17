@@ -9,6 +9,7 @@
     "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
+    "zoom": { "cartoon": 1.25 },
     "cards": [
       {"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"},
       {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"},
@@ -24,6 +25,7 @@
     "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
+    "zoom": { "cartoon": 1.3 },
     "cards": [
       {"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"},
       {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"},
@@ -41,6 +43,7 @@
     "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
+    "zoom": { "cartoon": 1.4 },
     "cards": [
       {"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"},
       {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"},
@@ -94,6 +97,7 @@
     "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f7f2e7"},
+    "zoom": { "cartoon": 1.18 },
     "cards": [
       {"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"},
       {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"},
@@ -110,6 +114,7 @@
     "grammar": ["setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
+    "zoom": { "cartoon": 1.12 },
     "cards": [
       {"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"},
       {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"},
@@ -145,6 +150,7 @@
     "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
+    "zoom": { "cartoon": 1.08 },
     "cards": [
       {"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"},
       {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"},
