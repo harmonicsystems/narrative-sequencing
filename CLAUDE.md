@@ -61,11 +61,20 @@ probably wrong. Full statement: top of README.
 ## Content model
 - Optional card.part: character | setting |
   problem | feeling | action | ending | end
-  feeling. Four story grammar stories use it
+  feeling. Five story grammar stories use it
   (kite-in-the-tree, spilled-paint,
-  lost-library-book, block-tower). Each has its
-  own child (Sam, Ana, Jo, Max; no pronouns in
-  captions) plus Gran and the puppy.
+  lost-library-book, block-tower,
+  puppy-at-the-door). Each has its own child
+  (Sam, Ana, Jo, Max; no pronouns in captions)
+  plus Gran and the puppy.
+- Two-feelings stories (puppy-at-the-door): two
+  characters feel differently at the same
+  moment. Same moment = one split card (both
+  people, one picture), never two cards, or
+  the target order would count a free choice
+  as a swap. Feelings are the characters',
+  never the student's; no single right
+  reading, so nothing here is scored.
 - Cast bible (image-prompts.md Part 4): sheets
   in img/_cast/<name>/ (turnaround first). Cards
   are made with Codex (`codex exec -i <refs>`,
