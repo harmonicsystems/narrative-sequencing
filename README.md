@@ -116,6 +116,8 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
+| `kind` | Optional. `"match"` makes the story a feelings match instead of a sequence (see "Feelings match"). |
+| `who` | Feelings match only: the character's name in "How does Jo feel?". |
 | `cards[].part` | Optional. The card's story grammar part: `character`, `setting`, `problem`, `feeling`, `action`, `ending` or `end feeling`. Stories with parts show "story parts" on the setup screen, and their retells report parts told. |
 
 For reversible stories, write each card as a **state** ("Half puffed"), not a
@@ -174,6 +176,39 @@ no shape depends on its fill, and *Light to dark* gets four shades of the
 picked colour at the original lightness steps. A drawing can be recoloured
 when its fill is `#b07a55` (and, for shades, `#f3e6d8`, `#d6ae8c`, `#a06c44`,
 `#553521`); anything drawn in the outline colour `#6f5f4a` stays as it is.
+
+## Feelings match
+
+The Feelings set has one entry per cast member (`"kind": "match"`). The
+student sees one picture at a time and picks how the character feels. Each
+card's `text` is the feeling the picture was drawn as, and its image is
+`img/<storyId>/<style>/<feeling>.jpg` (for example `img/feelings-jo/subtle/calm.jpg`), in three styles: `subtle`,
+`exaggerated` and `colour` (lines and colour). The pictures are cut from the
+cast feelings sheets (`image-prompts.md` Part 5).
+
+The start bar sets what the student chooses from (words, emoji or both),
+the labels and the feelings in play (at least two; the choices always appear
+in the same order).
+
+- **Open labels** (default): the choices are a menu, not a test. "The
+  student used another word…" records the student's own word. Nothing is
+  compared with the drawn feeling.
+- **Fixed words**: the same words every time, and the log records whether
+  the choice matches the drawn feeling. "Narrow to two" is offered only
+  here.
+
+Either way the student never sees right or wrong; "Next picture" moves on.
+The drawn feeling is the illustrator's intent, not the answer: many students,
+autistic students especially, read faces differently, and the subtle
+pictures are ambiguous on purpose. Each picture records `storyId`, `who`,
+`style`, `labels`, `choices`, `offered`, `drawnAs`, `chosen`, `ownWord`,
+`matched` (fixed words only), `cues`, `cueLevel` and `seconds`, and the
+O-line adds a sentence such as:
+
+> Matched feelings to 5 exaggerated pictures (Ana) with a fixed set of 5
+> words shown as emoji (calm, happy, upset, worried, frustrated): chose the
+> drawn feeling for 4/5; cues on 1/5 (narrowed to two 1/5). Other choices:
+> calm for frustrated (1/5).
 
 ## Data and output
 

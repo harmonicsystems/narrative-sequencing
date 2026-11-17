@@ -694,6 +694,9 @@ This is how the prompts get better.
 
 | 1 | lost-library-book fixes | Card 5 flashlight was blue (card 4 yellow): recoloured in place with PIL, no new image. Card 3 shelf books were thin: redrawn at Jo's scale. Card 6 backpack had a phantom second flap: redrawn to match card 2's single open compartment. Installed. | Name small props' colours in every brief they appear in (flashlight: yellow). |
 | 1 | block-tower (Codex) | Max and puppy sheets, card 2 master, then 1, 3, 4, 5. Six blocks and the sage ball hold across cards. Card 3's scowl may read angry rather than frustrated. About 160k tokens. | Pending your review. |
+| 1 | Jo feelings F1–F3 (Codex) | Three 3×3 sheets, same nine feelings and order as Ana's A2: subtle, exaggerated, and lines-and-colour (one muted tint and mark per feeling). Briefs attach Jo's A1 and library card 3. All three hold Jo and an even grid. "Focused" reads close to frustrated in all three (eyebrows angled down); F2 relieved's open mouth can read as a yawn; F2 calm and proud are both eyes-closed smiles. About 28k tokens each. Review page: `img/_drafts/jo-feelings/round-1/`. | Pending your review. |
+| 2 | Jo feelings F1–F3 (Codex) | Edit of round 1 (the old sheet attached as Image 3, "change only what is listed"): other cells held. Focused now level brows, eyes on hands, in all three. F2/F3 noses were dots: named the nose "a small curved line, like a c, exactly like Image 1", fixed everywhere. F2 relieved now wipes the forehead, mouth closed. F2 calm first came back smug (one brow up, lopsided smile); a one-cell edit made it closed-eyed and even. F3 frustrated came back almost the same pink as proud; recoloured to a pale brick with PIL. About 30k tokens a sheet. | Name the nose in every face brief. Describe calm as "both brows level, same height, symmetrical smile". When asking a tint to be paler, also name what it must stay apart from. |
+| 1 | Cast feelings F1–F3 (Codex) | Ana, Sam, Max, the grandparent and the puppy, three sheets each, with Jo's round 2 sheets attached as the layout reference and the round 2 fixes written into every brief. All 15 held the character and the even grid on the first try; noses are lines, focused reads as concentrating, frustrated stays apart from proud. The puppy uses dog body language. The ChatGPT limit hit after Ana; the rest ran after the reset. 14k–62k tokens a sheet; the spread is how much of the image skill's reference files Codex chose to read. Cut into 162 single pictures for the feelings match. | Try the lean helper next: skip the skill files and use low reasoning; the image model and brief are unchanged. |
 
 ### Workflow notes from round 1
 
@@ -766,3 +769,86 @@ the drawing's size on the card.
 | 3 feeling | A1, A2 | upset |
 | 4 action | A1, P1, P2-2, card 2 (layout) | calm, thinking it through |
 | 5 ending | A1, P1, P2-1, card 2 (layout) | proud |
+
+---
+
+# Part 5: feelings sheets and a two-feelings story
+
+## Feelings sheets (F1–F3)
+
+Every cast member gets three 3×3 feelings sheets with the same nine
+feelings in the same cells: calm, happy, surprised / focused, upset,
+worried / frustrated, proud, relieved.
+
+| Sheet | What changes |
+|---|---|
+| F1 subtle | Small everyday changes; some pairs sit close on purpose. |
+| F2 exaggerated | Picture-book big; the whole upper body joins in. |
+| F3 lines and colour | Medium face plus one pale tint and simple marks per feeling. |
+
+Jo's round 2 sheets are the layout reference for everyone else (attach as
+Image 2, "use only for the grid, poses, marks and colours"), so a feeling
+has the same pose across the cast. Each sheet has one brief template
+(Jo's, with the round 2 fixes written in) filled with the character's
+description; the puppy gets dog body language instead (ears, tail, whole
+body). Drafts:
+`img/_drafts/jo-feelings/`, `img/_drafts/cast-feelings/`. Lessons from
+Jo's rounds are in the prompt log: name the nose, describe calm as level
+brows with a symmetrical smile, and say what a pale tint must stay apart
+from.
+
+The cells double as references for story cards: crop the cell you need
+("Gran, worried, F1") and attach it with the character sheet.
+
+## puppy-at-the-door (7 cards, 3-5)
+
+Two characters feel differently about the same event. It's also how the
+puppy in `block-tower` came to Max's family.
+
+**The split card rule.** When two people feel something at the same
+moment, both go on one card: Jo on the left, Gran on the right, one
+scene. Two separate cards would let the student put either first, and the
+app would count that free choice as a swap.
+
+| # | Part | Caption | Picture |
+|---|---|---|---|
+| 1 | setting | Jo finds a puppy outside Gran's door | Hallway. Gran's door half open, Jo kneeling on the doormat beside the puppy, which sits looking up. |
+| 2 | feeling | Jo is excited. Gran is worried. | Split: Jo (left) hugs the puppy, big smile; Gran (right) in the doorway, hands held together, eyebrows raised in the middle. |
+| 3 | problem | Gran's building has a no-pets rule | Gran points to a small sign by the door: a paw print in a circle with one line through it (a symbol, no words). Jo holds the puppy. |
+| 4 | feeling | Jo is upset. Gran is frustrated. | Split, waist up: Jo (left) hands on cheeks, mouth down; Gran (right) brows down, lips pressed, arms crossed, looking at the sign, not at Jo. |
+| 5 | action | Jo and Gran make posters to find the puppy a home | Kitchen table: both drawing posters with a puppy picture (no words), the puppy asleep in a basket. |
+| 6 | ending | Max's family gives the puppy a home | Max's front door (a different, mustard door): Max kneels and hugs the puppy; Jo and Gran stand on the step. |
+| 7 | end feeling | Jo visits the puppy. Jo and Gran feel relieved. | Max's living-room rug: the puppy plays with Jo and Max; Gran sits on the sofa, shoulders low, soft smile. |
+
+Gran's frustration is with the rule, never with Jo: Gran looks at the
+sign, not at the child. Card 7's rug and sofa are the same as
+`block-tower`, so the two stories meet.
+
+### Settings
+
+- **S-hall** (cards 1–3): a building hallway seen straight on. A sage
+  door with a brass handle and a doormat; plain cream wall; the no-pets
+  sign at the child's head height beside the door (shown in card 3, small
+  and plain in 1–2).
+- **S-kitchen** (card 5): a small table seen from the side, two chairs,
+  a basket on the floor.
+- **S-max** (card 6): a mustard front door with one step.
+- **block-tower rug** (card 7): reuse `img/block-tower/cartoon/02.jpg` as
+  the layout.
+
+### Making it
+
+1. Master layout: card 2 (the first split card), with Jo A1, Gran A1,
+   puppy A1, and the cells "Jo happy F1" and "Gran worried F1".
+2. Cards 1 and 3 from card 2 (same hallway, camera and scale).
+3. Card 4 as a waist-up close view (like the other feeling cards), with
+   "Jo upset" and "Gran frustrated" cells.
+4. Cards 5, 6 and 7 with their own settings; card 7 also attaches
+   block-tower card 2 and Max A1.
+5. Review page, then install as in Part 4 (trim at install, 640 wide,
+   `img` names, `cartoon` in `styles`, `paper.cartoon`, refresh the
+   built-in copy).
+
+About 8 images including one redo, roughly 250–300k Codex tokens. Wait
+until Gran's feelings sheet exists so the two feeling cards can attach
+Gran's cells.

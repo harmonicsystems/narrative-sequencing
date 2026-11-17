@@ -144,6 +144,25 @@
     ]
   },
   {
+    "id": "puppy-at-the-door",
+    "set": "narrative",
+    "title": "A puppy at the door",
+    "gradeBand": "3-5",
+    "reversible": false,
+    "cover": 2,
+    "cursor": "🐾",
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "part": "setting"},
+      {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "part": "feeling"},
+      {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "part": "problem"},
+      {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "part": "feeling"},
+      {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "part": "action"},
+      {"text": "Max's family gives the puppy a home", "emoji": "🏡", "part": "ending"},
+      {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "part": "end feeling"}
+    ]
+  },
+  {
     "id": "puffer-fish",
     "set": "change",
     "title": "Puffer fish",
@@ -341,6 +360,132 @@
       {"text": "Short", "img": "02.svg"},
       {"text": "Tall", "img": "03.svg"},
       {"text": "Very tall", "img": "04.svg"}
+    ]
+  },
+  {
+    "id": "feelings-jo",
+    "set": "feelings",
+    "kind": "match",
+    "who": "Jo",
+    "title": "Jo's feelings",
+    "gradeBand": "K-8",
+    "cover": 2,
+    "styles": ["subtle", "exaggerated", "colour"],
+    "cards": [
+      {"text": "calm", "emoji": "😌", "img": "calm.jpg"},
+      {"text": "happy", "emoji": "😄", "img": "happy.jpg"},
+      {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"},
+      {"text": "focused", "emoji": "🧐", "img": "focused.jpg"},
+      {"text": "upset", "emoji": "😢", "img": "upset.jpg"},
+      {"text": "worried", "emoji": "😟", "img": "worried.jpg"},
+      {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"},
+      {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
+      {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
+    ]
+  },
+  {
+    "id": "feelings-ana",
+    "set": "feelings",
+    "kind": "match",
+    "who": "Ana",
+    "title": "Ana's feelings",
+    "gradeBand": "K-8",
+    "cover": 2,
+    "styles": ["subtle", "exaggerated", "colour"],
+    "cards": [
+      {"text": "calm", "emoji": "😌", "img": "calm.jpg"},
+      {"text": "happy", "emoji": "😄", "img": "happy.jpg"},
+      {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"},
+      {"text": "focused", "emoji": "🧐", "img": "focused.jpg"},
+      {"text": "upset", "emoji": "😢", "img": "upset.jpg"},
+      {"text": "worried", "emoji": "😟", "img": "worried.jpg"},
+      {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"},
+      {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
+      {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
+    ]
+  },
+  {
+    "id": "feelings-sam",
+    "set": "feelings",
+    "kind": "match",
+    "who": "Sam",
+    "title": "Sam's feelings",
+    "gradeBand": "K-8",
+    "cover": 2,
+    "styles": ["subtle", "exaggerated", "colour"],
+    "cards": [
+      {"text": "calm", "emoji": "😌", "img": "calm.jpg"},
+      {"text": "happy", "emoji": "😄", "img": "happy.jpg"},
+      {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"},
+      {"text": "focused", "emoji": "🧐", "img": "focused.jpg"},
+      {"text": "upset", "emoji": "😢", "img": "upset.jpg"},
+      {"text": "worried", "emoji": "😟", "img": "worried.jpg"},
+      {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"},
+      {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
+      {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
+    ]
+  },
+  {
+    "id": "feelings-max",
+    "set": "feelings",
+    "kind": "match",
+    "who": "Max",
+    "title": "Max's feelings",
+    "gradeBand": "K-8",
+    "cover": 2,
+    "styles": ["subtle", "exaggerated", "colour"],
+    "cards": [
+      {"text": "calm", "emoji": "😌", "img": "calm.jpg"},
+      {"text": "happy", "emoji": "😄", "img": "happy.jpg"},
+      {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"},
+      {"text": "focused", "emoji": "🧐", "img": "focused.jpg"},
+      {"text": "upset", "emoji": "😢", "img": "upset.jpg"},
+      {"text": "worried", "emoji": "😟", "img": "worried.jpg"},
+      {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"},
+      {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
+      {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
+    ]
+  },
+  {
+    "id": "feelings-gran",
+    "set": "feelings",
+    "kind": "match",
+    "who": "Gran",
+    "title": "Gran's feelings",
+    "gradeBand": "K-8",
+    "cover": 2,
+    "styles": ["subtle", "exaggerated", "colour"],
+    "cards": [
+      {"text": "calm", "emoji": "😌", "img": "calm.jpg"},
+      {"text": "happy", "emoji": "😄", "img": "happy.jpg"},
+      {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"},
+      {"text": "focused", "emoji": "🧐", "img": "focused.jpg"},
+      {"text": "upset", "emoji": "😢", "img": "upset.jpg"},
+      {"text": "worried", "emoji": "😟", "img": "worried.jpg"},
+      {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"},
+      {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
+      {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
+    ]
+  },
+  {
+    "id": "feelings-puppy",
+    "set": "feelings",
+    "kind": "match",
+    "who": "the puppy",
+    "title": "The puppy's feelings",
+    "gradeBand": "K-8",
+    "cover": 2,
+    "styles": ["subtle", "exaggerated", "colour"],
+    "cards": [
+      {"text": "calm", "emoji": "😌", "img": "calm.jpg"},
+      {"text": "happy", "emoji": "😄", "img": "happy.jpg"},
+      {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"},
+      {"text": "focused", "emoji": "🧐", "img": "focused.jpg"},
+      {"text": "upset", "emoji": "😢", "img": "upset.jpg"},
+      {"text": "worried", "emoji": "😟", "img": "worried.jpg"},
+      {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"},
+      {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
+      {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
     ]
   }
 ]
