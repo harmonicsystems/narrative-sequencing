@@ -141,6 +141,13 @@ Three parts, top to bottom:
 Card size: standard | large | largest (memory
 only; sets --cw through data-size on :root).
 Story list view: pictures (default) | list.
+The list is grouped by story.set, in this
+order: narrative "Stories", routine "Everyday
+steps", change "Step-by-step change", concept
+"Concepts" (unknown set: "Other stories"). Each
+set has a heading with a line icon and one line
+on what it holds; the icon repeats small on its
+tiles. New sets go in the SETS array.
 Pictures shows each story as a small deck with a
 close-up of one card: optional story.cover (card
 number from 1, default the last card), from the

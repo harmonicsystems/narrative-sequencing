@@ -99,6 +99,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 |---|---|
 | `id` | Unique, lowercase with hyphens. Also the image folder name. |
 | `title` | Shown on the setup and play screens. |
+| `set` | Which group the setup screen lists it under: `narrative` (Stories), `routine` (Everyday steps), `change` (Step-by-step change) or `concept` (Concepts). Anything else goes under "Other stories". |
 | `gradeBand` | Free text, e.g. `K-2`. |
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |

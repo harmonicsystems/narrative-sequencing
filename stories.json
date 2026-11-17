@@ -1,6 +1,7 @@
 [
   {
     "id": "brushing-teeth",
+    "set": "routine",
     "title": "Brushing teeth",
     "gradeBand": "K-2",
     "reversible": false,
@@ -17,6 +18,7 @@
   },
   {
     "id": "planting-a-seed",
+    "set": "routine",
     "title": "Planting a seed",
     "gradeBand": "K-2",
     "reversible": false,
@@ -33,6 +35,7 @@
   },
   {
     "id": "making-a-sandwich",
+    "set": "routine",
     "title": "Making a sandwich",
     "gradeBand": "3-5",
     "reversible": false,
@@ -50,6 +53,7 @@
   },
   {
     "id": "mailing-a-letter",
+    "set": "routine",
     "title": "Mailing a letter",
     "gradeBand": "3-5",
     "reversible": false,
@@ -68,6 +72,7 @@
   },
   {
     "id": "kite-in-the-tree",
+    "set": "narrative",
     "title": "Kite in the tree",
     "gradeBand": "K-2",
     "reversible": false,
@@ -85,6 +90,7 @@
   },
   {
     "id": "spilled-paint",
+    "set": "narrative",
     "title": "Spilled paint",
     "gradeBand": "K-2",
     "reversible": false,
@@ -102,6 +108,7 @@
   },
   {
     "id": "lost-library-book",
+    "set": "narrative",
     "title": "Lost library book",
     "gradeBand": "3-5",
     "reversible": false,
@@ -120,6 +127,7 @@
   },
   {
     "id": "block-tower",
+    "set": "narrative",
     "title": "Block tower",
     "gradeBand": "K-2",
     "reversible": false,
@@ -137,6 +145,7 @@
   },
   {
     "id": "puffer-fish",
+    "set": "change",
     "title": "Puffer fish",
     "gradeBand": "K-2",
     "reversible": true,
@@ -153,6 +162,7 @@
   },
   {
     "id": "kettle",
+    "set": "change",
     "title": "Kettle",
     "gradeBand": "3-5",
     "reversible": true,
@@ -170,6 +180,7 @@
   },
   {
     "id": "storm",
+    "set": "change",
     "title": "Storm",
     "gradeBand": "3-5",
     "reversible": true,
@@ -187,6 +198,7 @@
   },
   {
     "id": "voice-volume",
+    "set": "change",
     "title": "Voice volume",
     "gradeBand": "K-8",
     "reversible": true,
@@ -206,6 +218,7 @@
   },
   {
     "id": "small-to-large",
+    "set": "concept",
     "title": "Small to large",
     "gradeBand": "K-2",
     "reversible": true,
@@ -221,6 +234,7 @@
   },
   {
     "id": "light-to-dark",
+    "set": "concept",
     "title": "Light to dark",
     "gradeBand": "K-2",
     "reversible": true,
@@ -236,6 +250,7 @@
   },
   {
     "id": "low-to-high",
+    "set": "concept",
     "title": "Low to high",
     "gradeBand": "K-2",
     "reversible": true,
@@ -250,6 +265,7 @@
   },
   {
     "id": "filling-up",
+    "set": "concept",
     "title": "Filling up",
     "gradeBand": "K-2",
     "reversible": true,
@@ -266,6 +282,7 @@
   },
   {
     "id": "thin-to-thick",
+    "set": "concept",
     "title": "Thin to thick",
     "gradeBand": "K-2",
     "reversible": true,
@@ -281,6 +298,7 @@
   },
   {
     "id": "few-to-many",
+    "set": "concept",
     "title": "Few to many",
     "gradeBand": "K-2",
     "reversible": true,
@@ -296,6 +314,7 @@
   },
   {
     "id": "left-to-right",
+    "set": "concept",
     "title": "Left to right",
     "gradeBand": "K-2",
     "reversible": true,
@@ -310,6 +329,7 @@
   },
   {
     "id": "short-to-tall",
+    "set": "concept",
     "title": "Short to tall",
     "gradeBand": "K-2",
     "reversible": true,
