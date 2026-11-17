@@ -68,6 +68,12 @@ story = {
   previous one in the same chat, trim all images
   identically, keep scale and position constant
   so only the target property changes.
+- Gemini sets are saved as 01.jpg… (640 wide), so
+  each card names its file with "img". Stories
+  with the child share one Gemini chat ("the same
+  child as the very first image") to keep the
+  character consistent. Prompts and the full
+  workflow: image-prompts.md.
 - O-line names neighbouring swaps (exactly two
   adjacent wrong spots) and where they fell.
 - Array order = forward order.

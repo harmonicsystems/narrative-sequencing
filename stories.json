@@ -17,12 +17,13 @@
     "title": "Planting a seed",
     "gradeBand": "K-2",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Dig a hole", "emoji": "🕳️"},
-      {"text": "Drop in the seed", "emoji": "🌰"},
-      {"text": "Water the soil", "emoji": "💧"},
-      {"text": "A sprout comes up", "emoji": "🌱"}
+      {"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"},
+      {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"},
+      {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"},
+      {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}
     ]
   },
   {
@@ -30,12 +31,13 @@
     "title": "Making a sandwich",
     "gradeBand": "3-5",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Lay out two slices of bread", "emoji": "🍞"},
-      {"text": "Add cheese and lettuce", "emoji": "🧀"},
-      {"text": "Put the top slice on", "emoji": "🥪"},
-      {"text": "Eat the sandwich", "emoji": "😋"}
+      {"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"},
+      {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"},
+      {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"},
+      {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}
     ]
   },
   {
@@ -43,13 +45,14 @@
     "title": "Mailing a letter",
     "gradeBand": "3-5",
     "reversible": false,
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f1ede1"},
     "cards": [
-      {"text": "Write the letter", "emoji": "✍️"},
-      {"text": "Seal it in an envelope", "emoji": "✉️"},
-      {"text": "Stick on a stamp", "emoji": "🏷️"},
-      {"text": "Drop it in the mailbox", "emoji": "📮"},
-      {"text": "The letter arrives", "emoji": "📬"}
+      {"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"},
+      {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"},
+      {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"},
+      {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"},
+      {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}
     ]
   },
   {

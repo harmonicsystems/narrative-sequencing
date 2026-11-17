@@ -6,13 +6,16 @@ muted warm colours, cream background, portrait 3:4 (640 x 852).
 
 ## Rules for every set
 
-- Done so far: kettle, storm, voice-volume, brushing-teeth. Still to do:
-  planting-a-seed, making-a-sandwich, mailing-a-letter.
+- All seven sets are done (2026-11-16). The prompts below are kept for
+  redoing a card.
 - Object and scene stories (kettle, storm) get one chat each. The child
   stories all go in the anchor's chat, with "the same child as the very
   first image" in each prompt: this kept the child consistent without
   uploading the anchor.
-- The free Gemini image limit ran out after about 19 images in one evening.
+- The free Gemini image limit ran out after about 19 images in one evening
+  and reset at 11:30 PM.
+- Wait for each image to finish before sending the next prompt: a prompt
+  sent too early left the one before it with no image.
 - Paste the STYLE block into every prompt, word for word.
 - If a card drifts (size, position, colours), regenerate it from the previous
   card. Do not try to repair it later.
