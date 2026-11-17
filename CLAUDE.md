@@ -61,10 +61,23 @@ probably wrong. Full statement: top of README.
   problem | feeling | action | ending | end
   feeling. Four story grammar stories use it
   (kite-in-the-tree, spilled-paint,
-  lost-library-book, block-tower); their
-  cartoon sets come from image-prompts.md
-  Part 3 (reference images first: puppy, size
-  line-up, one empty setting per story).
+  lost-library-book, block-tower). Each has its
+  own child (Sam, Ana, Jo, Max; no pronouns in
+  captions) plus Gran and the puppy.
+- Cast bible (image-prompts.md Part 4): sheets
+  in img/_cast/<name>/ (turnaround first). Cards
+  are made with Codex (`codex exec -i <refs>`,
+  the ChatGPT app's bundled CLI, not Homebrew's
+  old one): card 2 first as the master layout,
+  then the rest from it. One tool per story.
+  Drafts go in img/_drafts/ (git-ignored) with a
+  review.html per round.
+- Caption-safe band: with words shown the card
+  keeps about the middle 65% of the picture, so
+  heads and key props sit between 20% and 80%
+  of the height. Full-scene cards are padded
+  evenly at install (same amount per story).
+  Keep captions to about three lines.
 story = {
   id, title, gradeBand,
   reversible: bool,

@@ -69,13 +69,14 @@
     "reversible": false,
     "cover": 2,
     "cursor": "🪁",
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6eee1"},
     "cards": [
-      {"text": "Sam flies a kite in the park", "emoji": "🪁", "part": "character"},
-      {"text": "The kite gets stuck in the tree", "emoji": "🌳", "part": "problem"},
-      {"text": "Sam feels sad", "emoji": "😢", "part": "feeling"},
-      {"text": "Gran reaches up with a rake", "emoji": "🧓", "part": "action"},
-      {"text": "Sam has the kite back and smiles", "emoji": "😊", "part": "ending"}
+      {"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"},
+      {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"},
+      {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"},
+      {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"},
+      {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}
     ]
   },
   {
@@ -85,13 +86,14 @@
     "reversible": false,
     "cover": 4,
     "cursor": "🖌️",
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6f0e4"},
     "cards": [
-      {"text": "Ana paints a house at the table", "emoji": "🎨", "part": "character"},
-      {"text": "The water cup tips over", "emoji": "💧", "part": "problem"},
-      {"text": "Ana feels upset", "emoji": "😣", "part": "feeling"},
-      {"text": "Ana paints boats on the blue", "emoji": "⛵", "part": "action"},
-      {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "part": "ending"}
+      {"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"},
+      {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"},
+      {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"},
+      {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"},
+      {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}
     ]
   },
   {
@@ -101,14 +103,15 @@
     "reversible": false,
     "cover": 4,
     "cursor": "🔦",
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6efe4"},
     "cards": [
-      {"text": "It is the day to bring back the library book", "emoji": "🎒", "part": "setting"},
-      {"text": "The book is not on the shelf", "emoji": "📚", "part": "problem"},
-      {"text": "Jo feels worried", "emoji": "😟", "part": "feeling"},
-      {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "part": "action"},
-      {"text": "The book is under the bed!", "emoji": "📕", "part": "ending"},
-      {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "part": "end feeling"}
+      {"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"},
+      {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"},
+      {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"},
+      {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"},
+      {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"},
+      {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}
     ]
   },
   {
@@ -118,13 +121,14 @@
     "reversible": false,
     "cover": 2,
     "cursor": "🧱",
-    "styles": ["emoji", "text"],
+    "styles": ["cartoon", "emoji", "text"],
+    "paper": {"cartoon": "#f6efe4"},
     "cards": [
-      {"text": "Max builds a tall block tower", "emoji": "🧱", "part": "character"},
-      {"text": "The puppy knocks it down", "emoji": "🐶", "part": "problem"},
-      {"text": "Max feels frustrated", "emoji": "😤", "part": "feeling"},
-      {"text": "Max takes a big breath and rolls the puppy a ball", "emoji": "🎾", "part": "action"},
-      {"text": "Max builds it again while the puppy chews the ball", "emoji": "🙂", "part": "ending"}
+      {"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"},
+      {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"},
+      {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"},
+      {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"},
+      {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}
     ]
   },
   {

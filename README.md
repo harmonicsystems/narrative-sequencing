@@ -36,7 +36,9 @@ local server. Images load either way.
 `research-notes.md` summarises the narrative intervention research (story
 grammar, many examples of the same shape, fading picture support, time and
 cause words), how this tool maps to it, and its caveats. `image-prompts.md`
-Part 3 has the Gemini prompts for the story grammar stories.
+Part 4 is the cast bible: how the story grammar pictures were made (character
+sheets in `img/_cast/`, cards drawn with Codex from a master layout), with a
+log of every round's feedback.
 
 ## A session
 
