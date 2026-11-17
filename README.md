@@ -65,7 +65,9 @@ explains the thinking behind it and how it was made.
    cue-placed card is still on the board.
 5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
    on screen while the student tells the story. Tap a card when its part is
-   told; tap again if it needed a prompt, and once more to clear it. Count
+   told; tap again if it needed a prompt, and once more to clear it. In
+   stories whose cards don't name their part, also mark the story parts the
+   student included (character, setting, action, ending…) the same way. Count
    time words (first, then, after, when…) and cause words (because, so…)
    with the − and + buttons. **Support** steps the cards back: Pictures,
    Words only (captions, no pictures), No cards (empty numbered spots, still
@@ -101,9 +103,11 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
 | `styles` | Which styles the setup screen offers. `emoji` and `text` are built in; any other name (`cartoon`, `realistic`, `shape`…) is an image folder. |
-| `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. |
+| `paper` | Optional. Background color of an image set, per style: `{"cartoon": "#f7f2e7"}`. The card takes that color so the caption strip blends into the picture in light and dark mode. A set with a `paper` color is shown whole, never trimmed, with its edges faded into the card. |
+| `zoom` | Optional. How much to enlarge a `paper` image set on the card, per style: `{"cartoon": 1.3}` (1 to 2). Use it when every picture in the set has empty margin all round; pick the largest value that keeps every card's drawing inside the frame. One value per set, so scale never differs between cards. |
 | `cover` | Optional. Card number (from 1) shown as the story's picture on the setup screen. Defaults to the last card. |
 | `cursor` | Optional. One emoji used as the mouse pointer while the story is played (for example `"💧"`). Decoration only; the setup screen can turn it off. |
+| `grammar` | Optional. Story grammar parts offered in the retell step, from `character`, `setting`, `problem`, `feeling`, `action`, `ending`. Leave it out to offer all six; use `[]` for none. List only parts the story really has. |
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
@@ -180,20 +184,22 @@ separately per attempt. Stories whose order had to be shown add "Correct order
 modeled for Z/N."
 
 Each retell records: `storyId`, `cardCount`, `style`, `direction`, `told`,
-`prompted`, `orderTold`, `partsTold`, `support`, `timeWords`, `causeWords`,
-`seconds`. `told` lists the spots
+`prompted`, `orderTold`, `partsOffered`, `partsTold`, `partsPrompted`,
+`support`, `timeWords`, `causeWords`, `seconds`. The three `parts` fields are
+the story grammar parts offered for that story, the ones included, and the
+ones among them that needed a prompt; stories with `cards[].part` take them
+from the cards tapped, others from the part buttons (`grammar`). `support`
+lists each support level used, in order. `told` lists the spots
 that were mentioned at all, `prompted` the ones among them that needed a
-prompt, and `orderTold` the spots in the order they were first tapped.
-`partsTold` names the story parts (`cards[].part`) of the spots told.
-`support` lists each support level used, in order. The app
+prompt, and `orderTold` the spots in the order they were first tapped. The app
 only counts the clinician's taps. Retells add one sentence to the O-line and a
 second table to the raw data:
 
 > Retell of 2 stories: mentioned 8/10 events, 1/8 after a prompt; events told
 > in story order in 1/2 retells; least support reached: pictures 1/2, no cards
-> 1/2; story parts told: character 2/2, problem 2/2, feeling 1/2, action 2/2,
-> ending 1/2; 3 time words and 1 cause word used.
+> 1/2; 3 time words and 1 cause word used. Story parts included: 8/10
+> (character 2/2, problem 2/2, feeling 1/2, action 2/2, ending 1/2), 1/8 after
+> a prompt.
 
-The support clause appears only when support was faded, and the story parts
-clause only for stories whose cards name their parts. Each retell counts once,
-at the least support it reached.
+The support clause appears only when support was faded. Each retell counts
+once, at the least support it reached.

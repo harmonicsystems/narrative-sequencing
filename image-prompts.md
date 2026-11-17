@@ -172,13 +172,103 @@ Same plate, same table-top view in cards 1 to 3.
    or words. No envelope in the picture.
 2. `[ANCHOR] [STYLE]` The child, waist up, presses the flap of a white
    envelope closed with both hands. The envelope has no stamp.
-3. `[ANCHOR] [STYLE]` The child, waist up, holds the sealed envelope in one
-   hand and presses a small red stamp onto its top corner with the other.
-4. `[ANCHOR] [STYLE]` The child stands beside a blue street mailbox and
-   pushes the stamped envelope into its slot. The envelope is half in.
-5. `[STYLE]` A grey-haired grandparent stands in an open doorway holding
-   the same envelope with the red stamp, now opened, and reads the sheet of
-   paper from inside it with a smile. The child is not in this picture.
+Cards 3, 4 and 5 carry this ENVELOPE block so the stamp is on the address
+side, not on the flap:
+
+```
+We see the FRONT of the envelope, the address side: a plain white rectangle
+with NO triangular flap and NO diagonal fold lines. In the middle are three
+short wavy scribble lines standing in for an address (no real letters). The
+small red square stamp is in the top right corner as we look at it. Exactly
+one envelope, exactly one stamp.
+```
+
+3. `[ANCHOR] [STYLE] [ENVELOPE]` The child, waist up, holds the envelope in
+   front of their chest with one hand and presses one finger of the other
+   on the stamp.
+4. `[ANCHOR] [STYLE] [ENVELOPE]` A blue street mailbox on the right with a
+   wide dark slot near the top of its front. The child stands on the left,
+   turned towards it, one arm stretched out, pushing the envelope into the
+   slot. The envelope is half in.
+5. `[STYLE] [ENVELOPE]` A grey-haired grandparent stands in an open doorway
+   holding the same envelope, its top edge torn open, and reads the sheet
+   of paper from inside it with a smile. The child is not in this picture.
+
+Redone 2026-11-17: the first set had the stamp on the flap side. Card 4
+needed four tries. "The envelope has no other lines on it at all: no flap,
+no triangle, no diagonal lines, no folds" removed the flap. Asking for the
+same picture "again" with the envelope further in changed almost nothing;
+asking for "a different composition" with the child turned towards the
+mailbox and an arm stretched out is what made it read as posting. Gemini
+would not draw the envelope level and half hidden in the slot. Card 2
+still shows the back, which is right for sealing.
+
+---
+
+# Part 3a: the first kite set (Gemini, replaced)
+
+The app now uses the Part 4 kite set (Sam and Gran, drawn with Codex). These
+prompts and notes are kept for the lessons in them.
+
+## kite-in-the-tree (5 cards)
+
+The first story with a problem and a feeling, so the retell step can offer
+all six story grammar parts. Made in the child anchor chat.
+
+Every prompt carries this KITE block, word for word, so the kite never
+changes:
+
+```
+The kite is always the same: a classic diamond-shaped kite, dusty red, with
+a cream cross on it (one line top to bottom, one line side to side), a thin
+string from its centre, and a tail with three small sage-green bows.
+```
+
+Cards 1, 2, 4 and 5 share one scene: a strip of green grass with one round
+leafy tree on the left. Card 2 is an edit of card 1 so the scene is
+identical.
+
+1. `[ANCHOR] [STYLE] [KITE]` The child stands on the grass holding the kite
+   string in both hands, looking up and smiling. The kite flies high in the
+   upper right. Nothing is in the tree. (character, setting)
+2. `[EDIT] [KITE]` The kite is now stuck in the top of the tree among the
+   leaves, its tail hanging down and its string dangling loose. Nothing is
+   in the sky. The child's hands are empty and the child looks up at the
+   tree, mouth open in surprise. (problem)
+3. `[ANCHOR] [STYLE] [KITE]` Head and shoulders of the child looking up,
+   sad: eyebrows tilted, mouth turned down, no tears. In the top corner,
+   leafy branches with the kite stuck in them. (feeling)
+4. `[ANCHOR] [STYLE] [KITE]` Same grass and tree. The grandparent from the
+   doorway picture reaches up with a long garden rake and hooks the kite,
+   which is still in the tree. The child stands beside them pointing up.
+   (action)
+5. `[ANCHOR] [STYLE] [KITE]` Same grass and tree, nothing in the tree. The
+   child hugs the kite with both arms, smiling. The grandparent stands
+   beside them holding the rake upright, smiling. (ending, feeling)
+
+Cards 1 and 5 both show a happy child with the kite: card 5 must have the
+grandparent and the rake, and the kite held, not flying.
+
+Notes from generating this set (2026-11-17):
+
+- State sizes that matter to the story. The first tree came out shorter than
+  the child, so a stuck kite was within reach; "about twice as tall as the
+  child" fixed it.
+- "Exactly one tree, exactly one kite" stopped Gemini adding a second tree.
+- An "Edit the previous image" prompt sometimes returns nothing. Asking for
+  "a new image in the same series, using the last picture as the scene" and
+  listing what is different worked every time.
+- Say where a character is looking, and how: "seen in side view facing the
+  tree, head tilted back, eyes on the kite". Without it the child faces the
+  viewer.
+- The limit ran out after about 10 images this time and reset at 9:30 AM.
+- Cards 2 and 3 were redone after the reset so the child is clearly looking
+  at the kite. Both worked first time with the side-view wording above;
+  card 3 was asked for as "a closer view of the last picture", which kept
+  the tree, kite and child identical to card 2.
+- The kite sits at the very top of cards 2 and 3, and the app used to trim
+  the top of each picture. Cards with a `paper` colour now show the whole
+  picture, so nothing is cut off.
 
 ---
 

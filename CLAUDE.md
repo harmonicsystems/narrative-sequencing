@@ -96,7 +96,15 @@ story = {
 - Optional story.paper = { <style>: "#rrggbb" }:
   the image set's background colour. Cards take
   it so captions blend into the picture; caption
-  ink is picked for contrast.
+  ink is picked for contrast. Cards with a
+  paper colour show the whole picture (contain);
+  sets without one fill the card and are trimmed
+  (cover), so only full-scene sets like storm
+  should go without. Picture edges fade into
+  the card. Optional story.zoom = { <style>: n }
+  (1 to 2) enlarges a paper set that has margin
+  to spare: one value per set, so scale stays
+  constant across its cards.
 - Generated image sets (puffer-fish/cartoon is
   the first): make each card as an edit of the
   previous one in the same chat, trim all images
@@ -212,21 +220,27 @@ words and cause words with − / +. Support
 no cards (spots stay tappable); a new retell
 starts at the last level used. The app only
 counts taps: it never decides what was said.
-One record per retell: storyId, cardCount,
-style, direction, told [], prompted [],
-orderTold [] (spot numbers, in the order first
-marked), partsTold [] (card.part of spots told),
-support [] (levels in order used), timeWords,
-causeWords, seconds. Leaving the story saves
-it; "Discard this retell" drops it. O-line adds
-one sentence: "Retell of N stories: mentioned
-X/T events, P/X after a prompt; events told in
-story order in A/B retells{; least support
-reached: …}{; story parts told: problem 3/4,
-…}; W time words and C cause words used."
-Support clause only when faded; parts clause
-only for stories with card.part. Raw data gets
-a second "Retell" table.
+Story parts: stories whose cards name their
+part (card.part) get them from the card taps;
+other stories get chips for the parts in
+story.grammar (all six if absent, none if []),
+tapped the same way. Only list parts a story
+really has: routines and change stories have no
+problem or feeling. One record per retell:
+storyId, cardCount, style, direction, told [],
+prompted [], orderTold [] (spot numbers, in the
+order first marked), partsOffered, partsTold,
+partsPrompted, support [] (levels in order
+used), timeWords, causeWords, seconds. Leaving
+the story saves it; "Discard this retell" drops
+it. O-line adds: "Retell of N stories:
+mentioned X/T events, P/X after a prompt;
+events told in story order in A/B retells{;
+least support reached: …}; W time words and C
+cause words used.{ Story parts included: k/n
+(part k/n, …), p/k after a prompt.}" Support
+clause only when faded. Raw data gets a second
+"Retell" table.
 
 ## Research
 research-notes.md: what narrative intervention

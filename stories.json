@@ -6,6 +6,7 @@
     "reversible": false,
     "cover": 2,
     "cursor": "🦷",
+    "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -20,6 +21,7 @@
     "gradeBand": "K-2",
     "reversible": false,
     "cursor": "🪴",
+    "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -36,6 +38,7 @@
     "reversible": false,
     "cover": 3,
     "cursor": "🍽️",
+    "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -52,6 +55,7 @@
     "reversible": false,
     "cover": 4,
     "cursor": "💌",
+    "grammar": ["character", "setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -138,6 +142,7 @@
     "reversible": true,
     "endLabels": ["calm", "puffed"],
     "cursor": "💧",
+    "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f7f2e7"},
     "cards": [
@@ -153,6 +158,7 @@
     "reversible": true,
     "endLabels": ["cold", "boiling"],
     "cursor": "🔥",
+    "grammar": ["setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
@@ -169,6 +175,7 @@
     "reversible": true,
     "endLabels": ["clear", "storm"],
     "cursor": "☂️",
+    "grammar": ["setting", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "cards": [
       {"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"},
@@ -186,6 +193,7 @@
     "endLabels": ["silent", "yelling"],
     "cover": 4,
     "cursor": "🎤",
+    "grammar": ["character", "action", "ending"],
     "styles": ["cartoon", "emoji", "text"],
     "paper": {"cartoon": "#f1ede1"},
     "cards": [
