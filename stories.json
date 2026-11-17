@@ -63,6 +63,71 @@
     ]
   },
   {
+    "id": "kite-in-the-tree",
+    "title": "Kite in the tree",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "cover": 2,
+    "cursor": "🪁",
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"text": "Sam flies a kite in the park", "emoji": "🪁", "part": "character"},
+      {"text": "The kite gets stuck in the tree", "emoji": "🌳", "part": "problem"},
+      {"text": "Sam feels sad", "emoji": "😢", "part": "feeling"},
+      {"text": "Gran reaches up with a rake", "emoji": "🧓", "part": "action"},
+      {"text": "Sam has the kite back and smiles", "emoji": "😊", "part": "ending"}
+    ]
+  },
+  {
+    "id": "spilled-paint",
+    "title": "Spilled paint",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "cover": 4,
+    "cursor": "🖌️",
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"text": "Ana paints a house at the table", "emoji": "🎨", "part": "character"},
+      {"text": "The water cup tips over", "emoji": "💧", "part": "problem"},
+      {"text": "Ana feels upset", "emoji": "😣", "part": "feeling"},
+      {"text": "Ana paints boats on the blue", "emoji": "⛵", "part": "action"},
+      {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "part": "ending"}
+    ]
+  },
+  {
+    "id": "lost-library-book",
+    "title": "Lost library book",
+    "gradeBand": "3-5",
+    "reversible": false,
+    "cover": 4,
+    "cursor": "🔦",
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"text": "It is the day to bring back the library book", "emoji": "🎒", "part": "setting"},
+      {"text": "The book is not on the shelf", "emoji": "📚", "part": "problem"},
+      {"text": "Jo feels worried", "emoji": "😟", "part": "feeling"},
+      {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "part": "action"},
+      {"text": "The book is under the bed!", "emoji": "📕", "part": "ending"},
+      {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "part": "end feeling"}
+    ]
+  },
+  {
+    "id": "block-tower",
+    "title": "Block tower",
+    "gradeBand": "K-2",
+    "reversible": false,
+    "cover": 2,
+    "cursor": "🧱",
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"text": "Max builds a tall block tower", "emoji": "🧱", "part": "character"},
+      {"text": "The puppy knocks it down", "emoji": "🐶", "part": "problem"},
+      {"text": "Max feels frustrated", "emoji": "😤", "part": "feeling"},
+      {"text": "Max takes a big breath and rolls the puppy a ball", "emoji": "🎾", "part": "action"},
+      {"text": "Max builds it again while the puppy chews the ball", "emoji": "🙂", "part": "ending"}
+    ]
+  },
+  {
     "id": "puffer-fish",
     "title": "Puffer fish",
     "gradeBand": "K-2",

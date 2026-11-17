@@ -284,8 +284,17 @@
   .retelling .slot.told { box-shadow: 0 0 0 3px var(--accent); }
   .retelling .slot.prompted { box-shadow: 0 0 0 3px var(--accent); outline: 2px dashed var(--accent); outline-offset: 5px; }
   #retellBox { margin-top: 8px; text-align: center; }
-  #retellRow { justify-content: center; margin-top: 6px; }
-  #wordsCount { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
+  #retellBox .row { justify-content: center; margin-top: 6px; }
+  #supportRow { margin-bottom: 8px; }
+  #retellBox .stepper { display: inline-flex; align-items: center; gap: 12px; }
+  #retellBox .count { min-width: 2ch; text-align: center; font-size: 1.2rem; font-weight: 600; }
+  /* Retell support, faded by the clinician: words only drops the picture;
+     no cards hides the card itself, leaving the numbered spot to tap. */
+  .support-words .slot .card .art { display: none; }
+  .support-words .slot .card .cap, .support-words .slot .card .cap[hidden] {
+    display: flex; flex: 1; font-size: calc(clamp(0.9rem, 1.9vw, 1.15rem) * var(--cap)); padding: 12px;
+  }
+  .support-none .slot .card { visibility: hidden; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
   #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); gap: 10px 14px; }
@@ -396,13 +405,29 @@
     </div>
     <div id="retellBox" hidden>
       <p class="muted small">Tap a card when the student tells that part. Tap again if it needed a prompt, and once more to clear it.</p>
-      <div class="row" id="retellRow">
-        <span id="wordsLabel">Sequence words (first, next, then, last…)</span>
-        <button class="btn mini" id="wordsLess" aria-label="One fewer sequence word">−</button>
-        <output id="wordsCount" aria-labelledby="wordsLabel">0</output>
-        <button class="btn mini" id="wordsMore" aria-label="One more sequence word">+</button>
-        <button class="link small" id="retellDiscard">Discard this retell</button>
+      <div class="row" id="supportRow" role="group" aria-labelledby="supportLabel">
+        <span id="supportLabel">Support:</span>
+        <button class="btn mini" data-support="pictures">Pictures</button>
+        <button class="btn mini" data-support="words">Words only</button>
+        <button class="btn mini" data-support="none">No cards</button>
       </div>
+      <div class="row" id="retellRow">
+        <span id="timeLabel">Time words (first, then, after, when…)</span>
+        <span class="stepper">
+          <button class="btn mini" data-count="time" data-step="-1" aria-label="One fewer time word">−</button>
+          <output id="timeCount" class="count" aria-labelledby="timeLabel">0</output>
+          <button class="btn mini" data-count="time" data-step="1" aria-label="One more time word">+</button>
+        </span>
+      </div>
+      <div class="row" id="causeRow">
+        <span id="causeLabel">Cause words (because, so…)</span>
+        <span class="stepper">
+          <button class="btn mini" data-count="cause" data-step="-1" aria-label="One fewer cause word">−</button>
+          <output id="causeCount" class="count" aria-labelledby="causeLabel">0</output>
+          <button class="btn mini" data-count="cause" data-step="1" aria-label="One more cause word">+</button>
+        </span>
+      </div>
+      <button class="link small" id="retellDiscard">Discard this retell</button>
     </div>
     <div class="row" id="cueBox">
       <div class="row" id="ladder" role="group" aria-label="Give a cue">
@@ -439,10 +464,20 @@
       <li><b>It records and does not judge.</b> The order a student builds shows how they understand the story. A wrong order is information, not a failure, so the app never marks a card right or wrong. A first wrong try gets only "Try again".</li>
       <li><b>Interpretation stays with the clinician.</b> The app counts and reports. It does not score, label or diagnose.</li>
       <li><b>Support is part of the data.</b> The clinician gives help from a ladder of cues, lightest first: a verbal cue, placing the first or last card, narrowing the choice to two, a pointer that grows over the next card, or showing the order. Each one is logged on the attempt with its level (independent, verbal, visual, model), so a cued success is never written up as independent. The app never gives a cue on its own.</li>
-      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in and sequence words used.</li>
+      <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in, time words and cause words, and how much picture support was left on the table.</li>
       <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
       <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
     </ul>
+
+    <h2>What the research suggests</h2>
+    <p>Narrative intervention research, much of it from the developers of the Story Champs program, points to a few practices that this tool tries to support without taking over the clinician's role:</p>
+    <ul>
+      <li><b>Story grammar.</b> Stories with a character, a problem, a feeling, an action and an ending. Four stories here are built that way, and each card names its part, so the retell line can say which parts were told.</li>
+      <li><b>Many examples of the same shape.</b> Several short stories with the same parts, rather than one long one.</li>
+      <li><b>Pictures, then less.</b> Retell first with pictures, then with words only, then with no cards. The retell records each step the clinician takes.</li>
+      <li><b>Time and cause words.</b> Words like <i>then</i> and <i>after</i>, and <i>because</i> and <i>so</i>, are counted separately.</li>
+    </ul>
+    <p>Most of that research is with preschool to third grade, and much of it is by the program's own authors. Sources and caveats are in the <a href="https://github.com/harmonicsystems/narrative-sequencing/blob/main/research-notes.md">research notes</a>.</p>
 
     <h2>How it was made</h2>
     <p>I built this with Claude, Anthropic's AI model, working as a coding partner. I described what a session needs to look like and what the note needs to say; Claude wrote the code, and I tried each version and corrected it. The whole app is one web page with no outside services, which keeps student data on the device and makes the tool easy to host and to trust.</p>
@@ -457,7 +492,7 @@
     <h2>How much work went into it</h2>
     <ul>
       <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
-      <li>16 stories: 8 picture stories with 33 illustrated cards, and 8 concept stories with 31 shape cards.</li>
+      <li>20 stories: 8 picture stories with 33 illustrated cards, 4 story grammar stories with 21 cards (pictures in progress), and 8 concept stories with 31 shape cards.</li>
       <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
       <li>Setup, card sizes, themes, the retell step, the cue ladder and this tour were each added in response to trying the tool and finding what got in the way.</li>
     </ul>
@@ -492,7 +527,7 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["emoji", "text"], "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "part": "ending"}]}, {"id": "spilled-paint", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["emoji", "text"], "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "part": "ending"}]}, {"id": "lost-library-book", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["emoji", "text"], "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "part": "end feeling"}]}, {"id": "block-tower", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["emoji", "text"], "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "part": "feeling"}, {"text": "Max takes a big breath and rolls the puppy a ball", "emoji": "🎾", "part": "action"}, {"text": "Max builds it again while the puppy chews the ball", "emoji": "🙂", "part": "ending"}]}, {"id": "puffer-fish", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}];// @seed
 
 const CUES = {
   independent: 'independently',
@@ -539,7 +574,7 @@ const TOUR = [
   { when: 'done', focus: '#retellBtn',
     text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
   { when: 'retell', focus: '#retellBox',
-    text: 'Click a card when its part is told; click again if it needed a prompt. Count sequence words with − and +. Then press End session.' },
+    text: 'Click a card when its part is told; click again if it needed a prompt. Count time words (first, then) and cause words (because, so) with − and +. Support steps back from pictures to words only to no cards. Then press End session.' },
   { when: 'summary', focus: '#oline',
     text: 'This objective line is ready to paste into a SOAP note, with the raw data below it. Nothing is saved: closing the page clears the session.' }
 ];
@@ -595,6 +630,7 @@ function renderSetup() {
     const plays = new Set(log.filter(a => a.storyId === s.id).map(a => a.run)).size;
     const meta = [s.gradeBand, s.cards.length + ' cards'];
     if (s.reversible) meta.push('reversible');
+    if (s.cards.some(c => c.part)) meta.push('story parts');
     if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
     b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
     b.onclick = () => { pick.storyId = s.id; renderSetup(); tour('pick'); };
@@ -855,7 +891,14 @@ function render() {
     slot.classList.toggle('prompted', m === 2);
     slot.querySelector('.mark').textContent = ['', 'told', 'told with a prompt'][m];
   });
-  if (R) $('wordsCount').textContent = R.words;
+  const level = R ? R.support[R.support.length - 1] : '';
+  $('play').classList.toggle('support-words', level === 'words');
+  $('play').classList.toggle('support-none', level === 'none');
+  if (R) {
+    $('timeCount').textContent = R.timeWords;
+    $('causeCount').textContent = R.causeWords;
+    document.querySelectorAll('#supportRow [data-support]').forEach(b => b.setAttribute('aria-pressed', b.dataset.support === level));
+  }
   if (!S.locked && !S.slots.includes(null)) tour('filled');
 }
 
@@ -864,13 +907,31 @@ function render() {
 // The app only counts what the clinician marks. marks[i] is for spot i + 1:
 // 0 not mentioned, 1 told, 2 told with a prompt. order = spots in the order
 // they were first marked, so it shows the order the student told them in.
+// support lists the support levels in the order they were used; a new retell
+// starts at the level the last one ended on (memory only).
+const SUPPORT = ['pictures', 'words', 'none'];
+const SUPPORT_NAME = { pictures: 'pictures', words: 'words only', none: 'no cards' };
+let lastSupport = 'pictures';
 function startRetell() {
   if (!S || !S.locked || S.retell) return;
-  S.retell = { marks: Array(S.story.cards.length).fill(0), order: [], words: 0, t0: performance.now() };
+  S.retell = { marks: Array(S.story.cards.length).fill(0), order: [], timeWords: 0, causeWords: 0,
+    support: [lastSupport], t0: performance.now() };
   $('retellBtn').hidden = true;
   $('feedback').textContent = 'Now tell the story.';
   render();
   tour('retell');
+}
+
+function setSupport(level) {
+  const R = S && S.retell;
+  if (!R || !SUPPORT.includes(level)) return;
+  // Before anything is marked or counted, a change only adjusts the starting
+  // level, so it never reads as support the student actually worked with.
+  const started = R.order.length || R.timeWords || R.causeWords;
+  if (!started) R.support = [level];
+  else if (R.support[R.support.length - 1] !== level) R.support.push(level);
+  lastSupport = level;
+  render();
 }
 
 function markSpot(i) {
@@ -896,7 +957,12 @@ function endRetell(save) {
       told: spots(1),            // spot numbers mentioned at all
       prompted: spots(2),        // of those, the ones that needed a prompt
       orderTold: [...R.order],
-      sequenceWords: R.words,
+      // Story parts (card.part) of the spots marked told, when the story has them.
+      partsTold: spots(1).map(n => S.story.cards[n - 1].part).filter(Boolean),
+      parts: S.story.cards.map(c => c.part).filter(Boolean),
+      support: [...R.support],
+      timeWords: R.timeWords,
+      causeWords: R.causeWords,
       seconds: Math.round((performance.now() - R.t0) / 1000)
     });
   }
@@ -1243,15 +1309,31 @@ function retellSentence(rs) {
     const inOrder = multi.filter(r => r.orderTold.every((p, i, a) => i === 0 || p > a[i - 1])).length;
     s += '; events told in story order in ' + inOrder + '/' + multi.length + (multi.length === 1 ? ' retell' : ' retells');
   }
-  const words = sum(r => r.sequenceWords);
-  return s + '; ' + words + (words === 1 ? ' sequence word' : ' sequence words') + ' used.';
+  // Support: each retell counted once, at the least support it reached.
+  const least = r => SUPPORT[Math.max(...r.support.map(l => SUPPORT.indexOf(l)))];
+  const bySupport = SUPPORT.map(l => [l, rs.filter(r => least(r) === l).length]).filter(([, n]) => n);
+  if (!(bySupport.length === 1 && bySupport[0][0] === 'pictures')) {
+    s += '; least support reached: ' + bySupport.map(([l, n]) => SUPPORT_NAME[l] + ' ' + n + '/' + N).join(', ');
+  }
+  // Story parts: counted only over retells of stories whose cards name their parts.
+  const withParts = rs.filter(r => r.parts.length);
+  if (withParts.length) {
+    const names = [];
+    withParts.forEach(r => r.parts.forEach(p => { if (!names.includes(p)) names.push(p); }));
+    const count = (list, p) => withParts.reduce((n, r) => n + list(r).filter(x => x === p).length, 0);
+    s += '; story parts told: ' + names.map(p => p + ' ' + count(r => r.partsTold, p) + '/' + count(r => r.parts, p)).join(', ');
+  }
+  const time = sum(r => r.timeWords), cause = sum(r => r.causeWords);
+  return s + '; ' + time + (time === 1 ? ' time word' : ' time words') + ' and ' +
+    cause + (cause === 1 ? ' cause word' : ' cause words') + ' used.';
 }
 
 function buildRetellRaw(rs) {
-  const head = ['storyId', 'cardCount', 'style', 'direction', 'told', 'prompted', 'orderTold', 'sequenceWords', 'seconds'];
+  const head = ['storyId', 'cardCount', 'style', 'direction', 'told', 'prompted', 'orderTold', 'partsTold', 'support', 'timeWords', 'causeWords', 'seconds'];
   const rows = rs.map(r => [
     r.storyId, r.cardCount, r.style, r.direction, r.told.join(',') || '-',
-    r.prompted.join(',') || '-', r.orderTold.join(',') || '-', r.sequenceWords, r.seconds
+    r.prompted.join(',') || '-', r.orderTold.join(',') || '-', r.partsTold.join(', ') || '-',
+    r.support.map(l => SUPPORT_NAME[l]).join(' > '), r.timeWords, r.causeWords, r.seconds
   ]);
   return [head, ...rows].map(r => r.join('\t')).join('\n');
 }
@@ -1348,8 +1430,12 @@ async function init() {
     $('feedback').textContent = '';
     render();
   };
-  $('wordsMore').onclick = () => { S.retell.words++; render(); };
-  $('wordsLess').onclick = () => { S.retell.words = Math.max(0, S.retell.words - 1); render(); };
+  document.querySelectorAll('#retellBox [data-count]').forEach(b => b.onclick = () => {
+    const key = b.dataset.count + 'Words';
+    S.retell[key] = Math.max(0, S.retell[key] + Number(b.dataset.step));
+    render();
+  });
+  document.querySelectorAll('#supportRow [data-support]').forEach(b => b.onclick = () => setSupport(b.dataset.support));
   $('slots').addEventListener('click', e => {
     const slot = e.target.closest('.slot');
     if (slot && S && S.retell) markSpot(Number(slot.dataset.slot));

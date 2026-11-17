@@ -31,6 +31,13 @@ python3 -m http.server 8000
 then visit http://localhost:8000. GitHub Pages behaves the same way as the
 local server. Images load either way.
 
+## Research
+
+`research-notes.md` summarises the narrative intervention research (story
+grammar, many examples of the same shape, fading picture support, time and
+cause words), how this tool maps to it, and its caveats. `image-prompts.md`
+Part 3 has the Gemini prompts for the story grammar stories.
+
 ## A session
 
 New to the tool? Add `#tour` to the address (or press "Take the 2-minute tour"
@@ -57,7 +64,10 @@ explains the thinking behind it and how it was made.
 5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
    on screen while the student tells the story. Tap a card when its part is
    told; tap again if it needed a prompt, and once more to clear it. Count
-   sequence words (first, next, then, last…) with the − and + buttons.
+   time words (first, then, after, when…) and cause words (because, so…)
+   with the − and + buttons. **Support** steps the cards back: Pictures,
+   Words only (captions, no pictures), No cards (empty numbered spots, still
+   tappable). A new retell starts at the level the last one ended on.
 6. **End session:** shows the O-line and the raw data tables, each with a
    copy button.
 
@@ -95,6 +105,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
+| `cards[].part` | Optional. The card's story grammar part: `character`, `setting`, `problem`, `feeling`, `action`, `ending` or `end feeling`. Stories with parts show "story parts" on the setup screen, and their retells report parts told. |
 
 For reversible stories, write each card as a **state** ("Half puffed"), not a
 change ("Starts to puff up"), so the text reads correctly in both directions.
@@ -167,11 +178,20 @@ separately per attempt. Stories whose order had to be shown add "Correct order
 modeled for Z/N."
 
 Each retell records: `storyId`, `cardCount`, `style`, `direction`, `told`,
-`prompted`, `orderTold`, `sequenceWords`, `seconds`. `told` lists the spots
+`prompted`, `orderTold`, `partsTold`, `support`, `timeWords`, `causeWords`,
+`seconds`. `told` lists the spots
 that were mentioned at all, `prompted` the ones among them that needed a
-prompt, and `orderTold` the spots in the order they were first tapped. The app
+prompt, and `orderTold` the spots in the order they were first tapped.
+`partsTold` names the story parts (`cards[].part`) of the spots told.
+`support` lists each support level used, in order. The app
 only counts the clinician's taps. Retells add one sentence to the O-line and a
 second table to the raw data:
 
-> Retell of 2 stories: mentioned 6/8 events, 1/6 after a prompt; events told in
-> story order in 1/2 retells; 2 sequence words used.
+> Retell of 2 stories: mentioned 8/10 events, 1/8 after a prompt; events told
+> in story order in 1/2 retells; least support reached: pictures 1/2, no cards
+> 1/2; story parts told: character 2/2, problem 2/2, feeling 1/2, action 2/2,
+> ending 1/2; 3 time words and 1 cause word used.
+
+The support clause appears only when support was faded, and the story parts
+clause only for stories whose cards name their parts. Each retell counts once,
+at the least support it reached.

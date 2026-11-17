@@ -57,6 +57,14 @@ probably wrong. Full statement: top of README.
   (memory only).
 
 ## Content model
+- Optional card.part: character | setting |
+  problem | feeling | action | ending | end
+  feeling. Four story grammar stories use it
+  (kite-in-the-tree, spilled-paint,
+  lost-library-book, block-tower); their
+  cartoon sets come from image-prompts.md
+  Part 3 (reference images first: puppy, size
+  line-up, one empty setting per story).
 story = {
   id, title, gradeBand,
   reversible: bool,
@@ -185,18 +193,35 @@ O-line adds "Cues given, by attempt: name (k/N),
 "Retell" keeps the finished sequence on screen
 while the student tells the story. The clinician
 taps a card as its part is told (tap again: told
-with a prompt; again: clear) and counts sequence
-words with − / +. The app only counts taps: it
-never decides what was said. One record per
-retell: storyId, cardCount, style, direction,
-told [], prompted [], orderTold [] (spot numbers,
-in the order first marked), sequenceWords,
-seconds. Leaving the story saves it; "Discard
-this retell" drops it. O-line adds one sentence:
-"Retell of N stories: mentioned X/T events, P/X
-after a prompt; events told in story order in
-A/B retells; W sequence words used." Raw data
-gets a second "Retell" table.
+with a prompt; again: clear) and counts time
+words and cause words with − / +. Support
+(clinician fades it): pictures | words only |
+no cards (spots stay tappable); a new retell
+starts at the last level used. The app only
+counts taps: it never decides what was said.
+One record per retell: storyId, cardCount,
+style, direction, told [], prompted [],
+orderTold [] (spot numbers, in the order first
+marked), partsTold [] (card.part of spots told),
+support [] (levels in order used), timeWords,
+causeWords, seconds. Leaving the story saves
+it; "Discard this retell" drops it. O-line adds
+one sentence: "Retell of N stories: mentioned
+X/T events, P/X after a prompt; events told in
+story order in A/B retells{; least support
+reached: …}{; story parts told: problem 3/4,
+…}; W time words and C cause words used."
+Support clause only when faded; parts clause
+only for stories with card.part. Raw data gets
+a second "Retell" table.
+
+## Research
+research-notes.md: what narrative intervention
+research (mostly Story Champs) suggests, how the
+app maps to it, caveats. Borrow principles only:
+never Story Champs stories, icons or names in
+the app. Parts are counts of clinician taps,
+never a score.
 
 ## Output (End session)
 Summary + "Copy" button. Template:
