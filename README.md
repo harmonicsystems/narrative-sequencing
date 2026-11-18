@@ -60,11 +60,13 @@ explains the thinking behind it and how it was made.
 3. **Check:** a wrong first attempt gets a neutral "Try again" with no hint
    about which cards are wrong. A wrong second attempt shows the correct order
    and is logged as modeled.
-4. **Cue:** the row at the bottom of the play screen gives a cue and logs it:
+4. **Cue:** the Clinician tools tray at the bottom of the play screen gives a
+   cue and logs it. Each cue has an icon and plain words:
    Verbal, Place first card, Place last card, Narrow to two, Pointer hint (the
    mouse pointer grows over the next card), Show the order.
-   Each press is recorded on the attempt and raises the Level menu beside it
-   (independent, verbal, visual, model), which can also be set by hand. The
+   Each press is recorded on the attempt and raises the Level menu in the
+   tray's header (independent, verbal, visual, model), which can also be set
+   by hand. An "Attempt 1 of 2" pill sits beside it. The
    level returns to `independent` at the start of each attempt unless a
    cue-placed card is still on the board.
 5. **Retell (optional):** once a story is finished, "Retell" keeps the sequence
