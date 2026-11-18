@@ -88,7 +88,10 @@ probably wrong. Full statement: top of README.
   band its scenes use: one shared crop for a
   story's full scenes (scale never changes), its
   own top trim for the close-up. Keep captions
-  to about three lines.
+  to about three lines. Every paper set is
+  trimmed (the older 640×857 sets too): a tall
+  picture with empty paper shrinks to fit the
+  near-square picture area and looks tiny.
 story = {
   id, title, gradeBand,
   reversible: bool,
@@ -163,7 +166,12 @@ only; sets --cw through data-size on :root).
 On the play screen fitCards() overrides --cw
 (and --cap): all of a story's cards fit one
 row and spots + tray + Check fit the window,
-max 340px; large/largest scale that by 1.2 /
+max 420px. Height is measured, not guessed:
+it sizes once, measures what isn't cards
+(header, labels, padding, Check) and solves;
+a finished story keeps its size. Keep play
+margins tight: every px of chrome comes out
+of both card rows. large/largest scale by 1.2 /
 1.45 (may wrap). Other screens use the CSS.
 Story list view: pictures (default) | list.
 The list is grouped by story.set, in this
