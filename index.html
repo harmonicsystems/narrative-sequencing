@@ -139,7 +139,6 @@
   #tour .link { color: var(--talk-ink); }
   #tour .btn { color: var(--ink); }
   .tour-focus { outline: 3px dashed var(--talk); outline-offset: 6px; border-radius: 14px; }
-  #introRow { margin-top: 14px; }
   #about { max-width: 720px; }
   #about p, #about li { line-height: 1.6; }
   #about li { margin-bottom: 8px; }
@@ -148,21 +147,85 @@
   #aboutHead h1 { margin: 0; }
 
   /* Setup */
-  /* Stories are grouped into sets (story.set), each with a heading, one line
-     on what it holds and its own grid. The set's icon repeats on every tile. */
-  .set + .set { margin-top: 34px; }
-  .setHead { display: flex; align-items: center; gap: 10px; margin: 0 0 2px; font-size: 1.15rem; }
-  .setHead .ic {
-    width: 1.5em; height: 1.5em; margin: 0; color: var(--accent); flex: none;
+  /* One question per screen: what kind, which story, then that story's own
+     choices and Start. Each screen holds a handful of things, so there is
+     nothing to scan. Back is always top left. */
+  #setup { max-width: 1040px; margin: 0 auto; }
+  #setupHead {
+    position: relative; display: flex; flex-wrap: wrap; align-items: center;
+    gap: 4px 14px; margin: -14px 0 12px;
+  }
+  #brand { margin: 0 auto 0 0; font-weight: 600; }
+  #setupTop { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; min-height: 48px; margin-bottom: 26px; }
+  /* The three steps. A finished step shows what was chosen and goes back to it. */
+  #crumbs {
+    list-style: none; margin: 0 0 0 auto; padding: 0; display: flex; flex-wrap: wrap;
+    align-items: center; gap: 2px 8px; font-size: 0.88rem; color: var(--muted);
+  }
+  #crumbs li { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+  #crumbs li + li::before { content: ''; width: 18px; height: 1.5px; background: var(--edge); }
+  #crumbs .n {
+    width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--edge); flex: none;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600;
+  }
+  #crumbs [aria-current] { color: var(--ink); font-weight: 600; }
+  #crumbs [aria-current] .n { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  #crumbs button {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0;
+    background: none; border: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 4px;
+  }
+  /* Narrow screens: only the current step keeps its words on show (the rest
+     stay readable to a screen reader), so the steps fit beside Back. */
+  @media (max-width: 600px) {
+    #crumbs li:not([aria-current]) .lab {
+      position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
+    #crumbs button { min-width: 44px; justify-content: center; }
+    #crumbs li + li::before { display: none; }
+    #setupTop { margin-bottom: 18px; }
+  }
+  #setup h1 { display: flex; align-items: center; gap: 12px; font-size: 1.9rem; line-height: 1.25; margin: 0 0 6px; }
+  #setup h1:focus { outline: none; }   /* a new screen moves focus to its question */
+  #setup h1 .ic, .eyebrow .ic, .door b .ic {
+    width: 1.2em; height: 1.2em; margin: 0; flex: none; color: var(--accent);
     fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
   }
-  .setNote { margin: 0 0 14px; }
-  .setGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-  .story .setIc { width: 1.1em; height: 1.1em; margin: 0 6px 0 0; vertical-align: -0.18em; color: var(--muted); }
-  .story { text-align: left; }
-  .story span { display: block; }
-  /* Pills: a small icon and a word, so what a story is reads at a glance.
-     The tint is a hint only; the icon and words carry the meaning. */
+  /* A close-up of one card: on a kind's door (three, fanned) and on a story's tile. */
+  .thumb {
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+    background: var(--soft); border: 1px solid var(--line); line-height: 1;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+  /* Step 1: the kinds of work (story.set), one door each. */
+  #stepKind h1 { margin-bottom: 26px; }
+  #doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(176px, 1fr)); gap: 16px; }
+  .door, .tile { display: flex; flex-direction: column; text-align: left; }
+  .door { gap: 4px; padding: 18px 16px 16px; border-radius: 22px; }
+  .door b { display: flex; align-items: center; gap: 8px; font-size: 1.08rem; line-height: 1.3; }
+  .doorFoot {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+    margin-top: auto; padding-top: 10px; font-weight: 600;
+  }
+  @media (hover: hover) { .door:hover, .tile:hover { box-shadow: 0 0 0 2.5px var(--accent); } }
+  .fan { position: relative; display: block; height: 124px; margin-bottom: 12px; }
+  .fan .thumb {
+    position: absolute; left: 50%; top: 5px; width: 88px; height: 100px; margin-left: -44px;
+    border-radius: 10px; border: 1.5px solid var(--edge); box-shadow: var(--shadow); font-size: 2.2rem;
+  }
+  .fan .thumb.left { top: 10px; transform: translateX(-40px) rotate(-7deg); }
+  .fan .thumb.right { top: 10px; transform: translateX(40px) rotate(7deg); }
+
+  /* Step 2: that kind's stories. */
+  #setNote { margin: 0; }
+  #picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 16px; margin-top: 22px; }
+  .tile { gap: 2px; padding: 14px 16px; border-radius: 18px; line-height: 1.35; }
+  #picks.pictures .tile { padding: 8px 8px 12px; }
+  .tile .thumb { aspect-ratio: 4 / 3; margin-bottom: 8px; border-radius: 11px; font-size: 3.2rem; }
+  #picks.pictures .tile > :not(.thumb) { margin-inline: 6px; }
+  .tile .pill { align-self: flex-start; margin-top: 6px; }
+  /* Pills: a small icon and a word. The tint is a hint only; the icon and
+     words carry the meaning. */
   .pill {
     display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 8px;
     border-radius: 999px; border: 1px solid var(--line); background: var(--soft);
@@ -172,77 +235,76 @@
     width: 1em; height: 1em; margin: 0; flex: none; vertical-align: 0;
     fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
   }
-  .pill.rev { background: color-mix(in srgb, var(--talk) 16%, var(--surface)); }
-  .pill.parts { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
   .pill.done { background: color-mix(in srgb, var(--go) 22%, var(--surface)); }
-  .story .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-  .story .pills .pill { display: inline-flex; }
-  /* Picture view: each story is a small deck of cards with a close-up of one
-     card on top. The two lines under the tile are the edges of the cards below. */
-  #storyList.pictures .setGrid { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 22px 16px; }
-  .pictures .story {
-    padding: 8px 8px 12px; border-radius: 18px; margin-bottom: 7px;
-    box-shadow: 0 3.5px 0 -1.5px var(--surface), 0 3.5px 0 0 var(--edge),
-                0 7px 0 -3px var(--surface), 0 7px 0 -1.5px var(--edge);
+
+  /* Step 3: the picked story. Its choices sit above its cards, shown as the
+     student will get them (mixed up, never in story order), then Start. */
+  #stepReady { max-width: 900px; }
+  .eyebrow {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px;
+    margin: 0 0 2px; color: var(--muted); font-size: 0.9rem;
   }
-  .pictures .story[aria-pressed="true"] {
-    box-shadow: 0 0 0 2.5px var(--accent), 0 4px 0 2.5px var(--accent), 0 8px 0 0 var(--edge);
+  .eyebrow .ic { width: 1.15em; height: 1.15em; color: inherit; }
+  #storyOpts { gap: 10px 26px; margin: 16px 0 18px; }
+  #storyOpts .row { gap: 8px; }
+  #storyOpts .lbl, #feelRow .lbl { font-size: 0.88rem; color: var(--muted); margin-right: 2px; }
+  #feelRow { gap: 6px; margin-top: 16px; }
+  #feelRow .btn.mini { min-height: 40px; padding: 4px 11px; }
+  .btn.mini { min-height: 44px; padding: 6px 14px; border-radius: 12px; font-size: 0.92rem; }
+  #previewNote { margin: 0 0 8px; }
+  #preview {
+    --cw: 150px;           /* emoji size on the small cards; the grid sets their width */
+    list-style: none; margin: 0; padding: 12px; border-radius: 22px; background: var(--soft);
+    width: fit-content; max-width: 100%;
+    display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 176px)); gap: 10px; justify-content: start;
   }
-  .story .thumb {
-    display: flex; align-items: center; justify-content: center; overflow: hidden;
-    aspect-ratio: 4 / 3; margin-bottom: 10px; border-radius: 11px;
-    background: var(--soft); border: 1px solid var(--line);
-    font-size: 3.2rem; line-height: 1;
+  #preview li { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  #preview .tag { min-height: 1.5em; font-size: 0.78rem; font-weight: 600; line-height: 1.5; text-align: center; }
+  #preview .card { width: 100%; border-radius: 14px; cursor: default; touch-action: auto; }
+  #preview .card .cap { font-size: 0.78rem; padding: 4px 6px 8px; }
+  #preview .card.plain .cap { font-size: 0.95rem; padding: 10px; }
+  /* The card placed for the student: a ring, and the words "Placed first" above it. */
+  #preview .card.placed { border-color: var(--accent); box-shadow: 0 0 0 2.5px var(--accent); }
+  #preview.pics { grid-template-columns: repeat(var(--n, 9), minmax(0, 84px)); gap: 8px; }
+  #preview.pics img {
+    display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px;
+    border: 1.5px solid var(--edge); background: var(--surface);
   }
-  .story .thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-  .story .thumb + span, .story .thumb ~ .pills { padding-inline: 6px; }
-  .pictures .story { display: flex; flex-direction: column; justify-content: flex-start; }
-  /* Session settings: things set once and kept for every story. Closed by
-     default; the summary line says what is chosen. */
-  #settings {
-    margin-top: 26px; border: 1.5px solid var(--edge); border-radius: 16px; background: var(--surface);
+  /* Cards take two rows when one row would make them too small to read. */
+  @media (max-width: 740px) {
+    #preview.many { grid-template-columns: repeat(var(--half), minmax(0, 176px)); }
+    #preview.pics { grid-template-columns: repeat(auto-fill, minmax(64px, 84px)); }
   }
-  #settings summary {
-    display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
-    min-height: 52px; padding: 12px 18px; cursor: pointer; list-style: none;
-  }
+  @media (max-width: 560px) { #preview.n5 { grid-template-columns: repeat(3, minmax(0, 176px)); } }
+  @media (max-width: 440px) { #preview:not(.pics) { width: auto; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); } }
+  @media (max-width: 740px) { #preview.pics { width: auto; } }
+  /* Start sits under the cards, at the left edge every other line starts from. */
+  #readyFoot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 22px; }
+  #readyNote { margin: 0; flex: 1; min-width: 220px; max-width: 62ch; }
+  #startBtn { flex: none; }
+  @media (max-width: 600px) { #startBtn { width: 100%; } }
+  #sourceNote { margin: 40px 0 0; }
+
+  /* Session settings: things set once and kept for every story, behind one
+     button in the top line. */
+  #settings { position: relative; }
+  #settings summary { display: flex; align-items: center; list-style: none; }
   #settings summary::-webkit-details-marker { display: none; }
-  #settings .sumTitle { font-weight: 600; }
-  #settingsSummary { display: flex; flex-wrap: wrap; gap: 6px; }
-  #settings .sumTitle::before { content: '▸'; display: inline-block; width: 1.2em; color: var(--muted); }
-  #settings[open] .sumTitle::before { content: '▾'; }
   #settingsBody {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 28px;
-    padding: 4px 18px 18px; border-top: 1px solid var(--line);
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 25; width: min(360px, calc(100vw - 40px));
+    padding: 4px 18px 14px; border-radius: 16px; background: var(--surface);
+    border: 1.5px solid var(--edge); box-shadow: var(--shadow);
   }
   #settingsBody h3 { font-size: 0.88rem; font-weight: 600; color: var(--muted); margin: 14px 0 8px; }
   #settingsBody label.check, #settingsBody .link { display: flex; margin-top: 0; }
   #settingsBody label.check input { flex: none; width: 22px; height: 22px; }
   #settingsBody .row { gap: 8px; }
   #settingsBody .link { text-align: left; }
-  /* Start bar: stays at the bottom of the screen and holds the choices that
-     belong to the picked story, so setup is pick a story, then Start. */
-  #startBar {
-    position: sticky; bottom: 0; z-index: 5; margin: 36px -6px 0;
-    padding: 12px 6px max(12px, env(safe-area-inset-bottom));   /* 6px wider: covers selection rings */
-    background: var(--bg); border-top: 1.5px solid var(--edge);
-    display: flex; gap: 12px 20px; align-items: center; justify-content: space-between;
-  }
-  #startInfo { min-width: 0; flex: 1; }
-  #startTitle { margin: 0 0 8px; font-weight: 600; }
-  #storyOpts { gap: 8px 22px; }
-  #storyOpts .row { gap: 8px; }
-  #feelRow { gap: 6px; margin-top: 8px; }
-  #feelRow .lbl, #storyOpts .lbl { font-size: 0.88rem; color: var(--muted); margin-right: 2px; }
-  #feelRow .btn.mini { min-height: 40px; padding: 4px 11px; }
-  .btn.mini { min-height: 44px; padding: 6px 14px; border-radius: 12px; font-size: 0.92rem; }
-  #startBtn { flex: none; }
+  /* Narrow screens: the top line wraps, so the panel hangs from the whole line. */
   @media (max-width: 600px) {
-    #startBar { flex-wrap: wrap; }
-    #startInfo { flex-basis: 100%; }
-    #startBtn { width: 100%; }
+    #settings { position: static; }
+    #settingsBody { left: 0; right: 0; width: auto; }
   }
-  #sessionBar { margin-top: 28px; padding-top: 0; border-top: 0; justify-content: space-between; }
 
   /* Play */
   #playHead { justify-content: flex-start; gap: 18px; margin-bottom: 12px; }
@@ -466,58 +528,72 @@
   </aside>
 
   <section id="setup">
-    <h1>Narrative Sequencing</h1>
-    <p class="muted">Choose a story for the student to put in order.</p>
-    <div class="row" id="introRow">
-      <button class="btn talk" id="tourBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"/></svg>New here? Take the 2-minute tour</button>
-      <button class="link" id="aboutBtn">About this tool</button>
+    <div id="setupHead">
+      <p id="brand">Narrative Sequencing</p>
+      <span class="muted small" id="sessionCount" hidden></span>
+      <button class="btn mini" id="endFromSetup" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
+      <button class="link small" id="tourBtn">2-minute tour</button>
+      <button class="link small" id="aboutBtn">About</button>
+      <details id="settings">
+        <summary class="btn mini"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M16 4.5v5M8 14.5v5"/></svg>Session settings</summary>
+        <div id="settingsBody">
+          <div>
+            <h3>Card size</h3>
+            <div class="row" id="sizeRow"></div>
+          </div>
+          <div>
+            <h3>On the cards</h3>
+            <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
+            <label class="check small"><input type="checkbox" id="storyCursor" checked> Use story pointers (mouse or trackpad)</label>
+            <label class="check small"><input type="checkbox" id="zoomOk" checked> Let the student enlarge a card</label>
+          </div>
+          <div>
+            <h3>This screen</h3>
+            <button class="link small" id="viewBtn"></button>
+            <button class="link small" id="themeBtn"></button>
+            <button class="link small" id="lookBtn"></button>
+          </div>
+        </div>
+      </details>
     </div>
-    <p class="muted small" id="sourceNote" hidden></p>
 
-    <details id="settings">
-      <summary><span class="sumTitle">Session settings</span><span id="settingsSummary"></span></summary>
-      <div id="settingsBody">
-        <div>
-          <h3>Card size</h3>
-          <div class="row" id="sizeRow"></div>
-        </div>
-        <div>
-          <h3>On the cards</h3>
-          <label class="check small"><input type="checkbox" id="captions" checked> Show words under pictures</label>
-          <label class="check small"><input type="checkbox" id="storyCursor" checked> Use story pointers (mouse or trackpad)</label>
-          <label class="check small"><input type="checkbox" id="zoomOk" checked> Let the student enlarge a card</label>
-        </div>
-        <div>
-          <h3>This screen</h3>
-          <button class="link small" id="viewBtn"></button>
-          <button class="link small" id="themeBtn"></button>
-          <button class="link small" id="lookBtn"></button>
-        </div>
+    <div id="setupTop">
+      <button class="btn mini" id="setupBack" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span id="setupBackText"></span></button>
+      <ol id="crumbs" aria-label="Setup steps"></ol>
+    </div>
+
+    <div id="setupMain">
+      <div id="stepKind">
+        <h1 tabindex="-1">What are you working on today?</h1>
+        <div id="doors"></div>
       </div>
-    </details>
 
-    <h2>Which story?</h2>
-    <div id="storyList"></div>
+      <div id="stepStory" hidden>
+        <h1 id="setTitle" tabindex="-1"></h1>
+        <p class="muted" id="setNote"></p>
+        <div id="picks"></div>
+      </div>
 
-    <div id="startBar">
-      <div id="startInfo">
-        <p id="startTitle" aria-live="polite"></p>
+      <div id="stepReady" hidden>
+        <p class="eyebrow" id="readyMeta"></p>
+        <h1 id="startTitle" tabindex="-1"></h1>
         <div class="row" id="storyOpts">
           <div class="row" id="styleRow" role="group" aria-label="How the cards look"></div>
           <div class="row" id="dirRow" role="group" aria-label="Which way the story goes"></div>
           <div class="row" id="choiceRow" role="group" aria-label="What the student chooses from" hidden></div>
           <div class="row" id="labelRow" role="group" aria-label="Labels" hidden></div>
         </div>
+        <p class="muted small" id="previewNote"></p>
+        <ol id="preview"></ol>
         <div class="row" id="feelRow" role="group" aria-label="Feelings in play" hidden></div>
+        <div id="readyFoot">
+          <button class="btn go" id="startBtn"><svg class="ic solid" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Start</button>
+          <p class="muted small" id="readyNote"></p>
+        </div>
       </div>
-      <button class="btn go" id="startBtn"><svg class="ic solid" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Start</button>
     </div>
 
-    <div class="row" id="sessionBar" hidden>
-      <span class="muted small" id="sessionCount"></span>
-      <button class="btn" id="endFromSetup"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
-    </div>
-
+    <p class="muted small" id="sourceNote" hidden></p>
   </section>
 
   <section id="play" hidden>
@@ -815,6 +891,7 @@ let S = null;          // state of the story on screen
 let matches = [];      // one record per picture in a feelings match
 let M = null;          // state of the feelings match on screen
 const pick = {
+  step: 'kind', set: null,   // which setup screen is up, and the kind chosen on the first
   storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures',
   // Feelings match (memory only): what the student picks from, open or fixed
   // labels, and which feelings are in play.
@@ -880,12 +957,13 @@ function el(tag, cls, text) {
 /* ---------- Tour ---------- */
 
 // Each step is entered when its event happens on the real screens. `focus`
-// is the element the step is talking about.
+// is what the step is talking about: a list, most specific first, and the
+// first one on screen gets the ring.
 const TOUR = [
-  { focus: '#storyList',
-    text: 'This is the clinician\'s setup screen. Pick any story below. "Brushing teeth" is a quick one with three cards.' },
-  { when: 'pick', focus: '#startBar',
-    text: 'The bar at the bottom shows your pick, with choices for how the cards look. Press Start when you are ready.' },
+  { focus: '.door[data-set="routine"] || #stepStory:not([hidden]) || #stepReady:not([hidden])',
+    text: 'This is the clinician\'s setup screen. It asks one thing at a time. Choose "Everyday steps", then "Brushing teeth": a quick one with three cards.' },
+  { when: 'pick', focus: '#stepReady:not([hidden]) || #setupMain',
+    text: 'These are the cards the student will get, mixed up, with choices for how they look. Press Start when you are ready.' },
   { when: 'start', focus: '#tray',
     text: 'This is what the student sees. Drag each card up to a numbered spot, or click a card and then a spot. Try a wrong order on purpose first.' },
   { when: 'filled', focus: '#checkBtn',
@@ -896,8 +974,8 @@ const TOUR = [
     text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
   { when: 'retell', focus: '#retellBox',
     text: 'Click a card when its part is told; click again if it needed a prompt. In stories whose cards don\'t name their part, also mark the story parts the student included. Count time words (first, then) and cause words (because, so) with − and +. Support steps back from pictures to words only to no cards. Then press Next story.' },
-  { when: 'back', focus: 'section[aria-labelledby="set-feelings"]', scroll: true,
-    text: 'Back at the list. The last set, Feelings, works differently: one picture of a cast member at a time, and the student names the feeling. Pick one. The bar shows the choices: words, emoji or both; open or fixed labels; which feelings are in play. Then press Start.' },
+  { when: 'back', focus: '.door[data-set="feelings"] || #setup[data-set="feelings"] #stepStory:not([hidden]) || #setup[data-set="feelings"] #stepReady:not([hidden]) || #setupBack',
+    text: 'Back at the stories. One kind works differently. Press "All kinds" and choose Feelings: one picture of a cast member at a time, and the student names the feeling. Pick one of the cast. The next screen has the choices: words, emoji or both; open or fixed labels; which feelings are in play. Then press Start.' },
   { when: 'match', focus: '#matchStage',
     text: 'There is no right answer here. The student picks a feeling, or you type the word they used. What the illustrator meant stays hidden unless you show it as a cue, and every cue is logged. Go through the pictures, then press End session.' },
   { when: 'summary', focus: '#oline',
@@ -905,7 +983,7 @@ const TOUR = [
 ];
 let tourAt = -1;       // -1 = tour off
 
-function paintTour(moved) {
+function paintTour() {
   document.querySelectorAll('.tour-focus').forEach(e => e.classList.remove('tour-focus'));
   const on = tourAt >= 0;
   $('tour').hidden = !on;
@@ -915,9 +993,8 @@ function paintTour(moved) {
   $('tourStep').textContent = 'Tour · step ' + (tourAt + 1) + ' of ' + TOUR.length;
   $('tourText').textContent = step.text;
   $('tourDone').hidden = tourAt !== TOUR.length - 1;
-  const target = document.querySelector(step.focus);
+  const target = step.focus.split(' || ').map(q => document.querySelector(q)).find(Boolean);
   if (target) target.classList.add('tour-focus');
-  if (target && step.scroll && moved) target.scrollIntoView({ block: 'center' }); // the screen just changed: jump, don't glide
 }
 
 // Called from the app whenever something the tour cares about happens.
@@ -928,11 +1005,12 @@ function tour(event) {
   if (event === 'pick' && tourAt > 0) to = -1;        // already past the first step
   if (event === 'back' && tourAt < TOUR.findIndex(s => s.when === 'done')) to = -1; // left mid-story
   if (to >= 0) tourAt = to;
-  paintTour(to >= 0);                                 // repaint: the list may have been redrawn
+  paintTour();
 }
 
 function startTour() {
   tourAt = 0;
+  pick.step = 'kind';
   renderSetup();
   show('setup');
   paintTour();
@@ -940,8 +1018,9 @@ function startTour() {
 
 /* ---------- Setup ---------- */
 
-// Story sets, in the order the setup list shows them. story.set names one;
-// a story without a known set goes under "Other stories" at the end.
+// Story sets, in the order setup offers them. story.set names one; a story
+// without a known set goes under "Other stories" at the end. `note` is the
+// one line on the set's door; `more` is added on the set's own screen.
 const SETS = [
   { id: 'narrative', title: 'Stories', note: 'A character, a problem, a feeling and how it ends.',
     icon: 'M3 6.5C5.5 5 8.5 5 12 7c3.5-2 6.5-2 9-.5V19c-2.5-1.5-5.5-1.5-9 .5-3.5-2-6.5-2-9-.5zM12 7v12.5' },
@@ -951,7 +1030,8 @@ const SETS = [
     icon: 'M5 19v-3M10 19v-6M15 19v-9M20 19V5' },
   { id: 'concept', title: 'Concepts', note: 'Size, shade, position and amount, drawn as simple shapes.',
     icon: 'M7.5 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM14 4.5h6v6h-6zM12 20H3l4.5-7.5z' },
-  { id: 'feelings', title: 'Feelings', note: 'Match a feeling to a picture of one of the cast. Open labels by default: the student\'s own word counts.',
+  { id: 'feelings', title: 'Feelings', note: 'Match a feeling to a picture of one of the cast.',
+    more: 'Open labels by default: the student\'s own word counts.',
     icon: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5v.5M15 9.5v.5' },
   { id: 'other', title: 'Other stories', note: '',
     icon: 'M5 4h14v16H5zM9 9h6M9 13h6' }
@@ -959,19 +1039,12 @@ const SETS = [
 const setOf = s => SETS.find(t => t.id === s.set && t.id !== 'other') || SETS[SETS.length - 1];
 // Line icons for pills and choices: same stroke style as the set icons.
 const ICONS = {
-  cap: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5',
-  cards: 'M4 8h11v12H4zM8 4h12v12h-1',
   face: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5v.5M15 9.5v.5',
   rev: 'M4 8h14l-3-3M20 16H6l3 3',
-  tag: 'M3 12V4h8l10 10-8 8zM7.5 7.5h.01',
   check: 'M5 12.5l4.5 4.5L19 7.5',
   picture: 'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M15 9h.01',
   text: 'M5 7V5h14v2M12 5v14M9 19h6',
-  shapes: 'M7.5 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM14 4.5h6v6h-6zM12 20H3l4.5-7.5z',
-  size: 'M4 14h6v6H4zM10 4h10v10',
-  words: 'M4 7h16M4 12h16M4 17h10',
-  pointer: 'M5 3l14 7-6 2-2 6z',
-  zoom: 'M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zM20 20l-4.8-4.8'
+  shapes: 'M7.5 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM14 4.5h6v6h-6zM12 20H3l4.5-7.5z'
 };
 const icon = name => setIcon({ icon: ICONS[name] }, '');
 function pill(name, text, cls) {
@@ -991,59 +1064,145 @@ function setIcon(set, cls) {
   return svg;
 }
 
+// Setup asks one thing at a time: the kind of work (pick.step 'kind'), the
+// story ('story'), then that story's own choices and Start ('ready').
+function goStep(step, set) {
+  pick.step = step;
+  if (set) pick.set = set;
+  renderSetup();
+  window.scrollTo(0, 0);
+  const heading = document.querySelector('#setupMain > :not([hidden]) h1');
+  if (heading) heading.focus({ preventScroll: true });   // a screen reader starts at the new question
+}
+
 function renderSetup() {
   const story = stories.find(s => s.id === pick.storyId) || stories[0];
   pick.storyId = story.id;
   if (!story.styles.includes(pick.style)) pick.style = story.styles[0];
 
-  const list = $('storyList');
-  list.replaceChildren();
-  list.classList.toggle('pictures', pick.view === 'pictures');
+  const kinds = SETS.filter(set => stories.some(s => setOf(s) === set));
+  const one = kinds.length === 1;                     // only one kind: skip the first question
+  let set = pick.step === 'ready' ? setOf(story) : kinds.find(t => t.id === pick.set);
+  if (one) set = kinds[0];
+  if (!set) pick.step = 'kind';
+  else if (one && pick.step === 'kind') pick.step = 'story';
+  pick.set = set ? set.id : null;
+  const step = pick.step, at = ['kind', 'story', 'ready'].indexOf(step);
+  $('setup').dataset.set = pick.set || '';
+  $('stepKind').hidden = step !== 'kind';
+  $('stepStory').hidden = step !== 'story';
+  $('stepReady').hidden = step !== 'ready';
+
+  const pictures = pick.view === 'pictures';
   $('viewBtn').textContent = 'View: ' + pick.view;
-  $('viewBtn').onclick = () => { pick.view = pick.view === 'pictures' ? 'list' : 'pictures'; renderSetup(); };
-  for (const set of SETS) {
-    const members = stories.filter(s => setOf(s) === set);
-    if (!members.length) continue;
-    const section = el('section', 'set');
-    const head = el('h3', 'setHead');
-    head.id = 'set-' + set.id;
-    head.append(setIcon(set, 'setHeadIc'), set.title);
-    section.setAttribute('aria-labelledby', head.id);
-    section.append(head);
-    if (set.note) section.append(el('p', 'muted small setNote', set.note));
-    const grid = el('div', 'setGrid');
-    section.append(grid);
-    list.append(section);
-    for (const s of members) {
-      const b = el('button', 'btn story');
-      b.setAttribute('aria-pressed', s.id === story.id);
-      if (pick.view === 'pictures') b.append(buildThumb(s));
-      const name = el('span', '');
-      name.append(setIcon(set, 'setIc'), s.title);
+  $('viewBtn').onclick = () => { pick.view = pictures ? 'list' : 'pictures'; renderSetup(); };
+  const plays = s => new Set([...log, ...matches].filter(a => a.storyId === s.id).map(a => a.run)).size;
+  const length = s => s.cards.length + (s.kind === 'match' ? ' feelings' : ' cards');
+
+  // Top line: back, and where this screen sits in the three steps.
+  $('setupBack').hidden = !at || (one && step === 'story');
+  $('setupBackText').textContent = step === 'ready' ? set.title : 'All kinds';
+  $('setupBack').onclick = () => goStep(step === 'ready' ? 'story' : 'kind');
+  const crumbs = $('crumbs');
+  crumbs.replaceChildren();
+  [['kind', at > 0 ? set.title : 'Kind'], ['story', at > 1 ? story.title : 'Story'], ['ready', 'Start']].forEach(([name, label], i) => {
+    if (one && name === 'kind') return;
+    const li = el('li'), n = el('span', 'n', crumbs.children.length + 1), lab = el('span', 'lab', label);
+    if (i === at) li.setAttribute('aria-current', 'step');
+    if (i < at) {
+      const b = el('button');
+      b.append(n, lab);
+      b.onclick = () => goStep(name);
+      li.append(b);
+    } else li.append(n, lab);
+    crumbs.append(li);
+  });
+
+  // Step 1: a door for each kind, with up to three of its covers fanned out.
+  const doors = $('doors'), picks = $('picks');
+  doors.replaceChildren();
+  picks.replaceChildren();
+  if (step === 'kind') {
+    for (const kind of kinds) {
+      const members = stories.filter(s => setOf(s) === kind);
+      const b = el('button', 'btn door');
+      b.dataset.set = kind.id;
+      if (pictures) {
+        const fan = el('span', 'fan');
+        for (const [side, s] of [['left', members[1]], ['right', members[2]], ['', members[0]]]) {
+          if (!s) continue;
+          const thumb = buildThumb(s);
+          if (side) thumb.classList.add(side);
+          fan.append(thumb);
+        }
+        b.append(fan);
+      }
+      const name = el('b');
+      name.append(setIcon(kind, ''), kind.title);
       b.append(name);
-      const plays = new Set([...log, ...matches].filter(a => a.storyId === s.id).map(a => a.run)).size;
-      const pills = el('span', 'pills');
-      if (s.gradeBand) pills.append(pill('cap', s.gradeBand));
-      pills.append(s.kind === 'match' ? pill('face', s.cards.length + ' feelings') : pill('cards', s.cards.length + ' cards'));
-      if (s.reversible) pills.append(pill('rev', 'reversible', 'rev'));
-      if (cardParts(s)) pills.append(pill('tag', 'story parts', 'parts'));
-      if (plays) pills.append(pill('check', 'done' + (plays > 1 ? ' ×' + plays : ''), 'done'));
-      b.append(pills);
-      b.onclick = () => { pick.storyId = s.id; renderSetup(); tour('pick'); };
-      grid.append(b);
+      if (kind.note) b.append(el('span', 'muted small', kind.note));
+      const unit = kind.id === 'feelings' ? ['character', 'characters'] : ['story', 'stories'];
+      const foot = el('span', 'doorFoot small', members.length + ' ' + unit[members.length === 1 ? 0 : 1]);
+      const done = members.filter(plays).length;
+      if (done) foot.append(pill('check', done + ' done', 'done'));
+      b.append(foot);
+      b.onclick = () => goStep('story', kind.id);
+      doors.append(b);
     }
   }
 
-  const styleRow = $('styleRow');
-  styleRow.replaceChildren();
-  for (const st of story.styles) {
-    const b = el('button', 'btn mini');
-    b.append(icon(st === 'emoji' ? 'face' : st === 'text' ? 'text' : st === 'shape' ? 'shapes' : 'picture'), STYLE_NAME[st] || st);
-    b.setAttribute('aria-pressed', st === pick.style);
-    b.onclick = () => { pick.style = st; renderSetup(); };
-    styleRow.append(b);
+  // Step 2: the stories of the chosen kind.
+  if (step === 'story') {
+    $('setTitle').replaceChildren(setIcon(set, ''), set.title);
+    $('setNote').textContent = [set.note, set.more].filter(Boolean).join(' ');
+    picks.classList.toggle('pictures', pictures);
+    for (const s of stories.filter(x => setOf(x) === set)) {
+      const b = el('button', 'btn tile');
+      if (pictures) b.append(buildThumb(s));
+      b.append(el('b', '', s.title), el('span', 'muted small', [length(s), s.gradeBand].filter(Boolean).join(' · ')));
+      const n = plays(s);
+      if (n) b.append(pill('check', 'done' + (n > 1 ? ' ×' + n : ''), 'done'));
+      b.onclick = () => { pick.storyId = s.id; goStep('ready'); tour('pick'); };
+      picks.append(b);
+    }
   }
 
+  // Step 3: the picked story, its choices and its cards.
+  if (step === 'ready') {
+    const match = story.kind === 'match';
+    const meta = $('readyMeta'), n = plays(story);
+    meta.replaceChildren(setIcon(set, ''), [set.title, story.gradeBand, length(story)].filter(Boolean).join(' · '));
+    if (n) meta.append(pill('check', 'done' + (n > 1 ? ' ×' + n : ''), 'done'));
+    $('startTitle').textContent = story.title;
+
+    const styleRow = $('styleRow');
+    styleRow.replaceChildren(el('span', 'lbl', match ? 'Pictures' : 'Cards show'));
+    for (const st of story.styles) {
+      const b = el('button', 'btn mini');
+      b.append(icon(st === 'emoji' ? 'face' : st === 'text' ? 'text' : st === 'shape' ? 'shapes' : 'picture'), STYLE_NAME[st] || st);
+      b.setAttribute('aria-pressed', st === pick.style);
+      b.onclick = () => { pick.style = st; renderSetup(); };
+      styleRow.append(b);
+    }
+
+    const dirRow = $('dirRow');
+    dirRow.replaceChildren();
+    dirRow.hidden = !story.reversible;
+    if (story.reversible) {
+      dirRow.append(el('span', 'lbl', 'Order'));
+      const [a, z] = story.endLabels || ['start', 'end'];
+      for (const [dir, label] of [['forward', a + ' → ' + z], ['reverse', z + ' → ' + a]]) {
+        const b = el('button', 'btn mini');
+        b.append(icon('rev'), label);
+        b.setAttribute('aria-pressed', dir === pick.direction);
+        b.onclick = () => { pick.direction = dir; renderSetup(); };
+        dirRow.append(b);
+      }
+    }
+
+    renderMatchOpts(story);
+    renderPreview(story);
+  }
 
   const sizeRow = $('sizeRow');
   sizeRow.replaceChildren();
@@ -1056,40 +1215,85 @@ function renderSetup() {
   // Memory only, like appearance: the choice lasts until the page is closed.
   if (pick.size === 'standard') delete document.documentElement.dataset.size;
   else document.documentElement.dataset.size = pick.size;
-
-  const dirRow = $('dirRow');
-  dirRow.replaceChildren();
-  dirRow.hidden = !story.reversible;
-  if (story.reversible) {
-    const [a, z] = story.endLabels || ['start', 'end'];
-    for (const [dir, label] of [['forward', a + ' → ' + z], ['reverse', z + ' → ' + a]]) {
-      const b = el('button', 'btn mini');
-      b.append(icon('rev'), label);
-      b.setAttribute('aria-pressed', dir === pick.direction);
-      b.onclick = () => { pick.direction = dir; renderSetup(); };
-      dirRow.append(b);
-    }
-  }
-
-  renderMatchOpts(story);
-
-  $('startTitle').textContent = story.title;
-  $('captions').onchange = $('storyCursor').onchange = renderSetup;
-  $('settingsSummary').replaceChildren(
-    pill('size', pick.size + ' cards'),
-    pill('words', $('captions').checked ? 'words shown' : 'words hidden'),
-    pill('pointer', $('storyCursor').checked ? 'story pointers on' : 'story pointers off'),
-    pill('zoom', $('zoomOk').checked ? 'enlarge on' : 'enlarge off'));
+  $('captions').onchange = renderSetup;
 
   const runs = new Set(log.map(a => a.run)).size, sets = new Set(matches.map(a => a.run)).size;
-  $('sessionBar').hidden = !runs && !sets;
+  $('sessionCount').hidden = $('endFromSetup').hidden = !runs && !sets;
   $('sessionCount').textContent = [
     runs ? runs + (runs === 1 ? ' story' : ' stories') : '',
     sets ? sets + (sets === 1 ? ' feelings set' : ' feelings sets') : ''
-  ].filter(Boolean).join(' and ') + ' logged this session';
+  ].filter(Boolean).join(' and ') + ' logged';
+
+  paintTour();   // the screen was redrawn: put the tour's ring back
 }
 
-// Start bar choices for a feelings match. Choices and labels apply to every
+// The same mixed-up order every time for a story, and never the story order
+// or its reverse: the setup screen must not show the answer.
+function mixedUp(story, idxs) {
+  if (idxs.length < 3) return [...idxs].reverse();
+  let seed = [...story.id].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const a = [...idxs], n = a.length;
+  do {
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  } while (a.every((c, i) => c === idxs[i]) || a.every((c, i) => c === idxs[n - 1 - i]));
+  return a;
+}
+
+// Ready screen: the picked story's cards as the student will get them. A
+// reversible story shows its placed first card, then the rest mixed up. A
+// feelings match shows how its pictures are drawn, mixed up and without
+// their words (so never an emoji either: that would name the feeling).
+function renderPreview(story) {
+  const list = $('preview'), all = story.cards.map((_, i) => i);
+  list.replaceChildren();
+  if (story.kind === 'match') {
+    list.className = 'pics';
+    list.style.setProperty('--n', all.length);
+    list.setAttribute('aria-hidden', 'true');
+    for (const i of mixedUp(story, all)) {
+      const li = el('li'), img = new Image();
+      img.alt = '';
+      img.draggable = false;
+      img.onerror = () => li.remove();
+      img.src = 'img/' + story.id + '/' + pick.style + '/' + (story.cards[i].img || story.cards[i].text + '.jpg');
+      li.append(img);
+      list.append(li);
+    }
+    $('previewNote').textContent = 'How the pictures look. Each is shown on its own, and the word it was drawn as stays hidden.';
+    $('readyNote').textContent = 'The student is asked "How does ' + (story.who || 'this one') + ' feel?" for each picture, and never sees right or wrong.';
+    return;
+  }
+  const order = story.reversible && pick.direction === 'reverse' ? [...all].reverse() : all;
+  const placed = story.reversible ? order[0] : null;
+  const rest = mixedUp(story, story.reversible ? order.slice(1) : order);
+  const shown = story.reversible ? [placed, ...rest] : rest;
+  list.className = shown.length > 5 ? 'many' : shown.length === 5 ? 'n5' : '';
+  list.style.setProperty('--n', shown.length);
+  list.style.setProperty('--half', Math.ceil(shown.length / 2));
+  list.removeAttribute('aria-hidden');
+  for (const idx of shown) {
+    const card = buildCard(story, idx, pick.style, $('captions').checked);
+    card.removeAttribute('tabindex');      // a picture of the card, not one to pick up
+    card.setAttribute('role', 'img');
+    const li = el('li');
+    if (story.reversible) li.append(el('span', 'tag', idx === placed ? 'Placed first' : ''));
+    if (idx === placed) card.classList.add('placed');
+    li.append(card);
+    list.append(li);
+  }
+  $('previewNote').textContent = story.reversible
+    ? 'The first card is placed for the student. The other ' + rest.length + ' are mixed up, like this:'
+    : 'The student gets these ' + rest.length + ' cards mixed up, like this:';
+  const parts = PART_ORDER.filter(part => story.cards.some(c => c.part === part));
+  $('readyNote').textContent = parts.length ? 'Story parts on these cards: ' + parts.join(', ') + '.'
+    : story.reversible ? 'Runs either way. Placing the first card makes the direction clear.' : '';
+}
+
+// Ready screen choices for a feelings match. Choices and labels apply to every
 // character; the feelings in play are the same words for the whole cast.
 function renderMatchOpts(story) {
   const on = story.kind === 'match';
@@ -2150,8 +2354,10 @@ async function init() {
     if (story && story.kind === 'match') { startMatch(); tour('match'); return; }
     startStory(); tour('start');
   };
-  $('matchBack').onclick = $('matchToSetup').onclick = () => { renderSetup(); show('setup'); };
-  $('matchEnd').onclick = showSummary;
+  // Leaving a story lands on that kind's stories, ready for the next pick.
+  const toStories = () => { pick.step = 'story'; renderSetup(); show('setup'); };
+  $('matchBack').onclick = $('matchToSetup').onclick = toStories;
+  $('matchEnd').onclick = () => { pick.step = 'story'; showSummary(); };
   $('matchNext').onclick = nextPicture;
   $('mcVerbal').onclick = () => matchCue('verbal cue');
   $('mcNarrow').onclick = () => matchCue('choice narrowed to two');
@@ -2165,8 +2371,8 @@ async function init() {
   $('aboutBack').onclick = () => { renderSetup(); show('setup'); };
   $('checkBtn').onclick = check;
   // Leaving the story keeps a retell in progress; only "Discard" drops it.
-  $('nextBtn').onclick = $('backBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); tour('back'); };
-  $('endBtn').onclick = () => { endRetell(true); showSummary(); };
+  $('nextBtn').onclick = $('backBtn').onclick = () => { endRetell(true); toStories(); tour('back'); };
+  $('endBtn').onclick = () => { endRetell(true); pick.step = 'story'; showSummary(); };
   $('retellBtn').onclick = startRetell;
   $('cueVerbal').onclick = () => { if (!S.locked) { noteCue('verbal cue', 'verbal'); render(); } };
   $('cueFirst').onclick = () => placeCue(0, 'first card placed');
@@ -2189,7 +2395,10 @@ async function init() {
   $('zoomClose').onclick = closeZoom;
   $('zoomView').addEventListener('click', e => { if (e.target.id !== 'zoomClose') closeZoom(); });
   $('zoomView').addEventListener('close', () => { if (zoomFrom && zoomFrom.isConnected) zoomFrom.focus(); zoomFrom = null; });
-  $('zoomOk').onchange = () => { document.documentElement.classList.toggle('nozoom', !$('zoomOk').checked); renderSetup(); };
+  $('zoomOk').onchange = () => { document.documentElement.classList.toggle('nozoom', !$('zoomOk').checked); };
+  // Session settings is a pop-over: a press anywhere else, or Escape, closes it.
+  document.addEventListener('click', e => { if (!e.target.closest('#settings')) $('settings').open = false; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') $('settings').open = false; });
   $('retellDiscard').onclick = () => {
     endRetell(false);
     $('retellBtn').hidden = false;
@@ -2217,6 +2426,7 @@ async function init() {
   $('newSession').onclick = () => {
     if (!confirm('Clear this session\'s data and start over?')) return;
     log = []; retells = []; matches = []; runCount = 0;
+    pick.step = 'kind';
     renderSetup(); show('setup');
   };
   $('tray').onclick = e => {
@@ -2245,7 +2455,8 @@ async function init() {
   paintLook();
 
   if (!stories.length) {
-    $('storyList').textContent = 'No stories found in stories.json.';
+    $('setupTop').hidden = true;
+    $('doors').textContent = 'No stories found in stories.json.';
     $('startBtn').disabled = true;
     return;
   }

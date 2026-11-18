@@ -149,18 +149,45 @@ story = {
   (puffer fish, kettle, storm, voice volume).
 
 ## Setup screen (clinician)
-Setup is two steps: pick a story, press Start.
-Three parts, top to bottom:
-- Session settings (closed panel, summary line
-  shows the choices): things set once for the
-  whole session.
-- Story list.
-- Start bar, stuck to the bottom of the screen:
-  story title, its style and (reversible only)
-  direction buttons with endLabels, e.g.
-  "calm → puffed", and Start. Anything that
-  depends on the picked story goes here, never
-  below the list.
+Setup asks one thing per screen (pick.step), so
+there is never a long list to scan:
+1. kind: "What are you working on today?" One
+   door per story.set, in SETS order: narrative
+   "Stories", routine "Everyday steps", change
+   "Step-by-step change", concept "Concepts",
+   feelings "Feelings" (unknown set: "Other
+   stories"). A door has up to three covers
+   fanned out, a line icon, one line on what
+   the set holds and its count. New sets go in
+   the SETS array. If stories.json has only one
+   set, this screen is skipped.
+2. story: that set's stories as tiles: cover,
+   title, "5 cards · K-2".
+3. ready: the picked story. Its choices (style
+   and, reversible only, direction buttons with
+   endLabels, e.g. "calm → puffed"), a preview
+   of its cards, then Start under them. Anything
+   that depends on the picked story goes here.
+Top line on every step: app name, the session
+count and End session (once something is
+logged), tour, About and Session settings (a
+pop-over: things set once for the whole
+session). Under it: Back (top left: "All kinds"
+or the set's name) and the three numbered
+steps; a finished step shows what was chosen
+and goes back to it. Leaving a story lands on
+step 2 for the same set.
+The ready preview must never show the answer: a
+student may be watching the screen. Cards are
+drawn mixed up (mixedUp(): the same order every
+time for a story, never the story order or its
+reverse). A reversible story's placed card
+comes first, labelled "Placed first". Story
+parts are listed in words under the cards,
+never on a card. A feelings match shows its
+pictures mixed up with no words and no emoji
+fallback; the feelings in play stay word
+buttons.
 Card size: standard | large | largest (memory
 only; sets --cw through data-size on :root).
 On the play screen fitCards() overrides --cw
@@ -173,25 +200,18 @@ a finished story keeps its size. Keep play
 margins tight: every px of chrome comes out
 of both card rows. large/largest scale by 1.2 /
 1.45 (may wrap). Other screens use the CSS.
-Story list view: pictures (default) | list.
-The list is grouped by story.set, in this
-order: narrative "Stories", routine "Everyday
-steps", change "Step-by-step change", concept
-"Concepts" (unknown set: "Other stories"). Each
-set has a heading with a line icon and one line
-on what it holds; the icon repeats small on its
-tiles. New sets go in the SETS array.
-Each tile carries pills (icon + word, never
-colour alone): grade, card or feelings count,
-reversible, story parts, done ×N. The session
-settings summary is pills too; style and
-direction choices carry an icon. Pill tints are
-color-mix() of the role tokens, so every theme
-gets them for free.
-Pictures shows each story as a small deck with a
-close-up of one card: optional story.cover (card
-number from 1, default the last card), from the
-first image style, else emoji, else words only.
+View: pictures (default) | list (no covers on
+doors or tiles).
+A pill (icon + word, never colour alone) marks
+what is done this session: "done ×N" on a
+story's tile and ready screen, "N done" on a
+door. Style and direction choices carry an
+icon. Pill tints are color-mix() of the role
+tokens, so every theme gets them for free.
+A cover is a close-up of one card: optional
+story.cover (card number from 1, default the
+last card), from the first image style, else
+emoji, else words only.
 Optional story.cursor (one emoji): the mouse
 pointer on the play screen, with a setup
 checkbox to turn it off. Decoration only: it
@@ -260,7 +280,10 @@ O-line adds "Cues given, by attempt: name (k/N),
   feelings set. Steps advance on real events
   via tour('pick' | 'start' | 'filled' | 'wrong' |
   'done' | 'retell' | 'back' | 'match' |
-  'summary'); nothing is blocked or faked. A link ending in #tour opens
+  'summary'); nothing is blocked or faked. A
+  step's `focus` is a list ("a || b"): the first
+  one on screen gets the ring, so it follows the
+  setup steps. A link ending in #tour opens
   straight into it; #about opens the About page.
 - About: what the tool is, why it works this way,
   how it was made and who did what. Written in
@@ -320,7 +343,7 @@ the clinician types the student's own word.
   Images: img/<storyId>/<style>/<feeling>.jpg,
   cut from the F1-F3 sheets (image-prompts.md
   Part 5): same nine feelings, same order.
-- Start bar: Choose from (words | emoji |
+- Ready screen: Choose from (words | emoji |
   both), Labels (open | fixed words), Feelings
   in play (min 2; same words for the whole
   cast; choices always in card order, so

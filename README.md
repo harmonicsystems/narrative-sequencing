@@ -42,14 +42,18 @@ log of every round's feedback.
 
 ## A session
 
-New to the tool? Add `#tour` to the address (or press "Take the 2-minute tour"
-on the first screen) for a guided walk through one session. "About this tool"
+New to the tool? Add `#tour` to the address (or press "2-minute tour" at the
+top of the first screen) for a guided walk through one session. "About"
 explains the thinking behind it and how it was made.
 
-1. **Setup (clinician):** pick a story and press Start. The bar at the bottom
-   of the screen shows the story's style and, for reversible stories, its
-   direction with the story's end labels (e.g. `calm → puffed`). Session
-   settings at the top hold card size, captions, story pointers and appearance.
+1. **Setup (clinician):** one question per screen. Choose a kind of work
+   (Stories, Everyday steps, Step-by-step change, Concepts, Feelings), then a
+   story, then press Start. The last screen shows the story's cards mixed up,
+   as the student will get them (never in story order), with its style and,
+   for reversible stories, its direction with the story's end labels (e.g.
+   `calm → puffed`). After a story you come back to the same kind's stories.
+   Session settings at the top right hold card size, captions, story pointers
+   and appearance.
 2. **Arrange (student):** drag cards into the numbered spots, or tap a card and
    then tap a spot. Tapping a placed card while another is selected swaps them.
    In reversible stories the first card is pinned in spot 1. The magnifier in
@@ -105,7 +109,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 |---|---|
 | `id` | Unique, lowercase with hyphens. Also the image folder name. |
 | `title` | Shown on the setup and play screens. |
-| `set` | Which group the setup screen lists it under: `narrative` (Stories), `routine` (Everyday steps), `change` (Step-by-step change) or `concept` (Concepts). Anything else goes under "Other stories". |
+| `set` | Which kind the first setup screen offers it under: `narrative` (Stories), `routine` (Everyday steps), `change` (Step-by-step change) or `concept` (Concepts). Anything else goes under "Other stories". |
 | `gradeBand` | Free text, e.g. `K-2`. |
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
@@ -120,7 +124,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
 | `kind` | Optional. `"match"` makes the story a feelings match instead of a sequence (see "Feelings match"). |
 | `who` | Feelings match only: the character's name in "How does Jo feel?". |
-| `cards[].part` | Optional. The card's story grammar part: `character`, `setting`, `problem`, `feeling`, `action`, `ending` or `end feeling`. Stories with parts show "story parts" on the setup screen, and their retells report parts told. |
+| `cards[].part` | Optional. The card's story grammar part: `character`, `setting`, `problem`, `feeling`, `action`, `ending` or `end feeling`. Stories with parts list them on the story's setup screen, and their retells report parts told. |
 
 For reversible stories, write each card as a **state** ("Half puffed"), not a
 change ("Starts to puff up"), so the text reads correctly in both directions.
@@ -188,7 +192,7 @@ card's `text` is the feeling the picture was drawn as, and its image is
 `exaggerated` and `colour` (lines and colour). The pictures are cut from the
 cast feelings sheets (`image-prompts.md` Part 5).
 
-The start bar sets what the student chooses from (words, emoji or both),
+The story's setup screen sets what the student chooses from (words, emoji or both),
 the labels and the feelings in play (at least two; the choices always appear
 in the same order).
 
