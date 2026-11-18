@@ -173,6 +173,13 @@ steps", change "Step-by-step change", concept
 set has a heading with a line icon and one line
 on what it holds; the icon repeats small on its
 tiles. New sets go in the SETS array.
+Each tile carries pills (icon + word, never
+colour alone): grade, card or feelings count,
+reversible, story parts, done ×N. The session
+settings summary is pills too; style and
+direction choices carry an icon. Pill tints are
+color-mix() of the role tokens, so every theme
+gets them for free.
 Pictures shows each story as a small deck with a
 close-up of one card: optional story.cover (card
 number from 1, default the last card), from the
@@ -216,7 +223,11 @@ clinician-only control sets it per attempt:
 independent | verbal | visual | model.
 
 ## Cue ladder (clinician-only, play screen)
-Buttons beside the Level menu, lightest first:
+One "Clinician tools" tray under the student's
+area (.toolTray; the feelings match has one
+too): a header with the Level menu and an
+"Attempt k of 2" pill, then one icon button per
+cue, lightest first:
 Verbal (log only) | Place first card (not for
 reversible stories, whose first card is pinned)
 | Place last card | Narrow to two (dims the tray
@@ -236,11 +247,12 @@ O-line adds "Cues given, by attempt: name (k/N),
 
 ## Tour and About
 - Tour: a strip at the top that walks a new
-  clinician through one real session (8 steps in
-  the TOUR array). Steps advance on real events
+  clinician through one real session (10 steps in
+  the TOUR array): a story, its retell, then a
+  feelings set. Steps advance on real events
   via tour('pick' | 'start' | 'filled' | 'wrong' |
-  'done' | 'retell' | 'summary'); nothing is
-  blocked or faked. A link ending in #tour opens
+  'done' | 'retell' | 'back' | 'match' |
+  'summary'); nothing is blocked or faked. A link ending in #tour opens
   straight into it; #about opens the About page.
 - About: what the tool is, why it works this way,
   how it was made and who did what. Written in

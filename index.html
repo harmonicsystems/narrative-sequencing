@@ -161,7 +161,22 @@
   .story .setIc { width: 1.1em; height: 1.1em; margin: 0 6px 0 0; vertical-align: -0.18em; color: var(--muted); }
   .story { text-align: left; }
   .story span { display: block; }
-  .story .meta { font-size: 0.88rem; font-weight: 400; color: var(--muted); }
+  /* Pills: a small icon and a word, so what a story is reads at a glance.
+     The tint is a hint only; the icon and words carry the meaning. */
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 8px;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--soft);
+    font-size: 0.8rem; font-weight: 600; line-height: 1.5; color: var(--ink); white-space: nowrap;
+  }
+  .pill .ic {
+    width: 1em; height: 1em; margin: 0; flex: none; vertical-align: 0;
+    fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .pill.rev { background: color-mix(in srgb, var(--talk) 16%, var(--surface)); }
+  .pill.parts { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+  .pill.done { background: color-mix(in srgb, var(--go) 22%, var(--surface)); }
+  .story .pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .story .pills .pill { display: inline-flex; }
   /* Picture view: each story is a small deck of cards with a close-up of one
      card on top. The two lines under the tile are the edges of the cards below. */
   #storyList.pictures .setGrid { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)); gap: 22px 16px; }
@@ -180,7 +195,7 @@
     font-size: 3.2rem; line-height: 1;
   }
   .story .thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-  .story .thumb + span, .story .thumb ~ .meta { padding-inline: 6px; }
+  .story .thumb + span, .story .thumb ~ .pills { padding-inline: 6px; }
   .pictures .story { display: flex; flex-direction: column; justify-content: flex-start; }
   /* Session settings: things set once and kept for every story. Closed by
      default; the summary line says what is chosen. */
@@ -188,11 +203,12 @@
     margin-top: 26px; border: 1.5px solid var(--edge); border-radius: 16px; background: var(--surface);
   }
   #settings summary {
-    display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline;
-    min-height: 52px; padding: 14px 18px; cursor: pointer; list-style: none;
+    display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+    min-height: 52px; padding: 12px 18px; cursor: pointer; list-style: none;
   }
   #settings summary::-webkit-details-marker { display: none; }
   #settings .sumTitle { font-weight: 600; }
+  #settingsSummary { display: flex; flex-wrap: wrap; gap: 6px; }
   #settings .sumTitle::before { content: '▸'; display: inline-block; width: 1.2em; color: var(--muted); }
   #settings[open] .sumTitle::before { content: '▾'; }
   #settingsBody {
@@ -361,11 +377,32 @@
   #partsChips .btn[data-mark="2"] { outline: 2px dashed var(--accent); outline-offset: 4px; }
   #feedback { min-height: 2.2em; margin: 34px 0 16px; text-align: center; font-size: 1.3rem; }
   #actions { justify-content: center; }
-  #cueBox { margin-top: 56px; justify-content: flex-end; font-size: 0.88rem; color: var(--muted); gap: 10px 14px; }
-  /* Cue ladder: clinician-only, lightest help on the left. Each press is logged. */
-  #ladder { gap: 8px; margin-right: auto; }
-  #ladder .btn { font-size: 0.85rem; min-height: 40px; padding: 4px 12px; color: var(--ink); }
-  .locked #ladder { display: none; }
+  /* Clinician tools: one tray under the student's area, lightest cue first,
+     each with an icon and plain words. Each press is logged. */
+  .toolTray {
+    margin-top: 56px; border: 1.5px solid var(--edge); border-radius: 16px;
+    background: var(--soft); font-size: 0.88rem; color: var(--muted);
+  }
+  .trayHead {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+    padding: 8px 14px; border-bottom: 1px solid var(--line);
+  }
+  .trayHead > .ic {
+    width: 1.15em; height: 1.15em; flex: none; color: var(--ink);
+    fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .trayHead b { color: var(--ink); }
+  .trayHead .push { margin-left: auto; }
+  .cues { display: grid; grid-template-columns: repeat(auto-fit, minmax(122px, 1fr)); gap: 8px; padding: 12px; }
+  .btn.cue {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    min-height: 68px; padding: 8px 6px; border-radius: 12px;
+    font-size: 0.85rem; font-weight: 600; line-height: 1.25; text-align: center; color: var(--ink);
+  }
+  .btn.cue .ic { margin: 0 0 3px; width: 1.45em; height: 1.45em; }
+  .btn.cue small { font-weight: 400; font-size: 0.78rem; color: var(--muted); }
+  .locked #ladder, .locked #cueBox .trayNote, .locked #attemptPill { display: none; }
+  .locked #cueBox .trayHead { border-bottom: 0; }
   /* "Narrow to two": the other cards step back and the spot being filled is ringed. */
   .card.dim { opacity: 0.3; pointer-events: none; box-shadow: none; }
   .slot.target { background: var(--surface); box-shadow: 0 0 0 3px var(--talk); outline: 2px dashed var(--talk); outline-offset: 5px; }
@@ -398,8 +435,7 @@
   }
   #matchDone { min-height: 1.6em; margin: 22px 0 8px; text-align: center; font-size: 1.3rem; }
   #matchActions { justify-content: center; gap: 12px 20px; }
-  #matchCues { margin-top: 48px; font-size: 0.88rem; color: var(--muted); gap: 8px; }
-  #matchCues .btn { font-size: 0.85rem; min-height: 40px; padding: 4px 12px; color: var(--ink); }
+  #matchCues { margin-top: 48px; }
   #match.finished #matchStage, #match.finished #matchCues, #match.finished #ownWordBtn { display: none; }
 
   /* Summary */
@@ -439,7 +475,7 @@
     <p class="muted small" id="sourceNote" hidden></p>
 
     <details id="settings">
-      <summary><span class="sumTitle">Session settings</span><span class="muted small" id="settingsSummary"></span></summary>
+      <summary><span class="sumTitle">Session settings</span><span id="settingsSummary"></span></summary>
       <div id="settingsBody">
         <div>
           <h3>Card size</h3>
@@ -532,23 +568,27 @@
       </div>
       <button class="link small" id="retellDiscard">Discard this retell</button>
     </div>
-    <div class="row" id="cueBox">
-      <div class="row" id="ladder" role="group" aria-label="Give a cue">
-        <span id="ladderLabel">Give a cue:</span>
-        <button class="btn mini" id="cueVerbal">Verbal</button>
-        <button class="btn mini" id="cueFirst">Place first card</button>
-        <button class="btn mini" id="cueLast">Place last card</button>
-        <button class="btn mini" id="cueNarrow">Narrow to two</button>
-        <button class="btn mini" id="cuePointer" aria-pressed="false">Pointer hint</button>
-        <button class="btn mini" id="cueModel">Show the order</button>
+    <!-- Clinician tools: one tray under the student's area, lightest cue first. -->
+    <div class="toolTray" id="cueBox">
+      <div class="trayHead">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3"/></svg><b>Clinician tools</b><span class="trayNote">lightest first · each press is logged</span>
+        <span class="pill push" id="attemptPill"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h11v12H4zM8 4h12v12h-1"/></svg><span id="attemptText">Attempt 1 of 2</span></span>
+        <label for="cue">Level</label>
+        <select id="cue">
+          <option value="independent">independent</option>
+          <option value="verbal">verbal</option>
+          <option value="visual">visual</option>
+          <option value="model">model</option>
+        </select>
       </div>
-      <label for="cue">Level</label>
-      <select id="cue">
-        <option value="independent">independent</option>
-        <option value="verbal">verbal</option>
-        <option value="visual">visual</option>
-        <option value="model">model</option>
-      </select>
+      <div class="cues" id="ladder" role="group" aria-label="Give a cue">
+        <button class="btn cue" id="cueVerbal"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="cueName">Verbal</span><small>log only</small></button>
+        <button class="btn cue" id="cueFirst"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-6.5-6-11a6 6 0 1 1 12 0c0 4.5-6 11-6 11zM12 7.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/></svg><span>Place first card</span></button>
+        <button class="btn cue" id="cueLast"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><span>Place last card</span></button>
+        <button class="btn cue" id="cueNarrow"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 2v-8.5z"/></svg><span>Narrow to two</span></button>
+        <button class="btn cue" id="cuePointer" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 7-6 2-2 6z"/></svg><span>Pointer hint</span><small>mouse only</small></button>
+        <button class="btn cue" id="cueModel"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg><span>Show the order</span><small>ends the attempt</small></button>
+      </div>
     </div>
   </section>
 
@@ -581,11 +621,13 @@
       <button class="btn go" id="matchToSetup" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back to stories</button>
       <button class="btn" id="matchEnd" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
     </div>
-    <div class="row" id="matchCues" role="group" aria-label="Give a cue">
-      <span>Give a cue:</span>
-      <button class="btn mini" id="mcVerbal">Verbal</button>
-      <button class="btn mini" id="mcNarrow">Narrow to two</button>
-      <button class="btn mini" id="mcShow">Show the drawn feeling</button>
+    <div class="toolTray" id="matchCues">
+      <div class="trayHead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3"/></svg><b>Clinician tools</b><span class="trayNote">lightest first · each press is logged</span></div>
+      <div class="cues" role="group" aria-label="Give a cue">
+        <button class="btn cue" id="mcVerbal"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="cueName">Verbal</span><small>log only</small></button>
+        <button class="btn cue" id="mcNarrow"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 2v-8.5z"/></svg><span>Narrow to two</span></button>
+        <button class="btn cue" id="mcShow"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg><span>Show the drawn feeling</span></button>
+      </div>
     </div>
   </section>
 
@@ -831,17 +873,21 @@ const TOUR = [
   { when: 'filled', focus: '#checkBtn',
     text: 'Every spot is filled. Press Check.' },
   { when: 'wrong', focus: '#cueBox',
-    text: 'A wrong first try only says "Try again". The app never shows which cards are wrong. Fix the order and Check again. The row at the bottom gives a cue (place a card, narrow the choice, grow the pointer over the next card) and logs it, so help is never reported as independent work.' },
+    text: 'A wrong first try only says "Try again". The app never shows which cards are wrong. Fix the order and Check again. The Clinician tools tray at the bottom gives a cue (place a card, narrow the choice, grow the pointer over the next card) and logs it, so help is never reported as independent work.' },
   { when: 'done', focus: '#retellBtn',
     text: 'The story is finished and the attempt is logged. Press Retell to have the student tell the story from the cards.' },
   { when: 'retell', focus: '#retellBox',
-    text: 'Click a card when its part is told; click again if it needed a prompt. In stories whose cards don\'t name their part, also mark the story parts the student included. Count time words (first, then) and cause words (because, so) with − and +. Support steps back from pictures to words only to no cards. Then press End session.' },
+    text: 'Click a card when its part is told; click again if it needed a prompt. In stories whose cards don\'t name their part, also mark the story parts the student included. Count time words (first, then) and cause words (because, so) with − and +. Support steps back from pictures to words only to no cards. Then press Next story.' },
+  { when: 'back', focus: 'section[aria-labelledby="set-feelings"]', scroll: true,
+    text: 'Back at the list. The last set, Feelings, works differently: one picture of a cast member at a time, and the student names the feeling. Pick one. The bar shows the choices: words, emoji or both; open or fixed labels; which feelings are in play. Then press Start.' },
+  { when: 'match', focus: '#matchStage',
+    text: 'There is no right answer here. The student picks a feeling, or you type the word they used. What the illustrator meant stays hidden unless you show it as a cue, and every cue is logged. Go through the pictures, then press End session.' },
   { when: 'summary', focus: '#oline',
     text: 'This objective line is ready to paste into a SOAP note, with the raw data below it. Nothing is saved: closing the page clears the session.' }
 ];
 let tourAt = -1;       // -1 = tour off
 
-function paintTour() {
+function paintTour(moved) {
   document.querySelectorAll('.tour-focus').forEach(e => e.classList.remove('tour-focus'));
   const on = tourAt >= 0;
   $('tour').hidden = !on;
@@ -853,6 +899,7 @@ function paintTour() {
   $('tourDone').hidden = tourAt !== TOUR.length - 1;
   const target = document.querySelector(step.focus);
   if (target) target.classList.add('tour-focus');
+  if (target && step.scroll && moved) target.scrollIntoView({ block: 'center' }); // the screen just changed: jump, don't glide
 }
 
 // Called from the app whenever something the tour cares about happens.
@@ -861,7 +908,9 @@ function tour(event) {
   let to = TOUR.findIndex((s, i) => i > tourAt && s.when === event);
   if (event === 'start') to = 2;                      // a second story restarts the play steps
   if (event === 'pick' && tourAt > 0) to = -1;        // already past the first step
-  if (to >= 0) { tourAt = to; paintTour(); }
+  if (event === 'back' && tourAt < TOUR.findIndex(s => s.when === 'done')) to = -1; // left mid-story
+  if (to >= 0) tourAt = to;
+  paintTour(to >= 0);                                 // repaint: the list may have been redrawn
 }
 
 function startTour() {
@@ -890,6 +939,29 @@ const SETS = [
     icon: 'M5 4h14v16H5zM9 9h6M9 13h6' }
 ];
 const setOf = s => SETS.find(t => t.id === s.set && t.id !== 'other') || SETS[SETS.length - 1];
+// Line icons for pills and choices: same stroke style as the set icons.
+const ICONS = {
+  cap: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5',
+  cards: 'M4 8h11v12H4zM8 4h12v12h-1',
+  face: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5v.5M15 9.5v.5',
+  rev: 'M4 8h14l-3-3M20 16H6l3 3',
+  tag: 'M3 12V4h8l10 10-8 8zM7.5 7.5h.01',
+  check: 'M5 12.5l4.5 4.5L19 7.5',
+  picture: 'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M15 9h.01',
+  text: 'M5 7V5h14v2M12 5v14M9 19h6',
+  shapes: 'M7.5 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM14 4.5h6v6h-6zM12 20H3l4.5-7.5z',
+  size: 'M4 14h6v6H4zM10 4h10v10',
+  words: 'M4 7h16M4 12h16M4 17h10',
+  pointer: 'M5 3l14 7-6 2-2 6z',
+  zoom: 'M10.5 4a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zM20 20l-4.8-4.8'
+};
+const icon = name => setIcon({ icon: ICONS[name] }, '');
+function pill(name, text, cls) {
+  const p = el('span', 'pill' + (cls ? ' ' + cls : ''));
+  p.append(icon(name), text);
+  return p;
+}
+
 function setIcon(set, cls) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'ic ' + cls);
@@ -932,10 +1004,13 @@ function renderSetup() {
       name.append(setIcon(set, 'setIc'), s.title);
       b.append(name);
       const plays = new Set([...log, ...matches].filter(a => a.storyId === s.id).map(a => a.run)).size;
-      const meta = [s.gradeBand, s.cards.length + (s.kind === 'match' ? ' feelings' : ' cards')];
-      if (s.reversible) meta.push('reversible');
-      if (plays) meta.push('done' + (plays > 1 ? ' ×' + plays : ''));
-      b.append(el('span', 'meta', meta.filter(Boolean).join(' · ')));
+      const pills = el('span', 'pills');
+      if (s.gradeBand) pills.append(pill('cap', s.gradeBand));
+      pills.append(s.kind === 'match' ? pill('face', s.cards.length + ' feelings') : pill('cards', s.cards.length + ' cards'));
+      if (s.reversible) pills.append(pill('rev', 'reversible', 'rev'));
+      if (cardParts(s)) pills.append(pill('tag', 'story parts', 'parts'));
+      if (plays) pills.append(pill('check', 'done' + (plays > 1 ? ' ×' + plays : ''), 'done'));
+      b.append(pills);
       b.onclick = () => { pick.storyId = s.id; renderSetup(); tour('pick'); };
       grid.append(b);
     }
@@ -944,7 +1019,8 @@ function renderSetup() {
   const styleRow = $('styleRow');
   styleRow.replaceChildren();
   for (const st of story.styles) {
-    const b = el('button', 'btn mini', STYLE_NAME[st] || st);
+    const b = el('button', 'btn mini');
+    b.append(icon(st === 'emoji' ? 'face' : st === 'text' ? 'text' : st === 'shape' ? 'shapes' : 'picture'), STYLE_NAME[st] || st);
     b.setAttribute('aria-pressed', st === pick.style);
     b.onclick = () => { pick.style = st; renderSetup(); };
     styleRow.append(b);
@@ -969,7 +1045,8 @@ function renderSetup() {
   if (story.reversible) {
     const [a, z] = story.endLabels || ['start', 'end'];
     for (const [dir, label] of [['forward', a + ' → ' + z], ['reverse', z + ' → ' + a]]) {
-      const b = el('button', 'btn mini', label);
+      const b = el('button', 'btn mini');
+      b.append(icon('rev'), label);
       b.setAttribute('aria-pressed', dir === pick.direction);
       b.onclick = () => { pick.direction = dir; renderSetup(); };
       dirRow.append(b);
@@ -980,12 +1057,11 @@ function renderSetup() {
 
   $('startTitle').textContent = story.title;
   $('captions').onchange = $('storyCursor').onchange = renderSetup;
-  $('settingsSummary').textContent = [
-    pick.size + ' cards',
-    $('captions').checked ? 'words shown' : 'words hidden',
-    $('storyCursor').checked ? 'story pointers on' : 'story pointers off',
-    $('zoomOk').checked ? 'enlarge on' : 'enlarge off'
-  ].join(' · ');
+  $('settingsSummary').replaceChildren(
+    pill('size', pick.size + ' cards'),
+    pill('words', $('captions').checked ? 'words shown' : 'words hidden'),
+    pill('pointer', $('storyCursor').checked ? 'story pointers on' : 'story pointers off'),
+    pill('zoom', $('zoomOk').checked ? 'enlarge on' : 'enlarge off'));
 
   const runs = new Set(log.map(a => a.run)).size, sets = new Set(matches.map(a => a.run)).size;
   $('sessionBar').hidden = !runs && !sets;
@@ -1316,7 +1392,8 @@ function render() {
   $('cuePointer').setAttribute('aria-pressed', S.hint);
   if (grow && S.cardEls.indexOf(grow.el) !== hintCard()) stopGrow();   // the next card changed
   const verbal = S.cues.filter(c => c === 'verbal cue').length;
-  $('cueVerbal').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
+  $('cueVerbal').querySelector('.cueName').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
+  $('attemptText').textContent = 'Attempt ' + S.attempt + ' of 2';
   $('play').classList.toggle('picking', S.selected != null);
   $('play').classList.toggle('locked', S.locked);
   $('checkBtn').disabled = S.locked || S.slots.includes(null);
@@ -1727,7 +1804,7 @@ function renderMatch() {
   $('matchNext').disabled = !M.chosen && !M.own;
   $('matchNext').lastChild.previousSibling.textContent = M.at === M.order.length - 1 ? 'Done' : 'Next picture';
   const verbal = M.cues.filter(c => c === 'verbal cue').length;
-  $('mcVerbal').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
+  $('mcVerbal').querySelector('.cueName').textContent = 'Verbal' + (verbal ? ' ×' + verbal : '');
   // Narrowing needs a target, so it is only offered with fixed words.
   $('mcNarrow').hidden = M.labels !== 'fixed' || M.offered.length < 3;
   $('mcNarrow').disabled = !!M.narrow;
@@ -2052,7 +2129,7 @@ async function init() {
 
   $('startBtn').onclick = () => {
     const story = stories.find(s => s.id === pick.storyId);
-    if (story && story.kind === 'match') { startMatch(); return; }
+    if (story && story.kind === 'match') { startMatch(); tour('match'); return; }
     startStory(); tour('start');
   };
   $('matchBack').onclick = $('matchToSetup').onclick = () => { renderSetup(); show('setup'); };
@@ -2070,8 +2147,7 @@ async function init() {
   $('aboutBack').onclick = () => { renderSetup(); show('setup'); };
   $('checkBtn').onclick = check;
   // Leaving the story keeps a retell in progress; only "Discard" drops it.
-  $('nextBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); };
-  $('backBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); };
+  $('nextBtn').onclick = $('backBtn').onclick = () => { endRetell(true); renderSetup(); show('setup'); tour('back'); };
   $('endBtn').onclick = () => { endRetell(true); showSummary(); };
   $('retellBtn').onclick = startRetell;
   $('cueVerbal').onclick = () => { if (!S.locked) { noteCue('verbal cue', 'verbal'); render(); } };
