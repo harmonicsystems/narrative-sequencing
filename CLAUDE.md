@@ -155,8 +155,8 @@ there is never a long list to scan:
    door per story.set, in SETS order: narrative
    "Stories", routine "Everyday steps", change
    "Step-by-step change", concept "Concepts",
-   feelings "Feelings" (unknown set: "Other
-   stories"). A door has up to three covers
+   feelings "Feelings", paths "Working it out"
+   (unknown set: "Other stories"). A door has up to three covers
    fanned out, a line icon, one line on what
    the set holds and its count. New sets go in
    the SETS array. If stories.json has only one
@@ -364,6 +364,57 @@ the clinician types the student's own word.
   Raw data gets a "Feelings" table.
 - Never log anything about the student's own
   feelings ("that's how I feel").
+
+## Working it out (set "paths")
+Stories with kind: "paths" branch: two friends
+reach a hard moment (hurt feelings, a boundary
+not heard) and the student chooses what could
+happen next. A school counselor's idea. The app
+calls it "Working it out", never "Choose Your
+Own Adventure" (a trademark).
+- Each card is a moment with an id. It offers
+  actions (card.choices: [{text, to}], pick one)
+  or feelings (card.feel: words, pick any
+  number: "More than one can be true"; all lead
+  to card.to). card.who / card.ask word the
+  question. A moment that leads nowhere is an
+  ending (card.end names it); it may still ask
+  a feel question. cards[0] is the start.
+  usablePaths() drops a story with a broken
+  link, no opening choice or no ending.
+- No choice is right or wrong to the app, and
+  nothing is compared. Consequences are what
+  happens next, never a verdict. Keep at least
+  one ending where it is not mended yet, and
+  paths that loop back (taking space, trying
+  again). Feelings are the characters': captions
+  don't name them, the student does.
+- Screen: steps taken so far (press one to go
+  back to it; the log keeps what was chosen,
+  path number goes up), the moment's picture
+  and words, the question, choices, then "See
+  what happens" (filled). At an ending: "Try
+  another way" (filled), Back to stories, End
+  session.
+- Ready screen shows only the opening moment.
+- Clinician: "The student had another idea…"
+  (own idea noted beside the choice; own word
+  on a feelings question counts as a pick).
+  Cues, log only: Verbal | Suggested a choice
+  (cueLevel model).
+- Record per choice: storyId, style, path, step,
+  scene, kind (action | feeling), who, offered
+  [], chosen [], own, leadsTo, ending, cues [],
+  cueLevel, seconds.
+- O-line adds per story played: "Chose paths
+  through the branching story "T" ({style}
+  stimuli): P paths, N choices{cues}. Path 1:
+  a > b > c; ended at "E"." Raw data gets a
+  "Working it out" table.
+- The two stories (torn-drawing: Ana and Sam;
+  stop-means-stop: Jo and Max) are drafts in
+  emoji/text, waiting on the counselor's review
+  and on pictures.
 
 ## Output (End session)
 Summary + "Copy" button. Template:

@@ -47,8 +47,8 @@ top of the first screen) for a guided walk through one session. "About"
 explains the thinking behind it and how it was made.
 
 1. **Setup (clinician):** one question per screen. Choose a kind of work
-   (Stories, Everyday steps, Step-by-step change, Concepts, Feelings), then a
-   story, then press Start. The last screen shows the story's cards mixed up,
+   (Stories, Everyday steps, Step-by-step change, Concepts, Feelings, Working
+   it out), then a story, then press Start. The last screen shows the story's cards mixed up,
    as the student will get them (never in story order), with its style and,
    for reversible stories, its direction with the story's end labels (e.g.
    `calm → puffed`). After a story you come back to the same kind's stories.
@@ -109,7 +109,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 |---|---|
 | `id` | Unique, lowercase with hyphens. Also the image folder name. |
 | `title` | Shown on the setup and play screens. |
-| `set` | Which kind the first setup screen offers it under: `narrative` (Stories), `routine` (Everyday steps), `change` (Step-by-step change) or `concept` (Concepts). Anything else goes under "Other stories". |
+| `set` | Which kind the first setup screen offers it under: `narrative` (Stories), `routine` (Everyday steps), `change` (Step-by-step change), `concept` (Concepts), `feelings` (Feelings) or `paths` (Working it out). Anything else goes under "Other stories". |
 | `gradeBand` | Free text, e.g. `K-2`. |
 | `reversible` | `true` if the story also makes sense backwards. Needs at least 3 cards. |
 | `endLabels` | Reversible stories only: `[startLabel, endLabel]` for the direction buttons. |
@@ -122,7 +122,7 @@ A JSON array of stories. Array order of `cards` is the forward order.
 | `cards[].text` | Required. Caption, and the whole card in `text` style. |
 | `cards[].emoji` | Optional. Used in `emoji` style and as the fallback for a missing image. |
 | `cards[].img` | Optional. File name that replaces the default `01.png`, `02.png`… |
-| `kind` | Optional. `"match"` makes the story a feelings match instead of a sequence (see "Feelings match"). |
+| `kind` | Optional. `"match"` makes the story a feelings match instead of a sequence (see "Feelings match"); `"paths"` makes it a branching story (see "Working it out"). |
 | `who` | Feelings match only: the character's name in "How does Jo feel?". |
 | `cards[].part` | Optional. The card's story grammar part: `character`, `setting`, `problem`, `feeling`, `action`, `ending` or `end feeling`. Stories with parts list them on the story's setup screen, and their retells report parts told. |
 
@@ -215,6 +215,84 @@ O-line adds a sentence such as:
 > words shown as emoji (calm, happy, upset, worried, frustrated): chose the
 > drawn feeling for 4/5; cues on 1/5 (narrowed to two 1/5). Other choices:
 > calm for frustrated (1/5).
+
+## Working it out
+
+The Working it out set holds branching stories (`"kind": "paths"`): two
+friends reach a hard moment, and the student chooses what could happen next.
+Each choice leads to another moment. Paths cross and loop back, and the
+endings include one where things are not mended yet. No choice is marked
+right or wrong, and nothing is compared with an answer: the app records the
+path the student took.
+
+Each card is one moment. The first card is where the story starts.
+
+```json
+{
+  "id": "torn-drawing",
+  "set": "paths",
+  "kind": "paths",
+  "title": "The torn drawing",
+  "gradeBand": "K-5",
+  "cover": 1,
+  "styles": ["emoji", "text"],
+  "cards": [
+    { "id": "tear", "text": "Sam grabs Ana's drawing to look at it. The drawing tears.", "emoji": "🖼️",
+      "who": "Ana", "feel": ["upset", "surprised", "frustrated", "worried"], "to": "sam-sees" },
+    { "id": "sam-sees", "text": "Sam looks at the torn drawing, then at Ana.", "emoji": "👀",
+      "who": "Sam", "choices": [
+        { "text": "Say sorry", "to": "sorry" },
+        { "text": "Walk away", "to": "apart" } ] },
+    { "id": "tape", "end": "Taped together", "text": "Ana and Sam tape the drawing together.", "emoji": "🩹",
+      "who": "Ana", "ask": "How might Ana feel now?", "feel": ["relieved", "upset", "calm", "happy"] }
+  ]
+}
+```
+
+| Field | Notes |
+|---|---|
+| `cards[].id` | Required. The moment's name, unique in the story. Choices point to it. |
+| `cards[].choices` | Things a character could do: `[{ "text": "Say sorry", "to": "sorry" }]`. The student picks one; `to` is the moment it leads to. |
+| `cards[].feel` | A feelings question in place of `choices`: a list of feeling words. The student can pick more than one ("More than one can be true"), and every pick leads on to the card's own `to`. Words that are in the feelings match get the same emoji. |
+| `cards[].to` | Where the moment leads when its choices don't say (always, for a `feel` moment). |
+| `cards[].who` | Who the question is about: "What could Sam do?", "How might Ana feel?". |
+| `cards[].ask` | Optional. The question in other words, e.g. "What could happen next?" (also the default when there is no `who`). |
+| `cards[].end` | Optional. A short name for an ending, used in the O-line (the card's text if left out). |
+
+A moment that leads nowhere is an ending. It can still ask a `feel` question
+(with no `to`): the student answers and presses Done. A story is only offered
+if every `to` names a moment that exists, the first card has something to
+choose, and there is at least one ending. Images work as for any story
+(`img/<storyId>/<style>/01.png`…, numbered in card order, or `cards[].img`).
+
+On screen the student sees one moment at a time, picks, and presses "See what
+happens". The steps taken so far stay in a row above; pressing one goes back
+to that moment to try another way from there, and "Try another way" at an
+ending goes back to the start. Earlier choices stay in the log.
+
+For the clinician: "The student had another idea…" notes the student's own
+idea in a few words (on a feelings question, the student's own word, which
+counts as one of the feelings picked). An own idea is recorded beside the
+choice; the story still moves on by one of the listed choices. The Clinician
+tools tray logs a Verbal cue or "Suggested a choice" on the choice in
+progress.
+
+Each choice records `storyId`, `style`, `path`, `step`, `scene`, `kind`
+(`action` or `feeling`), `who`, `offered`, `chosen`, `own`, `leadsTo`,
+`ending` (on the choice that finished a path), `cues`, `cueLevel`
+(independent, verbal, or model when a choice was suggested) and `seconds`.
+`path` goes up by one each time the student goes back to an earlier step. The
+O-line adds, for each story played:
+
+> Chose paths through the branching story "The torn drawing" (emoji stimuli):
+> 2 paths, 9 choices; cues on 1/9 (verbal 1/9). Path 1: Ana's feelings: upset
+> + surprised > Say it was an accident > Stop and listen > Ask what would help
+> (own idea: Make Ana a card) > "Draw a new one with me." > Ana's feelings:
+> happy; ended at "A new drawing". Path 2 (from choice 2): Walk away > Leave
+> it for today > Sam's feelings: worried + calm; ended at "Not mended yet".
+
+The raw data gets a "Working it out" table. The two stories in the set are
+first drafts, written to be edited: every word of them is in `stories.json`.
 
 ## Data and output
 

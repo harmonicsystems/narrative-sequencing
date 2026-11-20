@@ -500,6 +500,61 @@
   #matchCues { margin-top: 48px; }
   #match.finished #matchStage, #match.finished #matchCues, #match.finished #ownWordBtn { display: none; }
 
+  /* Working it out: a story with more than one way through. One moment at a
+     time: its picture, what happens, and what could come next. The steps
+     taken so far stay on show above, and any of them can be gone back to.
+     No choice is marked: a pressed choice only gets the usual ring. */
+  #paths { max-width: 920px; margin: 0 auto; }
+  #pathHead { justify-content: flex-start; gap: 18px; margin-bottom: 18px; }
+  #pathHead h1 { margin: 0; }
+  #pathTrailBox { margin-bottom: 22px; }
+  #pathTrailLabel { margin: 0 0 6px; }
+  #pathTrail { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px; }
+  #pathTrail li { display: flex; align-items: center; gap: 6px; }
+  #pathTrail li + li::before { content: ''; width: 12px; height: 1.5px; background: var(--edge); }
+  .btn.step {
+    display: flex; align-items: center; gap: 8px; min-height: 48px; max-width: 240px;
+    padding: 4px 12px 4px 6px; border-radius: 12px; font-size: 0.88rem; line-height: 1.25; text-align: left;
+  }
+  .step .n {
+    width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--edge); flex: none;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600;
+  }
+  .step .thumb { width: 36px; height: 36px; border-radius: 8px; flex: none; font-size: 1.3rem; }
+  #pathStage { display: grid; grid-template-columns: minmax(170px, 280px) minmax(0, 1fr); gap: 20px 32px; align-items: start; }
+  #pathStage.nopic, #pathStage:has(#pathPic .card.plain) { grid-template-columns: minmax(0, 1fr); }
+  #pathPic { --cw: 250px; margin: 0; }
+  #pathPic .card { width: 100%; cursor: default; touch-action: auto; }
+  #pathPic .card .cap, #pathStage.nopic #pathPic, #pathPic:has(.card.plain) { display: none; }
+  #pathText { font-size: 1.45rem; line-height: 1.45; margin: 4px 0 18px; }
+  #pathText:focus { outline: none; }   /* a new moment moves focus to its words */
+  #pathAsk { font-size: 1.15rem; font-weight: 600; margin: 0 0 4px; }
+  #pathHint { margin: 0; }
+  #pathChoices { flex-direction: column; align-items: stretch; gap: 10px; margin-top: 12px; }
+  #pathChoices .choice { min-height: 60px; padding: 10px 18px; text-align: left; font-size: 1.1rem; line-height: 1.35; }
+  /* Feelings: small buttons side by side, as in the feelings match. More than one can be pressed. */
+  #pathChoices.many { flex-direction: row; align-items: center; }
+  #pathChoices.many .choice { min-width: 112px; text-align: center; }
+  #pathChoices .own { border-style: dashed; }
+  /* An own idea is a note beside the choices, not one of them: smaller and quieter. */
+  #pathChoices:not(.many) .own { min-height: 48px; padding-block: 6px; font-size: 0.95rem; color: var(--muted); }
+  #ownIdeaBox { margin-top: 14px; gap: 10px; }
+  #ownIdea {
+    min-height: 44px; padding: 6px 12px; border-radius: 12px; flex: 1; min-width: 12em; max-width: 26em;
+    border: 1.5px solid var(--edge); background: var(--surface); color: var(--ink); font: inherit;
+  }
+  #pathDone { min-height: 1.6em; margin: 18px 0 0; font-size: 1.15rem; }
+  #pathDone:empty { display: none; }
+  #pathActions { margin-top: 18px; gap: 12px 20px; }
+  #pathCues { margin-top: 48px; }
+  #pathCues .cues { grid-template-columns: repeat(auto-fit, minmax(122px, 200px)); }
+  #paths.finished #pathCues { display: none; }
+  @media (max-width: 640px) {
+    #pathStage { grid-template-columns: minmax(0, 1fr); }
+    #pathPic { --cw: 150px; width: 150px; }
+    #pathText { font-size: 1.25rem; }
+  }
+
   /* Summary */
   .box {
     background: var(--surface); border: 1.5px solid var(--edge); border-radius: 16px;
@@ -707,6 +762,47 @@
     </div>
   </section>
 
+  <section id="paths" hidden>
+    <div class="row" id="pathHead">
+      <button class="btn mini" id="pathBack"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
+      <h1 id="pathTitle"></h1>
+      <span class="muted small" id="pathCount"></span>
+    </div>
+    <div id="pathTrailBox" hidden>
+      <p class="muted small" id="pathTrailLabel">The path so far. Press a step to go back to it.</p>
+      <ol id="pathTrail" aria-labelledby="pathTrailLabel"></ol>
+    </div>
+    <div id="pathStage">
+      <figure id="pathPic"></figure>
+      <div id="pathSide">
+        <p id="pathText" tabindex="-1"></p>
+        <p id="pathAsk"></p>
+        <p class="muted small" id="pathHint" hidden>More than one can be true.</p>
+        <div class="row" id="pathChoices" role="group" aria-labelledby="pathAsk"></div>
+        <div class="row" id="ownIdeaBox" hidden>
+          <label for="ownIdea" id="ownIdeaLabel">The student's own idea</label>
+          <input id="ownIdea" type="text" autocomplete="off" spellcheck="false" maxlength="60">
+          <button class="btn mini" id="ownIdeaUse">Note it</button>
+        </div>
+        <p id="pathDone" role="status" aria-live="polite"></p>
+        <div class="row" id="pathActions">
+          <button class="btn go" id="pathGo"><span id="pathGoText">See what happens</span><svg class="ic after" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button class="link" id="ownIdeaBtn">The student had another idea…</button>
+          <button class="btn go" id="pathAgain" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v4.5h4.5"/></svg>Try another way</button>
+          <button class="btn" id="pathToSetup" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back to stories</button>
+          <button class="btn" id="pathEnd" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15H6V5a1 1 0 0 1 1-1zM9 9h6M9 13h6M9 17h3"/></svg>End session</button>
+        </div>
+      </div>
+    </div>
+    <div class="toolTray" id="pathCues">
+      <div class="trayHead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3"/></svg><b>Clinician tools</b><span class="trayNote">lightest first · each press is logged</span></div>
+      <div class="cues" role="group" aria-label="Give a cue">
+        <button class="btn cue" id="pcVerbal"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="cueName">Verbal</span><small>log only</small></button>
+        <button class="btn cue" id="pcSuggest"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg><span class="cueName">Suggested a choice</span><small>log only</small></button>
+      </div>
+    </div>
+  </section>
+
   <section id="about" hidden>
     <div class="row" id="aboutHead">
       <button class="btn mini" id="aboutBack"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Stories</button>
@@ -725,6 +821,7 @@
       <li><b>Sequencing leads to retell.</b> Ordering the cards is the scaffold; telling the story is usually the goal. The retell step counts events told, prompts given, the order they came in, time words and cause words, which story parts (character, problem, feeling, action, ending…) the student included, and how much picture support was left on the table.</li>
       <li><b>Low stimulation by design.</b> Muted colours, no sounds, no rewards or animations, and pictures with no numbers, arrows or words that would give the order away.</li>
       <li><b>Feelings without a right answer.</b> In the feelings match, each picture was drawn as one feeling, but that is the illustrator's intent, not the answer. With open labels the student's choice or own word is recorded as given; with fixed words the log notes whether the choice matches the drawing. The student never sees right or wrong.</li>
+      <li><b>More than one way through.</b> In Working it out, two friends reach a hard moment and the student chooses what could happen next. Every choice leads somewhere, some paths loop back, and one ending is that it is not mended yet. No choice is marked right or wrong: the app records the path taken, and any step can be gone back to. The idea came from a school counselor.</li>
       <li><b>Stories that run both ways.</b> Some stories (a kettle heating, a storm building, a voice getting louder) can be ordered forward or backward, to work on gradual change as well as routines.</li>
     </ul>
 
@@ -754,6 +851,7 @@
       <li>Built across two days of working sessions, in about twenty rounds of "try it, change it".</li>
       <li>21 stories: 8 picture stories with 33 illustrated cards, 5 story grammar stories with 28 illustrated cards (one with two characters who feel differently about the same event), and 8 concept stories with 31 shape cards.</li>
       <li>A feelings match for the whole cast: six characters, nine feelings each, drawn three ways (subtle, exaggerated, and with lines and colour), 162 pictures in all.</li>
+      <li>2 branching stories for Working it out: 22 moments and 6 endings, in emoji and words so far.</li>
       <li>Several rounds of rework on the pictures alone, to keep one child consistent across stories and to make neighbouring cards easy to tell apart.</li>
       <li>Setup, card sizes, themes, the retell step, the cue ladder and this tour were each added in response to trying the tool and finding what got in the way.</li>
     </ul>
@@ -792,7 +890,7 @@
 
 // Built-in copy of stories.json, used only when the file can't be fetched
 // (browsers block fetch when index.html is opened straight from disk).
-const SEED = [{"id": "brushing-teeth", "set": "routine", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "set": "routine", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "set": "routine", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "set": "routine", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "set": "narrative", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6eee1"}, "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}]}, {"id": "spilled-paint", "set": "narrative", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6f0e4"}, "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}]}, {"id": "lost-library-book", "set": "narrative", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}]}, {"id": "block-tower", "set": "narrative", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"}, {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"}, {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}]}, {"id": "puppy-at-the-door", "set": "narrative", "title": "A puppy at the door", "gradeBand": "3-5", "reversible": false, "cover": 2, "cursor": "🐾", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7eee3"}, "cards": [{"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "img": "01.jpg", "part": "setting"}, {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "img": "02.jpg", "part": "feeling"}, {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "img": "03.jpg", "part": "problem"}, {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "img": "04.jpg", "part": "feeling"}, {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "img": "05.jpg", "part": "action"}, {"text": "Max's family gives the puppy a home", "emoji": "🏡", "img": "06.jpg", "part": "ending"}, {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "img": "07.jpg", "part": "end feeling"}]}, {"id": "puffer-fish", "set": "change", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "set": "change", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "set": "change", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "set": "change", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "set": "concept", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "set": "concept", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "set": "concept", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "set": "concept", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "set": "concept", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "set": "concept", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "set": "concept", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "set": "concept", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}, {"id": "feelings-jo", "set": "feelings", "kind": "match", "who": "Jo", "title": "Jo's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-ana", "set": "feelings", "kind": "match", "who": "Ana", "title": "Ana's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-sam", "set": "feelings", "kind": "match", "who": "Sam", "title": "Sam's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-max", "set": "feelings", "kind": "match", "who": "Max", "title": "Max's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-gran", "set": "feelings", "kind": "match", "who": "Gran", "title": "Gran's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-puppy", "set": "feelings", "kind": "match", "who": "the puppy", "title": "The puppy's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}];// @seed
+const SEED = [{"id": "brushing-teeth", "set": "routine", "title": "Brushing teeth", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🦷", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Put toothpaste on the brush", "emoji": "🪥", "img": "01.jpg"}, {"text": "Brush all your teeth", "emoji": "😬", "img": "02.jpg"}, {"text": "Rinse with water", "emoji": "🚰", "img": "03.jpg"}]}, {"id": "planting-a-seed", "set": "routine", "title": "Planting a seed", "gradeBand": "K-2", "reversible": false, "cursor": "🪴", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Dig a hole", "emoji": "🕳️", "img": "01.jpg"}, {"text": "Drop in the seed", "emoji": "🌰", "img": "02.jpg"}, {"text": "Water the soil", "emoji": "💧", "img": "03.jpg"}, {"text": "A sprout comes up", "emoji": "🌱", "img": "04.jpg"}]}, {"id": "making-a-sandwich", "set": "routine", "title": "Making a sandwich", "gradeBand": "3-5", "reversible": false, "cover": 3, "cursor": "🍽️", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Lay out two slices of bread", "emoji": "🍞", "img": "01.jpg"}, {"text": "Add cheese and lettuce", "emoji": "🧀", "img": "02.jpg"}, {"text": "Put the top slice on", "emoji": "🥪", "img": "03.jpg"}, {"text": "Eat the sandwich", "emoji": "😋", "img": "04.jpg"}]}, {"id": "mailing-a-letter", "set": "routine", "title": "Mailing a letter", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "💌", "grammar": ["character", "setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Write the letter", "emoji": "✍️", "img": "01.jpg"}, {"text": "Seal it in an envelope", "emoji": "✉️", "img": "02.jpg"}, {"text": "Stick on a stamp", "emoji": "🏷️", "img": "03.jpg"}, {"text": "Drop it in the mailbox", "emoji": "📮", "img": "04.jpg"}, {"text": "The letter arrives", "emoji": "📬", "img": "05.jpg"}]}, {"id": "kite-in-the-tree", "set": "narrative", "title": "Kite in the tree", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🪁", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6eee1"}, "cards": [{"text": "Sam flies a kite in the park", "emoji": "🪁", "img": "01.jpg", "part": "character"}, {"text": "The kite gets stuck in the tree", "emoji": "🌳", "img": "02.jpg", "part": "problem"}, {"text": "Sam feels sad", "emoji": "😢", "img": "03.jpg", "part": "feeling"}, {"text": "Gran reaches up with a rake", "emoji": "🧓", "img": "04.jpg", "part": "action"}, {"text": "Sam has the kite back and smiles", "emoji": "😊", "img": "05.jpg", "part": "ending"}]}, {"id": "spilled-paint", "set": "narrative", "title": "Spilled paint", "gradeBand": "K-2", "reversible": false, "cover": 4, "cursor": "🖌️", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6f0e4"}, "cards": [{"text": "Ana paints a house at the table", "emoji": "🎨", "img": "01.jpg", "part": "character"}, {"text": "The water cup tips over", "emoji": "💧", "img": "02.jpg", "part": "problem"}, {"text": "Ana feels upset", "emoji": "😣", "img": "03.jpg", "part": "feeling"}, {"text": "Ana paints boats on the blue", "emoji": "⛵", "img": "04.jpg", "part": "action"}, {"text": "Ana shows her lake picture, proud", "emoji": "🖼️", "img": "05.jpg", "part": "ending"}]}, {"id": "lost-library-book", "set": "narrative", "title": "Lost library book", "gradeBand": "3-5", "reversible": false, "cover": 4, "cursor": "🔦", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "It is the day to bring back the library book", "emoji": "🎒", "img": "01.jpg", "part": "setting"}, {"text": "The book is not on the shelf", "emoji": "📚", "img": "02.jpg", "part": "problem"}, {"text": "Jo feels worried", "emoji": "😟", "img": "03.jpg", "part": "feeling"}, {"text": "Jo looks under the bed with a flashlight", "emoji": "🔦", "img": "04.jpg", "part": "action"}, {"text": "The book is under the bed!", "emoji": "📕", "img": "05.jpg", "part": "ending"}, {"text": "Jo puts it in the backpack, relieved", "emoji": "😌", "img": "06.jpg", "part": "end feeling"}]}, {"id": "block-tower", "set": "narrative", "title": "Block tower", "gradeBand": "K-2", "reversible": false, "cover": 2, "cursor": "🧱", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f6efe4"}, "cards": [{"text": "Max builds a tall block tower", "emoji": "🧱", "img": "01.jpg", "part": "character"}, {"text": "The puppy knocks it down", "emoji": "🐶", "img": "02.jpg", "part": "problem"}, {"text": "Max feels frustrated", "emoji": "😤", "img": "03.jpg", "part": "feeling"}, {"text": "Max takes a deep breath", "emoji": "🎾", "img": "04.jpg", "part": "action"}, {"text": "Max builds the tower again", "emoji": "🙂", "img": "05.jpg", "part": "ending"}]}, {"id": "puppy-at-the-door", "set": "narrative", "title": "A puppy at the door", "gradeBand": "3-5", "reversible": false, "cover": 2, "cursor": "🐾", "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7eee3"}, "cards": [{"text": "Jo finds a puppy outside Gran's door", "emoji": "🐶", "img": "01.jpg", "part": "setting"}, {"text": "Jo is excited. Gran is worried.", "emoji": "🤩😟", "img": "02.jpg", "part": "feeling"}, {"text": "Gran's building has a no-pets rule", "emoji": "🚫", "img": "03.jpg", "part": "problem"}, {"text": "Jo is upset. Gran is frustrated.", "emoji": "😢😤", "img": "04.jpg", "part": "feeling"}, {"text": "Jo and Gran make posters to find the puppy a home", "emoji": "📝", "img": "05.jpg", "part": "action"}, {"text": "Max's family gives the puppy a home", "emoji": "🏡", "img": "06.jpg", "part": "ending"}, {"text": "Jo visits the puppy. Jo and Gran feel relieved.", "emoji": "😌", "img": "07.jpg", "part": "end feeling"}]}, {"id": "puffer-fish", "set": "change", "title": "Puffer fish", "gradeBand": "K-2", "reversible": true, "endLabels": ["calm", "puffed"], "cursor": "💧", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f7f2e7"}, "cards": [{"text": "Small and calm", "emoji": "🐟", "img": "01.jpg"}, {"text": "Half puffed", "emoji": "🐠", "img": "02.jpg"}, {"text": "Fully puffed, spikes out", "emoji": "🐡", "img": "03.jpg"}]}, {"id": "kettle", "set": "change", "title": "Kettle", "gradeBand": "3-5", "reversible": true, "endLabels": ["cold", "boiling"], "cursor": "🔥", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Cold water, no bubbles", "emoji": "🧊", "img": "01.jpg"}, {"text": "Warm water, tiny bubbles", "emoji": "🌡️", "img": "02.jpg"}, {"text": "Hot water, lots of bubbles", "emoji": "♨️", "img": "03.jpg"}, {"text": "Boiling, steam whistling out", "emoji": "💨", "img": "04.jpg"}]}, {"id": "storm", "set": "change", "title": "Storm", "gradeBand": "3-5", "reversible": true, "endLabels": ["clear", "storm"], "cursor": "☂️", "grammar": ["setting", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "cards": [{"text": "Clear blue sky", "emoji": "☀️", "img": "01.jpg"}, {"text": "A few clouds", "emoji": "🌤️", "img": "02.jpg"}, {"text": "Gray clouds cover the sky", "emoji": "☁️", "img": "03.jpg"}, {"text": "Rain is falling", "emoji": "🌧️", "img": "04.jpg"}, {"text": "Thunder and lightning", "emoji": "⛈️", "img": "05.jpg"}]}, {"id": "voice-volume", "set": "change", "title": "Voice volume", "gradeBand": "K-8", "reversible": true, "endLabels": ["silent", "yelling"], "cover": 4, "cursor": "🎤", "grammar": ["character", "action", "ending"], "styles": ["cartoon", "emoji", "text"], "paper": {"cartoon": "#f1ede1"}, "cards": [{"text": "Silent, no sound", "emoji": "🔇", "img": "01.jpg"}, {"text": "Whisper", "emoji": "🤫", "img": "02.jpg"}, {"text": "Talking voice", "emoji": "🗣️", "img": "03.jpg"}, {"text": "Loud voice", "emoji": "📣", "img": "04.jpg"}, {"text": "Yelling voice", "emoji": "🔊", "img": "05.jpg"}]}, {"id": "small-to-large", "set": "concept", "title": "Small to large", "gradeBand": "K-2", "reversible": true, "endLabels": ["small", "large"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Tiny", "img": "01.svg"}, {"text": "Small", "img": "02.svg"}, {"text": "Big", "img": "03.svg"}, {"text": "Very big", "img": "04.svg"}]}, {"id": "light-to-dark", "set": "concept", "title": "Light to dark", "gradeBand": "K-2", "reversible": true, "endLabels": ["light", "dark"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very light", "img": "01.svg"}, {"text": "Light", "img": "02.svg"}, {"text": "Dark", "img": "03.svg"}, {"text": "Very dark", "img": "04.svg"}]}, {"id": "low-to-high", "set": "concept", "title": "Low to high", "gradeBand": "K-2", "reversible": true, "endLabels": ["low", "high"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Low", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "High", "img": "03.svg"}]}, {"id": "filling-up", "set": "concept", "title": "Filling up", "gradeBand": "K-2", "reversible": true, "endLabels": ["empty", "full"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "None filled", "img": "01.svg"}, {"text": "One filled", "img": "02.svg"}, {"text": "Two filled", "img": "03.svg"}, {"text": "Three filled", "img": "04.svg"}, {"text": "All filled", "img": "05.svg"}]}, {"id": "thin-to-thick", "set": "concept", "title": "Thin to thick", "gradeBand": "K-2", "reversible": true, "endLabels": ["thin", "thick"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very thin", "img": "01.svg"}, {"text": "Thin", "img": "02.svg"}, {"text": "Thick", "img": "03.svg"}, {"text": "Very thick", "img": "04.svg"}]}, {"id": "few-to-many", "set": "concept", "title": "Few to many", "gradeBand": "K-2", "reversible": true, "endLabels": ["few", "many"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "One dot", "img": "01.svg"}, {"text": "Three dots", "img": "02.svg"}, {"text": "Six dots", "img": "03.svg"}, {"text": "Ten dots", "img": "04.svg"}]}, {"id": "left-to-right", "set": "concept", "title": "Left to right", "gradeBand": "K-2", "reversible": true, "endLabels": ["left", "right"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "On the left", "img": "01.svg"}, {"text": "In the middle", "img": "02.svg"}, {"text": "On the right", "img": "03.svg"}]}, {"id": "short-to-tall", "set": "concept", "title": "Short to tall", "gradeBand": "K-2", "reversible": true, "endLabels": ["short", "tall"], "styles": ["shape", "text"], "paper": {"shape": "#fdf9f1"}, "cards": [{"text": "Very short", "img": "01.svg"}, {"text": "Short", "img": "02.svg"}, {"text": "Tall", "img": "03.svg"}, {"text": "Very tall", "img": "04.svg"}]}, {"id": "feelings-jo", "set": "feelings", "kind": "match", "who": "Jo", "title": "Jo's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-ana", "set": "feelings", "kind": "match", "who": "Ana", "title": "Ana's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-sam", "set": "feelings", "kind": "match", "who": "Sam", "title": "Sam's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-max", "set": "feelings", "kind": "match", "who": "Max", "title": "Max's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-gran", "set": "feelings", "kind": "match", "who": "Gran", "title": "Gran's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "feelings-puppy", "set": "feelings", "kind": "match", "who": "the puppy", "title": "The puppy's feelings", "gradeBand": "K-8", "cover": 2, "styles": ["subtle", "exaggerated", "colour"], "cards": [{"text": "calm", "emoji": "😌", "img": "calm.jpg"}, {"text": "happy", "emoji": "😄", "img": "happy.jpg"}, {"text": "surprised", "emoji": "😮", "img": "surprised.jpg"}, {"text": "focused", "emoji": "🧐", "img": "focused.jpg"}, {"text": "upset", "emoji": "😢", "img": "upset.jpg"}, {"text": "worried", "emoji": "😟", "img": "worried.jpg"}, {"text": "frustrated", "emoji": "😤", "img": "frustrated.jpg"}, {"text": "proud", "emoji": "😊", "img": "proud.jpg"}, {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}]}, {"id": "torn-drawing", "set": "paths", "kind": "paths", "title": "The torn drawing", "gradeBand": "K-5", "cover": 1, "styles": ["emoji", "text"], "cards": [{"id": "tear", "text": "Sam grabs Ana's drawing to look at it. The drawing tears.", "emoji": "🖼️", "who": "Ana", "feel": ["upset", "surprised", "frustrated", "worried"], "to": "sam-sees"}, {"id": "sam-sees", "text": "Sam looks at the torn drawing, then at Ana.", "emoji": "👀", "who": "Sam", "choices": [{"text": "Say sorry", "to": "sorry"}, {"text": "Say it was an accident", "to": "accident"}, {"text": "Walk away", "to": "apart"}]}, {"id": "sorry", "text": "Sam says sorry. The drawing is still torn. Ana does not feel better yet.", "emoji": "🙇", "who": "Ana", "choices": [{"text": "Tell Sam how it feels", "to": "tell"}, {"text": "Say “It's okay”", "to": "okay"}, {"text": "Ask for some space", "to": "apart"}]}, {"id": "accident", "text": "Sam says it was an accident. Ana says the drawing is still torn. Both voices get louder.", "emoji": "🗯️", "who": "Sam", "choices": [{"text": "Stop and listen", "to": "tell"}, {"text": "Take a slow breath, then say sorry", "to": "sorry"}, {"text": "Say it again, louder", "to": "apart"}]}, {"id": "okay", "text": "Ana says, “It's okay.” Inside, it does not feel okay yet.", "emoji": "😶", "who": "Ana", "choices": [{"text": "Tell Sam the truth", "to": "tell"}, {"text": "Keep it inside for now", "to": "later"}]}, {"id": "apart", "text": "Ana and Sam are apart for a while. Both keep thinking about the drawing.", "emoji": "↔️", "ask": "What could happen next?", "choices": [{"text": "Sam comes back to say sorry", "to": "sorry"}, {"text": "Ana goes to tell Sam how it feels", "to": "tell"}, {"text": "Leave it for today", "to": "later"}]}, {"id": "tell", "text": "Ana says, “I worked hard on that drawing. It matters to me.” Sam listens.", "emoji": "💬", "who": "Sam", "choices": [{"text": "Ask what would help", "to": "ask"}, {"text": "Offer to tape it together", "to": "tape"}, {"text": "Say “I only wanted to look”", "to": "accident"}]}, {"id": "ask", "text": "Sam asks, “What would help?” Ana thinks about it.", "emoji": "🤔", "ask": "What could Ana say?", "choices": [{"text": "“Help me tape it.”", "to": "tape"}, {"text": "“Draw a new one with me.”", "to": "new"}, {"text": "“I need more time.”", "to": "later"}]}, {"id": "tape", "end": "Taped together", "text": "Ana and Sam tape the drawing together. The tape shows. Ana keeps the drawing.", "emoji": "🩹", "who": "Ana", "ask": "How might Ana feel now?", "feel": ["relieved", "upset", "calm", "happy"]}, {"id": "new", "end": "A new drawing", "text": "Ana and Sam draw a new one, side by side.", "emoji": "🖍️", "who": "Ana", "ask": "How might Ana feel now?", "feel": ["happy", "upset", "proud", "calm"]}, {"id": "later", "end": "Not mended yet", "text": "It is not mended today. Ana and Sam can try again another day.", "emoji": "🌙", "who": "Sam", "ask": "How might Sam feel now?", "feel": ["worried", "upset", "calm", "relieved"]}]}, {"id": "stop-means-stop", "set": "paths", "kind": "paths", "title": "Stop means stop", "gradeBand": "K-5", "cover": 1, "styles": ["emoji", "text"], "cards": [{"id": "tickle", "text": "Max tickles Jo. Jo says, “Stop.” Max keeps tickling.", "emoji": "✋", "who": "Jo", "feel": ["frustrated", "upset", "worried", "surprised"], "to": "jo-turn"}, {"id": "jo-turn", "text": "Jo wants the tickling to stop.", "emoji": "🛑", "who": "Jo", "choices": [{"text": "Say “Stop” in a strong voice", "to": "strong"}, {"text": "Move away", "to": "away"}, {"text": "Get a grown-up", "to": "grownup"}]}, {"id": "strong", "text": "Jo says, “I don't like being tickled. Stop means stop.” Max hears it.", "emoji": "🗣️", "who": "Max", "choices": [{"text": "Say sorry", "to": "sorry"}, {"text": "Say “I was only playing”", "to": "only"}, {"text": "Ask “Are you okay?”", "to": "check"}]}, {"id": "away", "text": "Jo moves away. Now Jo and Max are apart for a while.", "emoji": "↔️", "ask": "What could happen next?", "choices": [{"text": "Max goes to ask if Jo is okay", "to": "check"}, {"text": "Jo comes back to talk to Max", "to": "strong"}, {"text": "Jo plays somewhere else today", "to": "later"}]}, {"id": "grownup", "text": "Jo tells a grown-up. The grown-up helps Jo and Max talk.", "emoji": "🧑‍🏫", "who": "Max", "choices": [{"text": "Listen to Jo", "to": "strong"}, {"text": "Say “I was only playing”", "to": "only"}]}, {"id": "only", "text": "Max says, “I was only playing.” Jo says, “It was not fun for me.”", "emoji": "🗯️", "who": "Max", "choices": [{"text": "Say “I didn't know. Sorry.”", "to": "sorry"}, {"text": "Say “You're no fun”", "to": "away"}]}, {"id": "check", "text": "Max asks, “Are you okay?” Jo says, “I didn't like the tickling.”", "emoji": "💬", "who": "Max", "choices": [{"text": "Say sorry", "to": "sorry"}, {"text": "Ask what game Jo wants to play", "to": "play"}, {"text": "Make a stop signal together", "to": "plan"}]}, {"id": "sorry", "text": "Max says, “Sorry. Next time I will stop when Jo says stop.”", "emoji": "🙇", "who": "Jo", "choices": [{"text": "Say “Thank you for stopping”", "to": "play"}, {"text": "Say “I need a break first”", "to": "away"}, {"text": "Make a stop signal together", "to": "plan"}]}, {"id": "play", "end": "A different game", "text": "Jo picks a different game. Jo and Max play again.", "emoji": "⚽", "who": "Jo", "ask": "How might Jo feel now?", "feel": ["relieved", "happy", "calm", "worried"]}, {"id": "plan", "end": "A stop signal", "text": "Jo and Max pick a signal. A hand up means stop, right away.", "emoji": "🤝", "who": "Max", "ask": "How might Max feel now?", "feel": ["proud", "relieved", "calm", "worried"]}, {"id": "later", "end": "Apart for today", "text": "Jo plays somewhere else today. Jo and Max can talk another day.", "emoji": "🌙", "who": "Max", "ask": "How might Max feel now?", "feel": ["upset", "worried", "surprised", "calm"]}]}];// @seed
 // Built-in copy of the concept drawings (img/<storyId>/shape/*.svg), so they
 // can be recoloured even when index.html is opened from disk. Refreshed by the
 // script in the README, like SEED.
@@ -890,6 +988,8 @@ let runCount = 0;      // one run = one presentation of a story
 let S = null;          // state of the story on screen
 let matches = [];      // one record per picture in a feelings match
 let M = null;          // state of the feelings match on screen
+let pathLog = [];      // one record per choice made in a "Working it out" story
+let P = null;          // state of the "Working it out" story on screen
 const pick = {
   step: 'kind', set: null,   // which setup screen is up, and the kind chosen on the first
   storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures',
@@ -899,7 +999,7 @@ const pick = {
 };
 
 function show(name) {
-  for (const id of ['setup', 'play', 'match', 'summary', 'about']) $(id).hidden = id !== name;
+  for (const id of ['setup', 'play', 'match', 'paths', 'summary', 'about']) $(id).hidden = id !== name;
   fitCards();
   window.scrollTo(0, 0);
 }
@@ -1033,6 +1133,9 @@ const SETS = [
   { id: 'feelings', title: 'Feelings', note: 'Match a feeling to a picture of one of the cast.',
     more: 'Open labels by default: the student\'s own word counts.',
     icon: 'M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5v.5M15 9.5v.5' },
+  { id: 'paths', title: 'Working it out', note: 'A hard moment between friends, and more than one way through it.',
+    more: 'The student chooses what happens next. No choice is marked right or wrong.',
+    icon: 'M12 21v-6M12 15c0-4-5.5-3-5.5-7M12 15c0-4 5.5-3 5.5-7M6.5 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM17.5 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4z' },
   { id: 'other', title: 'Other stories', note: '',
     icon: 'M5 4h14v16H5zM9 9h6M9 13h6' }
 ];
@@ -1096,8 +1199,8 @@ function renderSetup() {
   const pictures = pick.view === 'pictures';
   $('viewBtn').textContent = 'View: ' + pick.view;
   $('viewBtn').onclick = () => { pick.view = pictures ? 'list' : 'pictures'; renderSetup(); };
-  const plays = s => new Set([...log, ...matches].filter(a => a.storyId === s.id).map(a => a.run)).size;
-  const length = s => s.cards.length + (s.kind === 'match' ? ' feelings' : ' cards');
+  const plays = s => new Set([...log, ...matches, ...pathLog].filter(a => a.storyId === s.id).map(a => a.run)).size;
+  const length = s => s.cards.length + (s.kind === 'match' ? ' feelings' : s.kind === 'paths' ? ' moments' : ' cards');
 
   // Top line: back, and where this screen sits in the three steps.
   $('setupBack').hidden = !at || (one && step === 'story');
@@ -1218,11 +1321,14 @@ function renderSetup() {
   $('captions').onchange = renderSetup;
 
   const runs = new Set(log.map(a => a.run)).size, sets = new Set(matches.map(a => a.run)).size;
-  $('sessionCount').hidden = $('endFromSetup').hidden = !runs && !sets;
-  $('sessionCount').textContent = [
+  const ways = new Set(pathLog.map(a => a.run)).size;
+  $('sessionCount').hidden = $('endFromSetup').hidden = !runs && !sets && !ways;
+  const counted = [
     runs ? runs + (runs === 1 ? ' story' : ' stories') : '',
-    sets ? sets + (sets === 1 ? ' feelings set' : ' feelings sets') : ''
-  ].filter(Boolean).join(' and ') + ' logged';
+    sets ? sets + (sets === 1 ? ' feelings set' : ' feelings sets') : '',
+    ways ? ways + (ways === 1 ? ' working-it-out story' : ' working-it-out stories') : ''
+  ].filter(Boolean);
+  $('sessionCount').textContent = [counted.slice(0, -1).join(', '), counted.slice(-1)[0]].filter(Boolean).join(' and ') + ' logged';
 
   paintTour();   // the screen was redrawn: put the tour's ring back
 }
@@ -1265,6 +1371,23 @@ function renderPreview(story) {
     }
     $('previewNote').textContent = 'How the pictures look. Each is shown on its own, and the word it was drawn as stays hidden.';
     $('readyNote').textContent = 'The student is asked "How does ' + (story.who || 'this one') + ' feel?" for each picture, and never sees right or wrong.';
+    return;
+  }
+  if (story.kind === 'paths') {
+    // Only the opening moment: what follows depends on the student's choices.
+    list.className = '';
+    list.style.setProperty('--n', 1);
+    list.removeAttribute('aria-hidden');
+    const card = buildCard(story, 0, pick.style, true);
+    card.removeAttribute('tabindex');
+    card.setAttribute('role', 'img');
+    const li = el('li');
+    li.append(card);
+    list.append(li);
+    const ends = story.cards.filter(lastScene).length;
+    $('previewNote').textContent = 'The story starts here. What comes next depends on what the student chooses.';
+    $('readyNote').textContent = story.cards.length + ' moments and ' + ends + ' endings. No choice is marked right or wrong, ' +
+      'and any step can be gone back to. Feelings questions take more than one answer.';
     return;
   }
   const order = story.reversible && pick.direction === 'reverse' ? [...all].reverse() : all;
@@ -2139,6 +2262,242 @@ function buildMatchRaw(ms) {
   return [head, ...rows].map(r => r.join('\t')).join('\n');
 }
 
+/* ---------- Working it out (branching stories) ---------- */
+
+// A story with kind "paths" is a set of moments (its cards), and the student
+// chooses the way through. A moment offers either actions (card.choices: one
+// is picked, and each leads to another moment) or feelings (card.feel: any
+// number can be picked, since more than one can be true, and all lead on to
+// card.to). A moment that leads nowhere is an ending. The app records what
+// was chosen and where it led. No choice is better than another to the app,
+// and nothing here is compared with an answer.
+const sceneOptions = card => Array.isArray(card.feel)
+  ? card.feel.map(f => ({ text: f, emoji: feelEmoji(f) }))
+  : Array.isArray(card.choices) ? card.choices : [];
+const sceneNext = (card, option) => (option && option.to) || card.to || null;
+const lastScene = card => !card.to && sceneOptions(card).every(o => !o.to);
+const endName = card => card.end || card.text;
+// Feelings take their emoji from the feelings match, so a word always looks the same.
+function feelEmoji(word) {
+  for (const s of stories) {
+    const c = s.kind === 'match' && s.cards.find(c => c.text === word);
+    if (c && c.emoji) return c.emoji;
+  }
+  return '';
+}
+// Every moment has an id and words, every link leads to a moment that exists,
+// the story opens with something to choose, and it has at least one ending.
+function usablePaths(s) {
+  const ids = s.cards.map(c => c.id);
+  return new Set(ids).size === ids.length && sceneOptions(s.cards[0]).length > 0 && s.cards.some(lastScene) &&
+    s.cards.every(c => c.id && c.text && sceneOptions(c).every(o => o.text) &&
+      (lastScene(c) || (sceneOptions(c).length > 0 && sceneOptions(c).every(o => ids.includes(sceneNext(c, o))))));
+}
+
+// A small picture of one moment for the steps taken so far (none in text style).
+function sceneThumb(story, idx, style) {
+  if (style === 'text') return null;
+  const data = story.cards[idx], thumb = el('span', 'thumb');
+  thumb.setAttribute('aria-hidden', 'true');
+  const useEmoji = () => {
+    thumb.replaceChildren();
+    if (data.emoji) thumb.textContent = data.emoji; else thumb.hidden = true;
+  };
+  if (style === 'emoji') { useEmoji(); return thumb; }
+  const img = new Image();
+  img.alt = '';
+  img.draggable = false;
+  img.onerror = useEmoji;
+  img.src = 'img/' + story.id + '/' + style + '/' + (data.img || pad2(idx + 1) + '.png');
+  thumb.append(img);
+  return thumb;
+}
+
+function startPaths() {
+  const story = stories.find(s => s.id === pick.storyId);
+  P = { story, style: pick.style, run: ++runCount, path: 1, trail: [] };
+  S = null;
+  $('pathTitle').textContent = story.title;
+  enterScene(0);
+  show('paths');
+}
+
+// Put one moment on screen: the steps taken so far, its picture and words,
+// and what can be chosen. `done` shows it as the end of a path.
+function enterScene(idx, done) {
+  const card = P.story.cards[idx], options = sceneOptions(card), feel = Array.isArray(card.feel);
+  Object.assign(P, { at: idx, picked: [], own: '', cues: [], t0: performance.now(), done: !!done || !options.length });
+  $('ownIdea').value = '';
+  $('ownIdeaBox').hidden = true;
+
+  const trail = $('pathTrail');
+  trail.replaceChildren();
+  P.trail.forEach((step, k) => {
+    const li = el('li'), b = el('button', 'btn step'), thumb = sceneThumb(P.story, step.scene, P.style);
+    b.append(el('span', 'n', k + 1));
+    if (thumb) b.append(thumb);
+    b.append(el('span', '', step.label));
+    b.setAttribute('aria-label', 'Step ' + (k + 1) + ': ' + P.story.cards[step.scene].text +
+      ' Chosen: ' + step.label + '. Go back to this moment.');
+    b.onclick = () => pathBackTo(k);
+    li.append(b);
+    trail.append(li);
+  });
+  $('pathTrailBox').hidden = !P.trail.length;
+
+  const art = buildCard(P.story, idx, P.style, false);
+  for (const a of ['tabindex', 'role', 'aria-label']) art.removeAttribute(a);   // the words sit beside it
+  art.setAttribute('aria-hidden', 'true');
+  $('pathPic').replaceChildren(art);
+  $('pathStage').classList.toggle('nopic', P.style === 'text');
+  $('pathText').textContent = card.text;
+  $('pathAsk').textContent = card.ask || (feel ? 'How might ' + (card.who || 'this one') + ' feel?'
+    : card.who ? 'What could ' + card.who + ' do?' : 'What could happen next?');
+
+  const row = $('pathChoices');
+  row.replaceChildren();
+  row.classList.toggle('many', feel);
+  options.forEach((o, i) => {
+    const b = el('button', 'btn choice');
+    if (o.emoji && P.style !== 'text') b.append(el('span', 'emo', o.emoji));
+    b.append(el('span', 'word', o.text));
+    b.onclick = () => {
+      if (!feel) P.picked = [i];
+      else P.picked = P.picked.includes(i) ? P.picked.filter(x => x !== i) : [...P.picked, i].sort((x, y) => x - y);
+      paintPaths();
+    };
+    row.append(b);
+  });
+  // The student's own word or idea, once the clinician has noted it. Press to change it.
+  const own = el('button', 'btn choice own');
+  own.id = 'ownIdeaChip';
+  own.onclick = () => { $('ownIdeaBox').hidden = false; $('ownIdea').focus(); };
+  row.append(own);
+  paintPaths();
+}
+
+// What changes while a moment is on screen: what is pressed, and the buttons.
+function paintPaths() {
+  const card = P.story.cards[P.at], options = sceneOptions(card), feel = Array.isArray(card.feel);
+  const open = !P.done;
+  $('paths').classList.toggle('finished', !open);
+  $('pathCount').textContent = open ? 'Choice ' + (P.trail.length + 1) : '';
+  $('pathAsk').hidden = $('pathChoices').hidden = !open;
+  $('pathHint').hidden = !open || !feel;
+  [...$('pathChoices').children].slice(0, options.length)
+    .forEach((b, i) => b.setAttribute('aria-pressed', P.picked.includes(i)));
+  // An own word is one of the feelings picked. An own idea is noted beside
+  // the choice: the story still moves on by one of the listed choices.
+  const chip = $('ownIdeaChip');
+  chip.hidden = !P.own;
+  chip.textContent = (feel ? 'Own word: ' : 'Own idea: ') + P.own;
+  if (feel && P.own) chip.setAttribute('aria-pressed', 'true'); else chip.removeAttribute('aria-pressed');
+  $('ownIdeaBtn').hidden = !open;
+  $('ownIdeaBtn').textContent = feel ? 'The student used another word…' : 'The student had another idea…';
+  $('ownIdeaLabel').textContent = feel ? 'The student\'s own word' : 'The student\'s own idea';
+  $('pathGo').hidden = !open;
+  $('pathGo').disabled = !P.picked.length && !(feel && P.own);
+  $('pathGoText').textContent = lastScene(card) ? 'Done' : 'See what happens';
+  $('pathAgain').hidden = $('pathToSetup').hidden = $('pathEnd').hidden = open;
+  $('pathDone').textContent = open ? '' : 'This is one way it could go. There are others.';
+  const times = name => { const n = P.cues.filter(c => c === name).length; return n ? ' ×' + n : ''; };
+  $('pcVerbal').querySelector('.cueName').textContent = 'Verbal' + times('verbal cue');
+  $('pcSuggest').querySelector('.cueName').textContent = 'Suggested a choice' + times('choice suggested');
+}
+
+// "See what happens": log the choice, then move to the moment it leads to.
+function pathGo() {
+  if (!P || P.done) return;
+  const card = P.story.cards[P.at], options = sceneOptions(card), feel = Array.isArray(card.feel);
+  if (!P.picked.length && !(feel && P.own)) return;
+  const chosen = P.picked.map(i => options[i].text);
+  if (feel && P.own) chosen.push(P.own);
+  const nextId = sceneNext(card, feel ? null : options[P.picked[0]]);
+  const next = nextId ? P.story.cards.find(c => c.id === nextId) : null;
+  const stops = !next || !sceneOptions(next).length;      // nothing left to choose after this
+  pathLog.push({
+    run: P.run, storyId: P.story.id, title: P.story.title, style: P.style,
+    path: P.path, step: P.trail.length + 1, scene: card.id,
+    kind: feel ? 'feeling' : 'action', who: card.who || '',
+    offered: options.map(o => o.text), chosen, own: P.own,
+    leadsTo: nextId || '', ending: stops ? endName(next || card) : '',
+    cues: [...P.cues],
+    cueLevel: P.cues.includes('choice suggested') ? 'model' : P.cues.length ? 'verbal' : 'independent',
+    seconds: Math.round((performance.now() - P.t0) / 1000)
+  });
+  P.trail.push({ scene: P.at, label: chosen.join(' + ') });
+  if (next) enterScene(P.story.cards.indexOf(next));
+  else enterScene(P.at, true);
+  $('pathText').focus({ preventScroll: true });           // a screen reader starts at the new moment
+}
+
+// Back to an earlier step, to try another way from there. What was chosen
+// before stays in the log; the next choice starts a new path.
+function pathBackTo(k) {
+  if (!P || !P.trail[k]) return;
+  const at = P.trail[k].scene;
+  P.trail = P.trail.slice(0, k);
+  P.path++;
+  enterScene(at);
+  $('pathText').focus({ preventScroll: true });
+}
+
+function pathCue(name) {
+  if (!P || P.done) return;
+  P.cues.push(name);
+  paintPaths();
+}
+
+function useOwnIdea() {
+  const feel = Array.isArray(P.story.cards[P.at].feel);
+  const w = $('ownIdea').value.trim();
+  P.own = feel ? w.toLowerCase() : w;                     // empty clears it
+  $('ownIdeaBox').hidden = true;
+  paintPaths();
+  $(P.own ? 'ownIdeaChip' : 'ownIdeaBtn').focus();
+}
+
+// One sentence for each time a story was played, then each path in the order
+// it was taken: what was chosen at each step and where the path ended.
+function pathSentence(ps) {
+  if (!ps.length) return '';
+  const by = (list, key) => {
+    const groups = new Map();
+    for (const r of list) { if (!groups.has(r[key])) groups.set(r[key], []); groups.get(r[key]).push(r); }
+    return [...groups.values()];
+  };
+  return by(ps, 'run').map(g => {
+    const a = g[0], N = g.length, paths = by(g, 'path');
+    const count = f => g.filter(f).length;
+    const cued = count(r => r.cues.length);
+    const cueNames = [['verbal cue', 'verbal'], ['choice suggested', 'choice suggested']]
+      .map(([n, label]) => [label, count(r => r.cues.includes(n))]).filter(([, k]) => k)
+      .map(([label, k]) => label + ' ' + k + '/' + N).join(', ');
+    let s = 'Chose paths through the branching story "' + a.title + '" (' + a.style + ' stimuli): ' +
+      paths.length + (paths.length === 1 ? ' path, ' : ' paths, ') + N + (N === 1 ? ' choice' : ' choices') +
+      (cued ? '; cues on ' + cued + '/' + N + ' (' + cueNames + ')' : ', independently') + '.';
+    paths.forEach((steps, i) => {
+      const said = steps.map(r => r.kind === 'feeling'
+        ? (r.who ? r.who + '\'s feelings: ' : 'feelings: ') + r.chosen.map(c => c === r.own ? c + ' (own word)' : c).join(' + ')
+        : r.chosen.join(' + ') + (r.own ? ' (own idea: ' + r.own + ')' : ''));
+      const end = steps[steps.length - 1].ending;
+      s += ' Path ' + (i + 1) + (steps[0].step > 1 ? ' (from choice ' + steps[0].step + ')' : '') + ': ' +
+        said.join(' > ') + (end ? '; ended at "' + end + '".' : '; not finished.');
+    });
+    return s;
+  }).join(' ');
+}
+
+function buildPathRaw(ps) {
+  const head = ['storyId', 'style', 'path', 'step', 'scene', 'kind', 'who', 'offered', 'chosen', 'own',
+    'leadsTo', 'ending', 'cueLevel', 'cues', 'seconds'];
+  const rows = ps.map(r => [
+    r.storyId, r.style, r.path, r.step, r.scene, r.kind, r.who || '-', r.offered.join(' | '), r.chosen.join(' | '),
+    r.own || '-', r.leadsTo || '-', r.ending || '-', r.cueLevel, r.cues.join('; ') || '-', r.seconds
+  ]);
+  return [head, ...rows].map(r => r.join('\t')).join('\n');
+}
+
 /* ---------- Summary ---------- */
 
 function groupRuns(entries) {
@@ -2296,15 +2655,18 @@ function buildRaw(entries) {
 }
 
 function showSummary() {
+  const onlyOther = !log.length && (matches.length || pathLog.length);   // no sequencing this session
   $('oline').textContent = [
-    log.length || !matches.length ? buildOLine(log) : '',
+    onlyOther ? '' : buildOLine(log),
     retellSentence(retells),
-    matchSentence(matches)
+    matchSentence(matches),
+    pathSentence(pathLog)
   ].filter(Boolean).join(' ');
   $('raw').textContent = [
-    log.length || !matches.length ? buildRaw(log) : '',
+    onlyOther ? '' : buildRaw(log),
     retells.length ? 'Retell\n' + buildRetellRaw(retells) : '',
-    matches.length ? 'Feelings\n' + buildMatchRaw(matches) : ''
+    matches.length ? 'Feelings\n' + buildMatchRaw(matches) : '',
+    pathLog.length ? 'Working it out\n' + buildPathRaw(pathLog) : ''
   ].filter(Boolean).join('\n\n');
   show('summary');
   tour('summary');
@@ -2333,7 +2695,7 @@ async function copyText(text, btn) {
 
 function usable(s) {
   return s && s.id && Array.isArray(s.cards) && s.cards.length >= (s.reversible ? 3 : 2) &&
-    Array.isArray(s.styles) && s.styles.length;
+    Array.isArray(s.styles) && s.styles.length && (s.kind !== 'paths' || usablePaths(s));
 }
 
 async function init() {
@@ -2352,11 +2714,21 @@ async function init() {
   $('startBtn').onclick = () => {
     const story = stories.find(s => s.id === pick.storyId);
     if (story && story.kind === 'match') { startMatch(); tour('match'); return; }
+    if (story && story.kind === 'paths') { startPaths(); return; }
     startStory(); tour('start');
   };
   // Leaving a story lands on that kind's stories, ready for the next pick.
   const toStories = () => { pick.step = 'story'; renderSetup(); show('setup'); };
   $('matchBack').onclick = $('matchToSetup').onclick = toStories;
+  $('pathBack').onclick = $('pathToSetup').onclick = toStories;
+  $('pathEnd').onclick = () => { pick.step = 'story'; showSummary(); };
+  $('pathGo').onclick = pathGo;
+  $('pathAgain').onclick = () => pathBackTo(0);
+  $('pcVerbal').onclick = () => pathCue('verbal cue');
+  $('pcSuggest').onclick = () => pathCue('choice suggested');
+  $('ownIdeaBtn').onclick = () => { $('ownIdeaBox').hidden = false; $('ownIdea').focus(); };
+  $('ownIdeaUse').onclick = useOwnIdea;
+  $('ownIdea').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); useOwnIdea(); } };
   $('matchEnd').onclick = () => { pick.step = 'story'; showSummary(); };
   $('matchNext').onclick = nextPicture;
   $('mcVerbal').onclick = () => matchCue('verbal cue');
@@ -2425,7 +2797,7 @@ async function init() {
   $('copyRaw').onclick = e => copyText($('raw').textContent, e.currentTarget);
   $('newSession').onclick = () => {
     if (!confirm('Clear this session\'s data and start over?')) return;
-    log = []; retells = []; matches = []; runCount = 0;
+    log = []; retells = []; matches = []; pathLog = []; runCount = 0;
     pick.step = 'kind';
     renderSetup(); show('setup');
   };

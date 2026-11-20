@@ -488,5 +488,110 @@
       {"text": "proud", "emoji": "😊", "img": "proud.jpg"},
       {"text": "relieved", "emoji": "😮‍💨", "img": "relieved.jpg"}
     ]
+  },
+  {
+    "id": "torn-drawing",
+    "set": "paths",
+    "kind": "paths",
+    "title": "The torn drawing",
+    "gradeBand": "K-5",
+    "cover": 1,
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"id": "tear", "text": "Sam grabs Ana's drawing to look at it. The drawing tears.", "emoji": "🖼️",
+       "who": "Ana", "feel": ["upset", "surprised", "frustrated", "worried"], "to": "sam-sees"},
+      {"id": "sam-sees", "text": "Sam looks at the torn drawing, then at Ana.", "emoji": "👀",
+       "who": "Sam", "choices": [
+         {"text": "Say sorry", "to": "sorry"},
+         {"text": "Say it was an accident", "to": "accident"},
+         {"text": "Walk away", "to": "apart"}]},
+      {"id": "sorry", "text": "Sam says sorry. The drawing is still torn. Ana does not feel better yet.", "emoji": "🙇",
+       "who": "Ana", "choices": [
+         {"text": "Tell Sam how it feels", "to": "tell"},
+         {"text": "Say “It's okay”", "to": "okay"},
+         {"text": "Ask for some space", "to": "apart"}]},
+      {"id": "accident", "text": "Sam says it was an accident. Ana says the drawing is still torn. Both voices get louder.", "emoji": "🗯️",
+       "who": "Sam", "choices": [
+         {"text": "Stop and listen", "to": "tell"},
+         {"text": "Take a slow breath, then say sorry", "to": "sorry"},
+         {"text": "Say it again, louder", "to": "apart"}]},
+      {"id": "okay", "text": "Ana says, “It's okay.” Inside, it does not feel okay yet.", "emoji": "😶",
+       "who": "Ana", "choices": [
+         {"text": "Tell Sam the truth", "to": "tell"},
+         {"text": "Keep it inside for now", "to": "later"}]},
+      {"id": "apart", "text": "Ana and Sam are apart for a while. Both keep thinking about the drawing.", "emoji": "↔️",
+       "ask": "What could happen next?", "choices": [
+         {"text": "Sam comes back to say sorry", "to": "sorry"},
+         {"text": "Ana goes to tell Sam how it feels", "to": "tell"},
+         {"text": "Leave it for today", "to": "later"}]},
+      {"id": "tell", "text": "Ana says, “I worked hard on that drawing. It matters to me.” Sam listens.", "emoji": "💬",
+       "who": "Sam", "choices": [
+         {"text": "Ask what would help", "to": "ask"},
+         {"text": "Offer to tape it together", "to": "tape"},
+         {"text": "Say “I only wanted to look”", "to": "accident"}]},
+      {"id": "ask", "text": "Sam asks, “What would help?” Ana thinks about it.", "emoji": "🤔",
+       "ask": "What could Ana say?", "choices": [
+         {"text": "“Help me tape it.”", "to": "tape"},
+         {"text": "“Draw a new one with me.”", "to": "new"},
+         {"text": "“I need more time.”", "to": "later"}]},
+      {"id": "tape", "end": "Taped together", "text": "Ana and Sam tape the drawing together. The tape shows. Ana keeps the drawing.", "emoji": "🩹",
+       "who": "Ana", "ask": "How might Ana feel now?", "feel": ["relieved", "upset", "calm", "happy"]},
+      {"id": "new", "end": "A new drawing", "text": "Ana and Sam draw a new one, side by side.", "emoji": "🖍️",
+       "who": "Ana", "ask": "How might Ana feel now?", "feel": ["happy", "upset", "proud", "calm"]},
+      {"id": "later", "end": "Not mended yet", "text": "It is not mended today. Ana and Sam can try again another day.", "emoji": "🌙",
+       "who": "Sam", "ask": "How might Sam feel now?", "feel": ["worried", "upset", "calm", "relieved"]}
+    ]
+  },
+  {
+    "id": "stop-means-stop",
+    "set": "paths",
+    "kind": "paths",
+    "title": "Stop means stop",
+    "gradeBand": "K-5",
+    "cover": 1,
+    "styles": ["emoji", "text"],
+    "cards": [
+      {"id": "tickle", "text": "Max tickles Jo. Jo says, “Stop.” Max keeps tickling.", "emoji": "✋",
+       "who": "Jo", "feel": ["frustrated", "upset", "worried", "surprised"], "to": "jo-turn"},
+      {"id": "jo-turn", "text": "Jo wants the tickling to stop.", "emoji": "🛑",
+       "who": "Jo", "choices": [
+         {"text": "Say “Stop” in a strong voice", "to": "strong"},
+         {"text": "Move away", "to": "away"},
+         {"text": "Get a grown-up", "to": "grownup"}]},
+      {"id": "strong", "text": "Jo says, “I don't like being tickled. Stop means stop.” Max hears it.", "emoji": "🗣️",
+       "who": "Max", "choices": [
+         {"text": "Say sorry", "to": "sorry"},
+         {"text": "Say “I was only playing”", "to": "only"},
+         {"text": "Ask “Are you okay?”", "to": "check"}]},
+      {"id": "away", "text": "Jo moves away. Now Jo and Max are apart for a while.", "emoji": "↔️",
+       "ask": "What could happen next?", "choices": [
+         {"text": "Max goes to ask if Jo is okay", "to": "check"},
+         {"text": "Jo comes back to talk to Max", "to": "strong"},
+         {"text": "Jo plays somewhere else today", "to": "later"}]},
+      {"id": "grownup", "text": "Jo tells a grown-up. The grown-up helps Jo and Max talk.", "emoji": "🧑‍🏫",
+       "who": "Max", "choices": [
+         {"text": "Listen to Jo", "to": "strong"},
+         {"text": "Say “I was only playing”", "to": "only"}]},
+      {"id": "only", "text": "Max says, “I was only playing.” Jo says, “It was not fun for me.”", "emoji": "🗯️",
+       "who": "Max", "choices": [
+         {"text": "Say “I didn't know. Sorry.”", "to": "sorry"},
+         {"text": "Say “You're no fun”", "to": "away"}]},
+      {"id": "check", "text": "Max asks, “Are you okay?” Jo says, “I didn't like the tickling.”", "emoji": "💬",
+       "who": "Max", "choices": [
+         {"text": "Say sorry", "to": "sorry"},
+         {"text": "Ask what game Jo wants to play", "to": "play"},
+         {"text": "Make a stop signal together", "to": "plan"}]},
+      {"id": "sorry", "text": "Max says, “Sorry. Next time I will stop when Jo says stop.”", "emoji": "🙇",
+       "who": "Jo", "choices": [
+         {"text": "Say “Thank you for stopping”", "to": "play"},
+         {"text": "Say “I need a break first”", "to": "away"},
+         {"text": "Make a stop signal together", "to": "plan"}]},
+      {"id": "play", "end": "A different game", "text": "Jo picks a different game. Jo and Max play again.", "emoji": "⚽",
+       "who": "Jo", "ask": "How might Jo feel now?", "feel": ["relieved", "happy", "calm", "worried"]},
+      {"id": "plan", "end": "A stop signal", "text": "Jo and Max pick a signal. A hand up means stop, right away.", "emoji": "🤝",
+       "who": "Max", "ask": "How might Max feel now?", "feel": ["proud", "relieved", "calm", "worried"]},
+      {"id": "later", "end": "Apart for today", "text": "Jo plays somewhere else today. Jo and Max can talk another day.", "emoji": "🌙",
+       "who": "Max", "ask": "How might Max feel now?", "feel": ["upset", "worried", "surprised", "calm"]}
+    ]
   }
 ]
