@@ -415,6 +415,14 @@ Own Adventure" (a trademark).
   stop-means-stop: Jo and Max) are drafts in
   emoji/text, waiting on the counselor's review
   and on pictures.
+- Picture map: image-prompts.md Part 6
+  (torn-drawing drafted, nothing generated). A
+  moment's picture must be true on every path
+  into it; no feelings-sheet cells (the student
+  names the feeling, so faces stay quiet and the
+  body carries it); nobody drawn as the one to
+  blame; each child keeps the same side. Files
+  are named by moment (`tear.jpg`) via card.img.
 
 ## Output (End session)
 Summary + "Copy" button. Template:

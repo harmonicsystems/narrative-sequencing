@@ -854,3 +854,347 @@ sign, not at the child. Card 7's rug and sofa are the same as
 About 8 images including one redo, roughly 250–300k Codex tokens. Wait
 until Gran's feelings sheet exists so the two feeling cards can attach
 Gran's cells.
+
+---
+
+# Part 6: Working it out (branching stories)
+
+The two `paths` stories are in emoji and words only. This part is the
+picture map for the first one, `torn-drawing` (Ana and Sam): what has to
+be decided, the stage, the props, one brief per moment and the order to
+make them in.
+
+**Draft, written 2026-11-20. Nothing here has been generated.** The
+wording in `stories.json` and the open questions below go to the
+counselor first. Every moment is one image, so a change made after the
+pictures costs a redraw.
+
+## What branching changes
+
+Sequencing cards are seen once, side by side. These pictures are seen one
+at a time, in any order, and some of them more than once.
+
+- **True on every path.** A moment can be reached several ways and can
+  come round again. Its picture may only show what is true however the
+  student got there. The table below lists where each moment is reached
+  from: check the picture against every one of them.
+- **The picture must not answer the question.** The captions never name a
+  feeling: the student does, and more than one can be true. A face drawn
+  as "upset" would answer for them. So this set attaches **no
+  feelings-sheet cells**. A face is described by what the child is doing
+  (looking, speaking, listening). The body carries the rest: where each
+  child stands, which way they turn, what the hands do.
+- **Nobody is the bad one.** Sam never smiles or looks pleased while the
+  drawing is torn. Ana never glares. Pointing is at the drawing, never at
+  a person (the same rule as Gran and the sign in `puppy-at-the-door`).
+  No tears, sweat drops or anger marks.
+- **Positions never swap.** Ana is always on the left, Sam always on the
+  right, the table and the drawing always between them. How far each is
+  from the table, and which way they face, is what changes.
+- **Each moment needs its own outline.** A picture also shows very small
+  in the "steps so far" row. The brief for each moment names the one
+  thing that tells it apart at that size.
+
+## Open questions (for the counselor and David)
+
+1. **Faces.** Drafted: quiet faces, feeling in the body. The risk is that
+   a quiet face during a conflict reads as not caring. The other way is
+   a readable face from the subtle (F1) sheets, which names the feeling
+   for the student. A clearer set could also come later as a second
+   style, the way the feelings match has subtle and exaggerated.
+2. **What Ana drew.** Drafted: a sun over two hills. It has no face and
+   no people in it (they would be one more face to read), and it is not
+   the house from `spilled-paint`.
+3. **Loud voices** in `accident`. Drafted: mouths wide open, both leaning
+   in, two short lines beside each mouth. Or posture only, no lines.
+4. **"Side by side"** in `new`. In this side view the two share one sheet
+   from their own ends of the table. Either the words change ("together")
+   or this ending gets a front view, which is a second layout to keep
+   steady.
+5. **The pieces in `later`.** Drafted: they stay on the table, waiting.
+   Or Ana takes them.
+6. **Sam's part of the new drawing.** Drafted: Sam draws a kite, a nod to
+   `kite-in-the-tree`. Or something plain.
+
+## The stage
+
+One place for the whole story, drawn the quiet way (Part 3): Ana's
+painting table from her props sheet, seen from the side, on plain cream.
+No stool, window, cup, brushes or paint tray. A small open box of crayons
+sits at Ana's end of the table in every full scene, because this is a
+drawing, not a painting.
+
+The master layout is moment 2 (`sam-sees`): both children standing at
+the table, the two pieces between them. Every other full scene is made
+from it.
+
+Three moments are close views (waist up), so they stand apart from the
+full scenes: `okay` (Ana alone), `tell` and `ask` (both children).
+
+## Props: the drawing (D1 to D4)
+
+Drawn flat and face-on so it can be copied into each scene, like the
+painting in Part 4. D2 and D3 are edits of D1, so the sun and the tear
+stay the same.
+
+- **D1, whole.** A child's crayon drawing on white paper, seen straight
+  on, the paper filling the picture with a thin cream margin. A big round
+  yellow sun with short rays in the middle of the top half, above two
+  rounded green hills. Loose crayon strokes. No face on the sun, no
+  people, no text, no signature.
+- **D2, torn.** Edit of D1: the paper is torn in two from the top edge to
+  the bottom edge, a little right of the middle, through the sun. The
+  tear zigzags. The two pieces sit a finger-width apart. Nothing else
+  changes.
+- **D3, taped.** Edit of D2: the two pieces are pushed together again.
+  Three short strips of tan masking tape cross the tear. The tear line
+  still shows between the strips.
+- **D4, the new one.** A new sheet, the same size. On the left a yellow
+  sun, half coloured in. On the right a dusty-blue diamond kite, outline
+  only. Both unfinished. The same crayon strokes as D1.
+
+One more small prop, in `tape` only: a roll of tan masking tape.
+
+## The moments
+
+| # | Moment | Asks about | Reached from | View | The drawing |
+|---|---|---|---|---|---|
+| 1 | `tear` | Ana's feelings | the start | full scene | tearing, in both children's hands |
+| 2 | `sam-sees` | what Sam could do | `tear` | full scene, **master** | two pieces on the table |
+| 3 | `sorry` | what Ana could do | `sam-sees`, `accident`, `apart` | full scene | two pieces on the table |
+| 4 | `accident` | what Sam could do | `sam-sees`, `tell` | full scene | two pieces on the table |
+| 5 | `okay` | what Ana could do | `sorry` | close, Ana alone | a corner of one piece |
+| 6 | `apart` | what could happen next | `sam-sees`, `sorry`, `accident` | full scene | two pieces on the table |
+| 7 | `tell` | what Sam could do | `sorry`, `accident`, `okay`, `apart` | close, both | two pieces along the bottom |
+| 8 | `ask` | what Ana could say | `tell` | close, both | two pieces along the bottom |
+| 9 | `tape` (ending) | Ana's feelings | `tell`, `ask` | full scene | taped, held up |
+| 10 | `new` (ending) | Ana's feelings | `ask` | full scene | new sheet; the pieces at the back |
+| 11 | `later` (ending) | Sam's feelings | `okay`, `apart`, `ask` | full scene | two pieces on the table |
+
+From `sam-sees` until an ending the two pieces lie in the same place on
+the table and nobody touches them, so a moment looks right the second
+time round too.
+
+What each picture shows. Every brief starts with CAST, STAGE or CLOSE,
+and FACES (below).
+
+1. **`tear`** *"Sam grabs Ana's drawing to look at it. The drawing
+   tears."* Ana and Sam each hold one side of the drawing above the
+   table. It has just torn down the middle between their hands (D2), the
+   two halves a little apart. Sam's arm is stretched across the table.
+   Ana leans forward with both hands on her half. Both look at the tear.
+   *Tells it apart:* the paper in the air between them.
+2. **`sam-sees`** *"Sam looks at the torn drawing, then at Ana."* The two
+   pieces lie flat on the table, a finger-width apart, tilted toward the
+   viewer. Ana stands at her end looking down at them, hands on the table
+   edge. Sam has let go: both hands open and low, head lifted from the
+   pieces to look at Ana. *Tells it apart:* Sam's open hands.
+3. **`sorry`** *"Sam says sorry. The drawing is still torn. Ana does not
+   feel better yet."* Sam faces Ana, head tipped down a little, both
+   hands held together in front, mouth a little open (speaking). Ana is
+   turned a quarter away, toward the viewer, looking down at the pieces,
+   one hand holding her other arm at the elbow. *Tells it apart:* Sam's
+   bowed head, Ana turned away.
+4. **`accident`** *"Sam says it was an accident. Ana says the drawing is
+   still torn. Both voices get louder."* Both lean in over the table
+   toward each other, mouths wide open. Sam's arms are out, palms up. Ana
+   points one arm straight down at the pieces. Two short curved lines
+   beside each mouth, the only marks in the set. No fists, nobody points
+   at the other. *Tells it apart:* both leaning in, arms out.
+5. **`okay`** *"Ana says, “It's okay.” Inside, it does not feel okay
+   yet."* Close view of Ana alone, turned a little to the right, toward
+   Sam, who is out of the picture. A small closed-mouth smile (the one
+   face in the set that is not quiet: it is what Ana shows). Her eyes are
+   down, her shoulders are lifted and her hands hold each other tight in
+   front of her chest. A corner of one torn piece along the bottom edge.
+   Face and body disagree: that is the picture. *Tells it apart:* one
+   child, close.
+6. **`apart`** *"Ana and Sam are apart for a while. Both keep thinking
+   about the drawing."* The pieces lie on the table as before. Ana sits
+   on the floor at the left, her back to the table, knees up, arms round
+   them. Sam sits on the floor at the right in the same pose, back to the
+   table. Each head is turned to look back at the table. Nobody is
+   leaving and nobody was sent away: this moment is reached after Sam
+   walks off, after Ana asks for space and after the loud voices. If the
+   turned heads come out wrong, use heads down, chins on knees. *Tells
+   it apart:* both sitting, back to back.
+7. **`tell`** *"Ana says, “I worked hard on that drawing. It matters to
+   me.” Sam listens."* Close view of both, facing each other, the table
+   top with the two pieces along the bottom edge. Ana has one hand flat
+   on her chest and the other resting on her piece, mouth open
+   (speaking), eyes on Sam. Sam stands square to Ana, arms down, head
+   tilted a little, mouth closed, eyes on Ana. A close view, so it does
+   not say who walked over to whom. *Tells it apart:* Ana's hand on her
+   chest.
+8. **`ask`** *"Sam asks, “What would help?” Ana thinks about it."* The
+   same close view as `tell`. Sam holds one open hand out, palm up,
+   toward the pieces, mouth a little open. Ana looks up and away, one
+   hand on her chin (the thinking pose on her body-language sheet), the
+   other arm across her waist. *Tells it apart:* Ana looking up, Sam's
+   hand out.
+9. **`tape`** *"Ana and Sam tape the drawing together. The tape shows.
+   Ana keeps the drawing."* Ana stands at her end and holds the taped
+   drawing up in both hands, turned so the viewer sees it straight on
+   (D3): the sun whole again, three strips of tape, the tear line still
+   there. Ana looks down at it. Sam stands at the other end with the roll
+   of tape in one hand, looking at Ana. *Tells it apart:* the drawing
+   held up, facing out.
+10. **`new`** *"Ana and Sam draw a new one, side by side."* The new sheet
+    (D4) lies in the middle of the table, tilted toward the viewer. Ana
+    and Sam lean over it from their own ends, heads close, a crayon in
+    each drawing hand: Ana on the sun, Sam on the kite. Both look at
+    their work. The two torn pieces lie together at the back of the
+    table, still torn. *Tells it apart:* two heads close over one sheet.
+11. **`later`** *"It is not mended today. Ana and Sam can try again
+    another day."* The pieces lie on the table as before. Ana walks away
+    to the left and Sam to the right, each in mid-step near their own
+    edge, backs to the table, looking ahead, arms at their sides. Both
+    walk the same way: nobody storms off. This moment is reached after
+    "It's okay", after being apart and after "I need more time". *Tells
+    it apart:* both walking away.
+
+## Blocks
+
+### CAST block (Ana and Sam)
+
+Ana's lines are her block from Part 4. Sam's are written from the
+turnaround sheet: if they differ, the sheet wins.
+
+```
+Match the supplied character references exactly.
+Ana: a seven-year-old girl with warm brown skin, round face, dark oval
+eyes, black hair parted in the middle in two round puffs with sage-green
+bands, dusty-blue overalls with a front pocket over a cream short-sleeve
+t-shirt, tan sneakers.
+Sam: a seven-year-old child with light skin, freckles across the nose
+and cheeks, dark dot eyes, red-orange hair in a rounded bowl cut with a
+straight fringe, a mustard-yellow zip jacket with two slanted pockets
+over a white t-shirt, sage-green trousers, dark brown lace-up boots.
+The two are the same height. Preserve each child's age, skin tone, hair
+silhouette, proportions and clothing design. Flat simple children's
+picture-card illustration, even medium-brown outlines, muted warm tan,
+cream, sage and dusty-blue palette, plain uniform cream #f7f2e7
+background, solid fills, no shading, gradients or shadows. No text,
+lettering, numbers, arrows, logos, frames or watermark.
+```
+
+### FACES block (every moment)
+
+```
+Faces are quiet in this picture. Brows level and relaxed. Eyes open,
+looking where the brief says. Mouth a small short line, unless the brief
+says the child is speaking. No smile, no frown, no tears, no sweat
+drops, no anger or shock marks. What each child feels is shown only by
+posture, hands, and where they stand and look.
+```
+
+### STAGE block (full scenes)
+
+For the master (`sam-sees`), leave out the first sentence after
+"Portrait 3:4" and attach Ana's props sheet for the table.
+
+```
+Portrait 3:4. Match the layout reference exactly: same camera height and
+angle, same table in the same place and at the same size, same floor
+level, both children at the same size. Side view. Ana is at the left end
+of the table and Sam at the right end. Standing, each child fills a
+little over half the card height and the table top is level with their
+waists. The table is the small wooden table in the props reference:
+ignore everything else on that sheet. A small open box of crayons sits
+on the table at Ana's end. Nothing else is in the room: no stool,
+window, cup, brushes or paint tray. The whole scene sits in the lower
+two-thirds of the card, with plain cream above it and around it.
+```
+
+### CLOSE block (`okay`, `tell`, `ask`)
+
+```
+Portrait 3:4. Waist-up close view at the children's eye level. The table
+top runs along the bottom edge with the torn drawing on it, as in the
+layout reference. Head and shoulders fill the top half. Plain cream
+behind.
+```
+
+## References per moment
+
+| Picture | Attach |
+|---|---|
+| D1 | nothing (CAST style lines only) |
+| D2, D3 | D1 (edit: "change only what is listed") |
+| D4 | D1 (for the paper and the crayon strokes) |
+| `sam-sees` (master) | Ana A1, Sam A1, Ana P1 (table only), D2 |
+| `tear`, `sorry`, `accident`, `apart`, `later` | Ana A1, Sam A1, master, D2 |
+| `tape` | Ana A1, Sam A1, master, D3 |
+| `new` | Ana A1, Sam A1, master, D4, D2 |
+| `tell` | Ana A1, Sam A1, master, D2 |
+| `ask` | Ana A1, Sam A1, Ana A4 (thinking pose), master, D2 |
+| `okay` | Ana A1, Ana A4 (hands), D2 |
+
+Sheets are in `img/_cast/ana/` and `img/_cast/sam/`. Sam has no pose
+sheet and does not need one: the later stories held their characters
+from the turnaround and the master layout alone.
+
+## Making it
+
+1. The counselor reads the wording and the open questions. Change
+   `stories.json` first, then this map.
+2. D1, then D2 and D3 as edits of it, then D4.
+3. The master, `sam-sees`, on its own. Check it before going on: every
+   other picture depends on it.
+4. The other full scenes from the master: `tear`, `sorry`, `accident`,
+   `apart`, then the endings `tape`, `new`, `later`.
+5. The close views: `okay`, `tell`, `ask`.
+6. A review page (`img/_drafts/torn-drawing/round-1/review.html`) that
+   shows each picture beside its caption and question, and the pictures
+   again at the size of the steps row.
+
+About 15 images and a redo or two: roughly 300k Codex tokens with the
+lean helper (`puppy-at-the-door` was 128k for seven), and likely two
+sittings because of the image limit.
+
+## Checks before saving
+
+- Walk every "reached from" in the table. Is the picture true after each?
+- Cover the caption. Can any feeling word be read from a face alone? If
+  yes, redo that face (except the small smile in `okay`).
+- Does either child look like the one to blame, in any picture?
+- The tear is the same tear everywhere, and the pieces lie in the same
+  place from `sam-sees` to the endings.
+- Ana on the left, Sam on the right, the same height, in every picture.
+- The crayon box is in every full scene. No stool, cup or brushes.
+- At the size of the steps row, can the eleven be told apart?
+- No text anywhere, including on the drawing.
+
+## Install
+
+- Trim as in Part 4: the eight full scenes share one crop; the three
+  close views share their own. Resize to 640 wide.
+- Save as `img/torn-drawing/cartoon/<moment>.jpg` (`tear.jpg`,
+  `sam-sees.jpg`, …) and give each card `"img": "<moment>.jpg"`. Naming
+  by moment keeps the files right if moments are added or moved.
+- Put `"cartoon"` first in the story's `styles`, set `paper.cartoon`
+  from the files and refresh the built-in copy (README).
+- Look at the picture box on the Working it out screen with a real
+  picture in it. Today it is portrait 3:4, at most 280 px wide, with no
+  magnifier. A trimmed two-person scene will be close to square and its
+  figures small: the box may need to be wider, or need the magnifier the
+  sequencing cards have.
+- Update the counts on the About page and the "drafts in emoji/text"
+  line in `CLAUDE.md`.
+
+## stop-means-stop (not mapped yet)
+
+The same rules apply (true on every path, no feelings cells, nobody is
+the bad one, Jo and Max never swap sides). The setting can be Max's rug:
+`img/block-tower/cartoon/02.jpg` as the layout. Four things need an
+answer before its map is written:
+
+1. **How the tickling is drawn.** It is unwanted touch. Hands near or
+   hands on? Is Jo laughing while saying stop? Max must not look mean.
+2. **The stop signal.** One gesture (a flat hand up), drawn the same way
+   in `plan` and wherever Jo says stop.
+3. **The grown-up** in `grownup`. Gran (already in the cast), an adult
+   cropped at the shoulders, or a new teacher, which costs a set of
+   sheets.
+4. **The "different game"** in `play`. The blocks and the sage ball from
+   `block-tower` would need no new props.
