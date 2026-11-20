@@ -397,6 +397,13 @@ Own Adventure" (a trademark).
   another way" (filled), Back to stories, End
   session.
 - Ready screen shows only the opening moment.
+- Pictures: one is on screen at a time, so a
+  set with a paper colour is shown at the
+  picture's own shape (card class hug) in a
+  wider column, with the magnifier. A tall
+  picture (a close view) is held to 52vh so the
+  tools tray stays in view. startPaths() loads
+  every picture of the story up front.
 - Clinician: "The student had another idea…"
   (own idea noted beside the choice; own word
   on a feelings question counts as a pick).
@@ -412,11 +419,14 @@ Own Adventure" (a trademark).
   a > b > c; ended at "E"." Raw data gets a
   "Working it out" table.
 - The two stories (torn-drawing: Ana and Sam;
-  stop-means-stop: Jo and Max) are drafts in
-  emoji/text, waiting on the counselor's review
-  and on pictures.
-- Picture map: image-prompts.md Part 6
-  (torn-drawing drafted, nothing generated). A
+  stop-means-stop: Jo and Max) are drafts,
+  waiting on the counselor's review.
+  torn-drawing has round 1 pictures installed
+  (img/torn-drawing/cartoon/, 11 moments);
+  stop-means-stop is emoji/text, not yet mapped.
+- Picture map: image-prompts.md Part 6. Round 1
+  drafts, briefs and the helper script are in
+  img/_drafts/torn-drawing/round-1/. A
   moment's picture must be true on every path
   into it; no feelings-sheet cells (the student
   names the feeling, so faces stay quiet and the

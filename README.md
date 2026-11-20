@@ -264,6 +264,13 @@ A moment that leads nowhere is an ending. It can still ask a `feel` question
 if every `to` names a moment that exists, the first card has something to
 choose, and there is at least one ending. Images work as for any story
 (`img/<storyId>/<style>/01.png`…, numbered in card order, or `cards[].img`).
+*The torn drawing* names each picture after its moment
+(`"img": "tear.jpg"`), so the files stay right if moments are added or moved.
+
+One picture is on screen at a time, so a set with a `paper` colour is shown
+at the picture's own shape in a wider column, not in a 3:4 card, and gets
+the enlarge button. A tall picture is held to the window so the clinician
+tools stay in view. All of a story's pictures load when it starts.
 
 On screen the student sees one moment at a time, picks, and presses "See what
 happens". The steps taken so far stay in a row above; pressing one goes back
@@ -293,6 +300,9 @@ O-line adds, for each story played:
 
 The raw data gets a "Working it out" table. The two stories in the set are
 first drafts, written to be edited: every word of them is in `stories.json`.
+*The torn drawing* has a first round of pictures, one for every moment;
+*Stop means stop* is in emoji and words so far. How the pictures were
+planned and made is in `image-prompts.md`, Part 6.
 
 ## Data and output
 

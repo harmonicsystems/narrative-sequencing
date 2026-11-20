@@ -699,6 +699,8 @@ This is how the prompts get better.
 | 1 | Cast feelings F1–F3 (Codex) | Ana, Sam, Max, the grandparent and the puppy, three sheets each, with Jo's round 2 sheets attached as the layout reference and the round 2 fixes written into every brief. All 15 held the character and the even grid on the first try; noses are lines, focused reads as concentrating, frustrated stays apart from proud. The puppy uses dog body language. The ChatGPT limit hit after Ana; the rest ran after the reset. 14k–62k tokens a sheet; the spread is how much of the image skill's reference files Codex chose to read. Cut into 162 single pictures for the feelings match. | Try the lean helper next: skip the skill files and use low reasoning; the image model and brief are unchanged. |
 | 1 | puppy-at-the-door (Codex, lean helper) | Card 2 (split card) as the master, attaching Jo, Gran and the puppy plus the feelings-sheet cells for the two faces; then 1, 3, 4 from it and 5, 6, 7 in their own settings (7 reuses block-tower card 2 for the rug and sofa). All seven on the first try: same hallway, door and sign; Gran looks at the sign, not at Jo, in 3 and 4. **Lean helper** (skip the skill files, low reasoning, brief passed word for word): 7.5k–27k tokens a card, about 128k for all seven, against 20–35k a card before, with no visible loss of quality. Possible note: in card 3 Gran points while frowning, which could read as scolding. | Use the lean helper by default. Attach feelings-sheet cells for faces on feeling cards. |
 | 1 | puppy-at-the-door fixes, installed | Card 3: Gran's glasses floated off the face in side view; a one-change Codex edit sat them on the nose. Card 7: the puppy had no nose; the Codex edit added one but also erased its brown eye patch, so the nose was drawn onto the original with PIL instead. Installed: the six full scenes share one crop, the close-up (card 4) its own top trim; paper #f7eee3. | Edits can drop a character's marks: name the marks to keep ("keep the brown patch around one eye"), or fix tiny things locally. |
+| 1 | torn-drawing (Codex, lean helper) | The drawing first (D1, then D2 torn and D3 taped as edits of it, D4 new), then `sam-sees` as the master, then the other seven full scenes and the three close views from it, two to four at a time. All 15 on the first try, about 215k tokens (4.8k–33k each), in one sitting with no limit hit. Ana, Sam, the table, the crayon box and the tear hold in every picture, and nobody swaps sides. Quiet faces (FACES block, no feelings cells) came out a little solemn, not blank; Ana's mouth turns down slightly in `tear`. `new`: Codex put both children behind the table, side by side, and drew the table larger. `apart` and `later` are drawn about 9% and 14% smaller than the other full scenes. Review page: `img/_drafts/torn-drawing/round-1/`. | Pending your review. |
+| 1 | torn-drawing installed | Trimmed with one crop for the eight full scenes and their own for the close views; paper #f5efe3; files named by moment. `apart` and `later` could not be enlarged to match the others: the children are at the picture's edges and would be cut. Left as drawn. In the app the picture now takes its own shape in a wider column and has the magnifier. | A scene with both children away from the table needs more width than a full-scale card has: expect it to come back smaller, or stage it closer. |
 
 ### Workflow notes from round 1
 
@@ -721,6 +723,31 @@ keeps Ana's face steady. One story comes from one tool, so every
 
 Claude runs each card with `codex exec -i <refs…>` and the brief below.
 Codex saves one image to the round folder and changes nothing else.
+
+### The lean helper
+
+Used by default since `puppy-at-the-door`. It passes the brief word for
+word, skips the image skill's reference files and uses low reasoning.
+`codex` here is the ChatGPT app's bundled CLI, not Homebrew's older one.
+
+```
+#!/bin/zsh
+# gen-lean.sh <out-file> <brief-file> <ref images...>
+OUT=$1; BRIEF=$2; shift 2
+REFS=(); for r in "$@"; do REFS+=(-i "$r"); done
+{
+  echo "Call the built-in image_gen tool exactly once, right away, passing the brief below as the prompt word for word, with the attached images as references in the order given. Do not read any skill, reference or other files first, and do not rewrite or shorten the brief."
+  echo "Then copy the newest generated image from \$CODEX_HOME/generated_images (default ~/.codex/generated_images) to this exact path: $OUT"
+  echo "Do not create, edit or delete any other files. Reply with only the saved path."
+  echo
+  cat "$BRIEF"
+} | /Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex exec --ephemeral --skip-git-repo-check -c model_reasoning_effort=low -s workspace-write -C "$(dirname $OUT)" "${REFS[@]}" -
+```
+
+Several briefs can run at once (`… &` then `wait`). Each run copies "the
+newest image", so look at every file afterwards to be sure it is the
+right picture. From `torn-drawing` on, a round keeps its briefs and a
+copy of the helper beside its pictures, in `briefs/`.
 
 ### CAST block (Ana)
 
@@ -864,10 +891,13 @@ picture map for the first one, `torn-drawing` (Ana and Sam): what has to
 be decided, the stage, the props, one brief per moment and the order to
 make them in.
 
-**Draft, written 2026-11-20. Nothing here has been generated.** The
-wording in `stories.json` and the open questions below go to the
-counselor first. Every moment is one image, so a change made after the
-pictures costs a redraw.
+**Round 1 was drawn and installed on 2026-11-20** as
+`img/torn-drawing/cartoon/`, so the story can be played with pictures.
+It is still waiting on review
+(`img/_drafts/torn-drawing/round-1/review.html`). The pictures follow the
+drafted answers to the open questions below, so the counselor can react
+to pictures as well as words. A change to a moment's wording after this
+costs a redraw of that moment.
 
 ## What branching changes
 
@@ -907,10 +937,11 @@ at a time, in any order, and some of them more than once.
    the house from `spilled-paint`.
 3. **Loud voices** in `accident`. Drafted: mouths wide open, both leaning
    in, two short lines beside each mouth. Or posture only, no lines.
-4. **"Side by side"** in `new`. In this side view the two share one sheet
-   from their own ends of the table. Either the words change ("together")
-   or this ending gets a front view, which is a second layout to keep
-   steady.
+4. **"Side by side"** in `new`. The brief asked for the two to share one
+   sheet from their own ends of the table. Round 1 came back with both
+   behind the table, side by side, which matches the caption but draws
+   the table larger than in the other scenes. Keep it, or redo it from
+   the ends?
 5. **The pieces in `later`.** Drafted: they stay on the table, waiting.
    Or Ana takes them.
 6. **Sam's part of the new drawing.** Drafted: Sam draws a kite, a nod to
@@ -1148,9 +1179,8 @@ from the turnaround and the master layout alone.
    shows each picture beside its caption and question, and the pictures
    again at the size of the steps row.
 
-About 15 images and a redo or two: roughly 300k Codex tokens with the
-lean helper (`puppy-at-the-door` was 128k for seven), and likely two
-sittings because of the image limit.
+Round 1 took 15 images and about 215k Codex tokens with the lean helper,
+in one sitting, with no redo.
 
 ## Checks before saving
 
@@ -1167,20 +1197,27 @@ sittings because of the image limit.
 
 ## Install
 
-- Trim as in Part 4: the eight full scenes share one crop; the three
-  close views share their own. Resize to 640 wide.
+- Scale. In round 1 the table top is about 584 px wide (of 1086) in six
+  full scenes, 534 in `apart` and 502 in `later`. Those two cannot be
+  enlarged to match: the children sit or walk at the edges of the
+  picture and would be cut off. Two children beside a table is simply a
+  wider scene than fits at full scale, so they stay as drawn. The scenes
+  show one at a time, never side by side. `new` has its own, larger
+  table.
+- Trim as in Part 4: the eight full scenes share one crop (640 × 593);
+  `tell` and `ask` share theirs (640 × 738); `okay` has its own
+  (640 × 842). Resize to 640 wide.
 - Save as `img/torn-drawing/cartoon/<moment>.jpg` (`tear.jpg`,
   `sam-sees.jpg`, …) and give each card `"img": "<moment>.jpg"`. Naming
   by moment keeps the files right if moments are added or moved.
 - Put `"cartoon"` first in the story's `styles`, set `paper.cartoon`
   from the files and refresh the built-in copy (README).
-- Look at the picture box on the Working it out screen with a real
-  picture in it. Today it is portrait 3:4, at most 280 px wide, with no
-  magnifier. A trimmed two-person scene will be close to square and its
-  figures small: the box may need to be wider, or need the magnifier the
-  sequencing cards have.
-- Update the counts on the About page and the "drafts in emoji/text"
-  line in `CLAUDE.md`.
+- The picture box. A trimmed two-person scene is close to square, and
+  in a 3:4 card at most 280 px wide its figures were small. Done at
+  install: a set with a paper colour is shown at the picture's own shape
+  in a wider column (up to 420 px), a tall close view is held to the
+  window, and the picture has the magnifier the sequencing cards have.
+- Update the counts on the About page, the README and `CLAUDE.md`.
 
 ## stop-means-stop (not mapped yet)
 
