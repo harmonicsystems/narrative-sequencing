@@ -546,6 +546,16 @@
   /* Feelings: small buttons side by side, as in the feelings match. More than one can be pressed. */
   #pathChoices.many { flex-direction: row; align-items: center; }
   #pathChoices.many .choice { min-width: 112px; text-align: center; }
+  /* Feeling choices as the character's own face: a picture large enough to
+     read a subtle face, with the word beside it. Two across when there is room. */
+  #pathChoices.faces { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  #pathChoices.faces .choice.pic {
+    display: flex; align-items: center; gap: 12px; min-width: 0; padding: 5px 12px 5px 5px; text-align: left;
+  }
+  #pathChoices .choice .face {
+    width: 124px; height: 124px; flex: none; border-radius: 12px; object-fit: cover;
+    background: var(--soft); pointer-events: none;
+  }
   #pathChoices .own { border-style: dashed; }
   /* An own idea is a note beside the choices, not one of them: smaller and quieter. */
   #pathChoices:not(.many) .own { min-height: 48px; padding-block: 6px; font-size: 0.95rem; color: var(--muted); }
@@ -650,6 +660,7 @@
           <div class="row" id="dirRow" role="group" aria-label="Which way the story goes"></div>
           <div class="row" id="choiceRow" role="group" aria-label="What the student chooses from" hidden></div>
           <div class="row" id="labelRow" role="group" aria-label="Labels" hidden></div>
+          <div class="row" id="faceRow" role="group" aria-label="How the feeling choices look" hidden></div>
         </div>
         <p class="muted small" id="previewNote"></p>
         <ol id="preview"></ol>
@@ -811,6 +822,7 @@
       <div class="trayHead"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11h12v9H6zM9 11V8a3 3 0 0 1 6 0v3"/></svg><b>Clinician tools</b><span class="trayNote">lightest first · each press is logged</span></div>
       <div class="cues" role="group" aria-label="Give a cue">
         <button class="btn cue" id="pcVerbal"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="cueName">Verbal</span><small>log only</small></button>
+        <button class="btn cue" id="pcFaces"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zM8.5 14.5c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2M9 9.5v.5M15 9.5v.5"/></svg><span class="cueName">Clearer faces</span><small id="pcFacesNow"></small></button>
         <button class="btn cue" id="pcSuggest"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg><span class="cueName">Suggested a choice</span><small>log only</small></button>
       </div>
     </div>
@@ -1008,7 +1020,9 @@ const pick = {
   storyId: null, style: null, direction: 'forward', size: 'standard', view: 'pictures',
   // Feelings match (memory only): what the student picks from, open or fixed
   // labels, and which feelings are in play.
-  choices: 'words', labels: 'open', feelings: ['calm', 'happy', 'upset', 'worried']
+  choices: 'words', labels: 'open', feelings: ['calm', 'happy', 'upset', 'worried'],
+  // Working it out (memory only): what a feelings question's choices show.
+  faces: 'emoji'
 };
 
 function show(name) {
@@ -1317,6 +1331,7 @@ function renderSetup() {
     }
 
     renderMatchOpts(story);
+    renderPathOpts(story);
     renderPreview(story);
   }
 
@@ -1458,6 +1473,24 @@ function renderMatchOpts(story) {
       pick.feelings = on ? pick.feelings.filter(x => x !== f) : [...pick.feelings, f];
       renderSetup();
     };
+    row.append(b);
+  }
+}
+
+// Ready screen choice for a branching story: what its feelings questions
+// offer. Emoji, or the character's own face from the feelings pictures, in
+// one of their three drawings (lightest cue first).
+function renderPathOpts(story) {
+  const row = $('faceRow'), styles = story.kind === 'paths' && pick.style !== 'text' ? faceStyles(story) : [];
+  row.hidden = !styles.length;
+  if (!styles.length) return;
+  if (!['emoji', ...styles].includes(pick.faces)) pick.faces = 'emoji';
+  row.replaceChildren(el('span', 'lbl', 'Feeling choices'));
+  for (const value of ['emoji', ...styles]) {
+    const b = el('button', 'btn mini');
+    b.append(icon(value === 'emoji' ? 'face' : 'picture'), FACE_NAME[value] || value);
+    b.setAttribute('aria-pressed', pick.faces === value);
+    b.onclick = () => { pick.faces = value; renderSetup(); };
     row.append(b);
   }
 }
@@ -2302,6 +2335,21 @@ function feelEmoji(word) {
   }
   return '';
 }
+// A feelings question can offer the character's own face in place of an
+// emoji: the feelings match pictures, in the drawing the clinician chose.
+// Lightest cue first: emoji, subtle, exaggerated, lines and colour.
+const FACE_ORDER = ['emoji', 'subtle', 'exaggerated', 'colour'];
+const FACE_NAME = { words: 'words', emoji: 'emoji', subtle: 'subtle faces', exaggerated: 'exaggerated faces', colour: 'faces with lines and colour' };
+const feelSet = who => stories.find(s => s.kind === 'match' && s.who === who);
+function feelPic(who, word, faces) {
+  const s = feelSet(who), c = s && s.styles.includes(faces) && s.cards.find(c => c.text === word);
+  return c ? 'img/' + s.id + '/' + faces + '/' + (c.img || c.text + '.jpg') : '';
+}
+// The drawings every character asked about in this story has, in cue order.
+function faceStyles(story) {
+  const sets = [...new Set(story.cards.filter(c => Array.isArray(c.feel)).map(c => c.who))].map(feelSet);
+  return sets.length && sets.every(Boolean) ? FACE_ORDER.filter(f => f !== 'emoji' && sets.every(s => s.styles.includes(f))) : [];
+}
 // Every moment has an id and words, every link leads to a moment that exists,
 // the story opens with something to choose, and it has at least one ending.
 function usablePaths(s) {
@@ -2332,12 +2380,18 @@ function sceneThumb(story, idx, style) {
 
 function startPaths() {
   const story = stories.find(s => s.id === pick.storyId);
-  P = { story, style: pick.style, run: ++runCount, path: 1, trail: [] };
+  const faces = faceStyles(story);
+  P = { story, style: pick.style, run: ++runCount, path: 1, trail: [], faceStyles: faces,
+    // What feeling choices show when a question comes up; a cue can raise it for that question.
+    faces0: pick.style === 'text' ? 'words' : faces.includes(pick.faces) ? pick.faces : 'emoji' };
   S = null;
   // Load every picture now: a later moment then shows at once, and still
   // shows if the connection has gone.
   if (pick.style !== 'emoji' && pick.style !== 'text') {
     story.cards.forEach((c, i) => { new Image().src = 'img/' + story.id + '/' + pick.style + '/' + (c.img || pad2(i + 1) + '.png'); });
+  }
+  if (P.faces0 !== 'emoji' && P.faces0 !== 'words') {
+    for (const c of story.cards) for (const f of c.feel || []) new Image().src = feelPic(c.who, f, P.faces0);
   }
   $('pathTitle').textContent = story.title;
   enterScene(0);
@@ -2348,7 +2402,8 @@ function startPaths() {
 // and what can be chosen. `done` shows it as the end of a path.
 function enterScene(idx, done) {
   const card = P.story.cards[idx], options = sceneOptions(card), feel = Array.isArray(card.feel);
-  Object.assign(P, { at: idx, picked: [], own: '', cues: [], t0: performance.now(), done: !!done || !options.length });
+  Object.assign(P, { at: idx, picked: [], own: '', cues: [], t0: performance.now(), done: !!done || !options.length,
+    faces: P.faces0 });
   $('ownIdea').value = '';
   $('ownIdeaBox').hidden = true;
 
@@ -2378,12 +2433,32 @@ function enterScene(idx, done) {
   $('pathAsk').textContent = card.ask || (feel ? 'How might ' + (card.who || 'this one') + ' feel?'
     : card.who ? 'What could ' + card.who + ' do?' : 'What could happen next?');
 
+  drawChoices();
+}
+
+// The choice buttons of the moment on screen. A feelings question shows each
+// word with an emoji or, when faces are on, with the character's own face.
+function drawChoices() {
+  const card = P.story.cards[P.at], options = sceneOptions(card), feel = Array.isArray(card.feel);
+  const faces = feel && P.faces !== 'emoji' && P.faces !== 'words';
   const row = $('pathChoices');
   row.replaceChildren();
   row.classList.toggle('many', feel);
+  row.classList.toggle('faces', faces);
   options.forEach((o, i) => {
     const b = el('button', 'btn choice');
-    if (o.emoji && P.style !== 'text') b.append(el('span', 'emo', o.emoji));
+    const emo = () => el('span', 'emo', o.emoji);
+    const src = faces ? feelPic(card.who, o.text, P.faces) : '';
+    if (src) {
+      const img = new Image();
+      img.className = 'face';
+      img.alt = '';
+      img.draggable = false;
+      img.onerror = () => { b.classList.remove('pic'); if (o.emoji) img.replaceWith(emo()); else img.remove(); };
+      img.src = src;
+      b.classList.add('pic');
+      b.append(img);
+    } else if (o.emoji && P.style !== 'text') b.append(emo());
     b.append(el('span', 'word', o.text));
     b.onclick = () => {
       if (!feel) P.picked = [i];
@@ -2427,6 +2502,27 @@ function paintPaths() {
   const times = name => { const n = P.cues.filter(c => c === name).length; return n ? ' ×' + n : ''; };
   $('pcVerbal').querySelector('.cueName').textContent = 'Verbal' + times('verbal cue');
   $('pcSuggest').querySelector('.cueName').textContent = 'Suggested a choice' + times('choice suggested');
+  // Clearer faces: one step up for this question, on feelings questions only.
+  const next = feel ? nextFaces() : '';
+  $('pcFaces').hidden = !feel || !P.faceStyles.length || P.style === 'text';
+  $('pcFaces').disabled = !next;
+  $('pcFacesNow').textContent = 'now: ' + (FACE_NAME[P.faces] || P.faces);
+}
+
+// The next clearer drawing for the feeling choices, if there is one.
+function nextFaces() {
+  const steps = ['emoji', ...P.faceStyles];
+  return steps[steps.indexOf(P.faces) + 1] || '';
+}
+// Cue: show the feeling choices one step clearer for this question. Picks
+// already made stay. The next question starts at the level set on setup.
+function pathFacesUp() {
+  const next = P && !P.done && Array.isArray(P.story.cards[P.at].feel) ? nextFaces() : '';
+  if (!next) return;
+  P.faces = next;
+  P.cues.push('clearer faces');
+  drawChoices();
+  $('pcFaces').focus();
 }
 
 // "See what happens": log the choice, then move to the moment it leads to.
@@ -2444,9 +2540,12 @@ function pathGo() {
     path: P.path, step: P.trail.length + 1, scene: card.id,
     kind: feel ? 'feeling' : 'action', who: card.who || '',
     offered: options.map(o => o.text), chosen, own: P.own,
+    faces: feel ? P.faces : '',            // what the feeling choices showed when this was answered
+    faces0: feel ? P.faces0 : '',          // and what they were set to show on setup
     leadsTo: nextId || '', ending: stops ? endName(next || card) : '',
     cues: [...P.cues],
-    cueLevel: P.cues.includes('choice suggested') ? 'model' : P.cues.length ? 'verbal' : 'independent',
+    cueLevel: P.cues.includes('choice suggested') ? 'model' : P.cues.includes('clearer faces') ? 'visual'
+      : P.cues.length ? 'verbal' : 'independent',
     seconds: Math.round((performance.now() - P.t0) / 1000)
   });
   P.trail.push({ scene: P.at, label: chosen.join(' + ') });
@@ -2494,10 +2593,15 @@ function pathSentence(ps) {
     const a = g[0], N = g.length, paths = by(g, 'path');
     const count = f => g.filter(f).length;
     const cued = count(r => r.cues.length);
-    const cueNames = [['verbal cue', 'verbal'], ['choice suggested', 'choice suggested']]
-      .map(([n, label]) => [label, count(r => r.cues.includes(n))]).filter(([, k]) => k)
-      .map(([label, k]) => label + ' ' + k + '/' + N).join(', ');
-    let s = 'Chose paths through the branching story "' + a.title + '" (' + a.style + ' stimuli): ' +
+    // Clearer faces also says how far the drawings were raised.
+    const top = FACE_ORDER.filter(f => g.some(r => r.cues.includes('clearer faces') && r.faces === f)).pop();
+    const cueNames = [['verbal cue', 'verbal'], ['clearer faces', 'clearer faces'], ['choice suggested', 'choice suggested']]
+      .map(([n, label]) => [label, count(r => r.cues.includes(n)), n]).filter(([, k]) => k)
+      .map(([label, k, n]) => label + ' ' + k + '/' + N + (n === 'clearer faces' && top ? ', up to ' + FACE_NAME[top] : '')).join(', ');
+    // How the feeling choices were set to look, when it was not the usual emoji.
+    const set = (g.find(r => r.kind === 'feeling') || {}).faces0;
+    const faces = set && set !== 'emoji' && set !== 'words' ? '; feeling choices as ' + (FACE_NAME[set] || set) : '';
+    let s = 'Chose paths through the branching story "' + a.title + '" (' + a.style + ' stimuli' + faces + '): ' +
       paths.length + (paths.length === 1 ? ' path, ' : ' paths, ') + N + (N === 1 ? ' choice' : ' choices') +
       (cued ? '; cues on ' + cued + '/' + N + ' (' + cueNames + ')' : ', independently') + '.';
     paths.forEach((steps, i) => {
@@ -2513,10 +2617,10 @@ function pathSentence(ps) {
 }
 
 function buildPathRaw(ps) {
-  const head = ['storyId', 'style', 'path', 'step', 'scene', 'kind', 'who', 'offered', 'chosen', 'own',
+  const head = ['storyId', 'style', 'path', 'step', 'scene', 'kind', 'who', 'faces', 'offered', 'chosen', 'own',
     'leadsTo', 'ending', 'cueLevel', 'cues', 'seconds'];
   const rows = ps.map(r => [
-    r.storyId, r.style, r.path, r.step, r.scene, r.kind, r.who || '-', r.offered.join(' | '), r.chosen.join(' | '),
+    r.storyId, r.style, r.path, r.step, r.scene, r.kind, r.who || '-', r.faces || '-', r.offered.join(' | '), r.chosen.join(' | '),
     r.own || '-', r.leadsTo || '-', r.ending || '-', r.cueLevel, r.cues.join('; ') || '-', r.seconds
   ]);
   return [head, ...rows].map(r => r.join('\t')).join('\n');
@@ -2750,6 +2854,7 @@ async function init() {
   $('pathAgain').onclick = () => pathBackTo(0);
   $('pcVerbal').onclick = () => pathCue('verbal cue');
   $('pcSuggest').onclick = () => pathCue('choice suggested');
+  $('pcFaces').onclick = pathFacesUp;
   $('ownIdeaBtn').onclick = () => { $('ownIdeaBox').hidden = false; $('ownIdea').focus(); };
   $('ownIdeaUse').onclick = useOwnIdea;
   $('ownIdea').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); useOwnIdea(); } };

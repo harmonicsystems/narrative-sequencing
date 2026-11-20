@@ -404,20 +404,43 @@ Own Adventure" (a trademark).
   picture (a close view) is held to 52vh so the
   tools tray stays in view. startPaths() loads
   every picture of the story up front.
+- Feeling choices (ready screen, pick.faces,
+  memory only): emoji (default) | subtle faces |
+  exaggerated faces | faces with lines and
+  colour, lightest cue first. A face is the
+  feelings-match picture of the character asked
+  about (the match story whose who = card.who),
+  124px with the word beside it, two across:
+  smaller and a subtle face can't be read.
+  Offered only when every character the story
+  asks about has a feelings set; hidden in text
+  style (words only). The faces show what each
+  word looks like on that character: nothing is
+  compared and no choice is marked.
 - Clinician: "The student had another idea…"
   (own idea noted beside the choice; own word
   on a feelings question counts as a pick).
-  Cues, log only: Verbal | Suggested a choice
-  (cueLevel model).
+  Cues, lightest first: Verbal (log only) |
+  Clearer faces (feelings questions only: the
+  choices go one drawing clearer for this
+  question, picks stay; cueLevel visual; the
+  next question starts at the setup level
+  again, so the app never raises support on its
+  own) | Suggested a choice (log only, model).
 - Record per choice: storyId, style, path, step,
-  scene, kind (action | feeling), who, offered
-  [], chosen [], own, leadsTo, ending, cues [],
+  scene, kind (action | feeling), who, faces
+  (words | emoji | subtle | exaggerated |
+  colour, as shown when answered), offered [],
+  chosen [], own, leadsTo, ending, cues [],
   cueLevel, seconds.
 - O-line adds per story played: "Chose paths
   through the branching story "T" ({style}
-  stimuli): P paths, N choices{cues}. Path 1:
-  a > b > c; ended at "E"." Raw data gets a
-  "Working it out" table.
+  stimuli{; feeling choices as subtle faces}):
+  P paths, N choices{cues}. Path 1: a > b > c;
+  ended at "E"." Cues clause: "cues on k/N
+  (verbal k/N, clearer faces k/N, up to
+  exaggerated faces, choice suggested k/N)".
+  Raw data gets a "Working it out" table.
 - The two stories (torn-drawing: Ana and Sam;
   stop-means-stop: Jo and Max) are drafts,
   waiting on the counselor's review.

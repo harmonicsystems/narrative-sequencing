@@ -277,17 +277,30 @@ happens". The steps taken so far stay in a row above; pressing one goes back
 to that moment to try another way from there, and "Try another way" at an
 ending goes back to the start. Earlier choices stay in the log.
 
+**Feeling choices.** A feelings question shows each word with an emoji. On
+the ready screen, *Feeling choices* can swap the emoji for the character's
+own face, taken from the Feelings set: subtle faces, exaggerated faces, or
+faces with lines and colour (lightest cue first). The face is the one drawn
+for the character the question is about, so the story needs a Feelings entry
+whose `who` matches each `cards[].who` it asks about; the choice is offered
+only when it has them. In text style the choices are words only.
+
 For the clinician: "The student had another idea…" notes the student's own
 idea in a few words (on a feelings question, the student's own word, which
 counts as one of the feelings picked). An own idea is recorded beside the
 choice; the story still moves on by one of the listed choices. The Clinician
 tools tray logs a Verbal cue or "Suggested a choice" on the choice in
-progress.
+progress. On a feelings question it also has **Clearer faces**: each press
+shows the choices one drawing clearer (emoji, subtle, exaggerated, lines and
+colour) for that question only, and is logged as a visual cue. The next
+feelings question starts again at the level set on the ready screen.
 
 Each choice records `storyId`, `style`, `path`, `step`, `scene`, `kind`
-(`action` or `feeling`), `who`, `offered`, `chosen`, `own`, `leadsTo`,
-`ending` (on the choice that finished a path), `cues`, `cueLevel`
-(independent, verbal, or model when a choice was suggested) and `seconds`.
+(`action` or `feeling`), `who`, `faces` (what the feeling choices showed when
+the question was answered: words, emoji, subtle, exaggerated or colour),
+`offered`, `chosen`, `own`, `leadsTo`, `ending` (on the choice that finished
+a path), `cues`, `cueLevel` (independent, verbal, visual when the faces were
+made clearer, or model when a choice was suggested) and `seconds`.
 `path` goes up by one each time the student goes back to an earlier step. The
 O-line adds, for each story played:
 
@@ -297,6 +310,11 @@ O-line adds, for each story played:
 > (own idea: Make Ana a card) > "Draw a new one with me." > Ana's feelings:
 > happy; ended at "A new drawing". Path 2 (from choice 2): Walk away > Leave
 > it for today > Sam's feelings: worried + calm; ended at "Not mended yet".
+
+When the feeling choices were set to faces, the stimuli note says so:
+"(cartoon stimuli; feeling choices as subtle faces)". A Clearer faces cue is
+counted with the others and says how far it went: "cues on 1/4 (clearer
+faces 1/4, up to exaggerated faces)".
 
 The raw data gets a "Working it out" table. The two stories in the set are
 first drafts, written to be edited: every word of them is in `stories.json`.
